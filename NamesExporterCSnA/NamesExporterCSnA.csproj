@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Documents\GitHub\GeKtviWpfToolkit\GeKtviWpfToolkit\GeKtviWpfToolkit\GeKtviWpfToolkit.csproj" />
+    <ProjectReference Include="..\..\GeKtviWpfToolkit\GeKtviWpfToolkit\GeKtviWpfToolkit.csproj" />
   </ItemGroup>
 
   <ItemGroup>

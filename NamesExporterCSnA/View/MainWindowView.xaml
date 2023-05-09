@@ -18,6 +18,7 @@
         Width=  "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Width, Mode=TwoWay}"
         Height= "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Height, Mode=TwoWay}"
         Topmost="True"
+        WindowState="{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.WindowState, Mode=TwoWay}"
         ui:TitleBar.ExtendViewIntoTitleBar="True"
         
         ui:TitleBar.BackButtonStyle="{DynamicResource AppTitleBarBackButtonStyle}"
@@ -116,6 +117,7 @@
             </Grid.RowDefinitions>
             <Border Style="{DynamicResource BorderStyle}" Grid.Column="0">
                 <tk:DataGridGK 
+                    Margin="1"
                     Style="{StaticResource DefaultDataGridStyle}"
                     ItemsSource="{Binding DataIn, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                     SelectionUnit="CellOrRowHeader" 
@@ -135,6 +137,7 @@
 
             <Border Style="{DynamicResource BorderStyle}" Grid.Column="2">
                 <tk:DataGridGK
+                    Margin="1"
                     Style="{StaticResource DefaultDataGridStyle}"
                     ItemsSource="{Binding DataOut, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                     SelectionUnit="CellOrRowHeader" 
