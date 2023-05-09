@@ -32,9 +32,9 @@ namespace NamesExporterCSnA.View
         private void InitializeComponentUiSave()
         {
             if (Properties.UI.Default.WindowSettings == null)
-            {
                 Properties.UI.Default.WindowSettings = new WindowSettings();
-            }
+            if (Properties.UI.Default.WindowSettings.WindowState == WindowState.Minimized)
+                Properties.UI.Default.WindowSettings.WindowState = WindowState.Normal;
         }
 
         private void MainWindowClosed(object? sender, EventArgs e)

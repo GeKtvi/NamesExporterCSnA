@@ -12,6 +12,7 @@
         d:Height="500"
         x:Name="Window"
         Title="Export Helper" 
+
         xmlns:properties="clr-namespace:NamesExporterCSnA.Properties"
         Top=    "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Top, Mode=TwoWay}"
         Left=   "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Left, Mode=TwoWay}"
