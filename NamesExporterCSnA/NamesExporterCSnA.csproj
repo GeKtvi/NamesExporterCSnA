@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+	<StartupObject>NamesExporterCSnA.Program</StartupObject>
+	<ApplicationIcon>View\Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="View\Icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="View\Icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+    <PackageReference Include="ModernWpfUI" Version="0.9.6" />
+    <PackageReference Include="Prism.Wpf" Version="8.1.97" />
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Documents\GitHub\GeKtviWpfToolkit\GeKtviWpfToolkit\GeKtviWpfToolkit\GeKtviWpfToolkit.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="View\Icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\UI.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UI.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\UI.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>UI.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+</Project>
