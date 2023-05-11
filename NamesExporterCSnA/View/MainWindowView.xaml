@@ -18,10 +18,8 @@
         Left=   "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Left, Mode=TwoWay}"
         Width=  "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Width, Mode=TwoWay}"
         Height= "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Height, Mode=TwoWay}"
-        Topmost="True"
         WindowState="{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.WindowState, Mode=TwoWay}"
         ui:TitleBar.ExtendViewIntoTitleBar="True"
-        
         ui:TitleBar.BackButtonStyle="{DynamicResource AppTitleBarBackButtonStyle}"
         ui:WindowHelper.UseModernWindowStyle="True">
 
@@ -49,9 +47,14 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
     </Window.Resources>
 
-
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding ImportData}" Gesture="Ctrl+Shift+V"/>
+        <KeyBinding Command="{Binding ExportData}" Gesture="Ctrl+Shift+C"/>
+        <KeyBinding Command="{Binding ClearData}" Gesture="Ctrl+Shift+D"/>
+    </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -87,9 +90,9 @@
             <TextBlock Grid.Column="0" Grid.ColumnSpan="7" Text="{Binding ElementName=Window, Path=Title}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
             <ui:TitleBarButton 
-                Grid.Column="3" 
+                Grid.Column="2" 
                 Width="45" 
-                ToolTip="Импортировать из буфера"
+                ToolTip="Импортировать из буфера Ctrl+Shift+V"
                 Command="{Binding ImportData}">
                 <ui:TitleBarButton.Content>
                     <ui:SymbolIcon Symbol="Download"/>
@@ -97,12 +100,22 @@
             </ui:TitleBarButton >
 
             <ui:TitleBarButton 
-                Grid.Column="4" 
+                Grid.Column="3" 
                 Width="45" 
-                ToolTip="Экспортировать в буфер" 
+                ToolTip="Экспортировать в буфер Ctrl+Shift+C" 
                 Command="{Binding ExportData}">
                 <ui:TitleBarButton.Content>
                     <ui:SymbolIcon Symbol="Upload"/>
+                </ui:TitleBarButton.Content>
+            </ui:TitleBarButton >
+
+            <ui:TitleBarButton 
+                Grid.Column="4" 
+                Width="45" 
+                ToolTip="Очистить входные данные Ctrl+Shift+D"
+                Command="{Binding ClearData}">
+                <ui:TitleBarButton.Content>
+                    <ui:SymbolIcon Symbol="ClearSelection"/>
                 </ui:TitleBarButton.Content>
             </ui:TitleBarButton >
         </Grid>
@@ -116,7 +129,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Border Style="{DynamicResource BorderStyle}" Grid.Column="0">
+            <Border x:Name="LeftBorder" Style="{DynamicResource BorderStyle}" Grid.Column="0">
                 <tk:DataGridGK 
                     Margin="1"
                     Style="{StaticResource DefaultDataGridStyle}"
@@ -125,6 +138,7 @@
                     AutoGenerateColumns="False" 
                     HorizontalScrollBarVisibility="Visible"
                     GridLinesVisibility="All">
+
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Обозначение"  Binding="{Binding SchemeName, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
                         <DataGridTextColumn Header="Наименование" Binding="{Binding WireName,       UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
@@ -144,7 +158,6 @@
                     SelectionUnit="CellOrRowHeader" 
                     HorizontalScrollBarVisibility="Auto"
                     GridLinesVisibility="All" IsReadOnly="True"/>
-
             </Border>
 
             <!--<local:LowerPanel Margin="5" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"/>-->

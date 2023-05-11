@@ -43,11 +43,7 @@ namespace NamesExporterCSnA.Model
         public void SetDataIn(List<string[]> values)
         {
             IsUpdateFeezed = true;
-            //var first = DataIn.First().GetType();
             DataIn.Clear();
-            //var type = DataOut.First().GetType();
-            //var properties = type.GetProperties();
-
 
             foreach (string[] row in values)
             {
@@ -70,9 +66,32 @@ namespace NamesExporterCSnA.Model
                 }
                 DataIn.Add(cable);
             }
-
             IsUpdateFeezed = false;
             UpdateDataOut();
+        }
+
+        public List<List<string>> GetDataAsListList() 
+        {
+            List<List<string>> data = new();
+
+            foreach (var itemDataOut in DataOut)
+            {
+                int i = 0;
+                data.Add(new());
+                foreach (var item in TypeDescriptor.GetProperties(DataOut.First()))
+                {
+                    System.ComponentModel.PropertyDescriptor propertyDescriptor = item as System.ComponentModel.PropertyDescriptor;
+                    var attributes = propertyDescriptor.Attributes[typeof(System.ComponentModel.DataAnnotations.DisplayAttribute)];
+                    System.ComponentModel.DataAnnotations.DisplayAttribute displayAttribute =
+                            attributes as System.ComponentModel.DataAnnotations.DisplayAttribute;
+
+                    if (displayAttribute.GetAutoGenerateField() != false)
+                        data.Last().Add(propertyDescriptor.GetValue(itemDataOut).ToString());
+                    i++;
+                }
+            }
+
+            return data;
         }
 
         private void DataInChanged(object? sender, NotifyCollectionChangedEventArgs e)
