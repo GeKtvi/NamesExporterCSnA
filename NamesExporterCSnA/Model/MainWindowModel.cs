@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GeKtviWpfToolkit;
 using NamesExporterCSnA.Model.Data;
-using NamesExporterCSnA.Model.Data.MarksDKC;
+using NamesExporterCSnA.Model.Data.Marks;
 using System.Windows.Threading;
 using System.Threading;
 using System.Windows;
@@ -20,13 +20,13 @@ namespace NamesExporterCSnA.Model
 {
     public class MainWindowModel : BindableBase
     {
-        public ObservableCollection<MaxExportedCable> DataIn { get; set; }
-        public ObservableCollection<object> DataOut { get; set; }
+        public ObservableCollection<MaxExportedCable> DataIn { get; private set; }
+        public ObservableCollection<object> DataOut { get; private set; }
 
         public bool IsUpdateFeezed { get; set; } = false;
 
         private CablesParser _cablesParser = new();
-        private CableMarkDKCFabric _cableMarkDKCFabric = new CableMarkDKCFabric();
+        private CableMarkFabric _cableMarkDKCFabric = new CableMarkFabric();
 
         private DeferredOperation _deferredUpdate;
         private Thread _notificationThread; // заглушка
@@ -70,7 +70,7 @@ namespace NamesExporterCSnA.Model
             UpdateDataOut();
         }
 
-        public List<List<string>> GetDataAsListList() 
+        public List<List<string>> GetDataAsListList()
         {
             List<List<string>> data = new();
 
@@ -103,16 +103,16 @@ namespace NamesExporterCSnA.Model
 
             foreach (INotifyPropertyChanged item in e.NewItems)
                 item.PropertyChanged += (s, e) => _deferredUpdate.DoOperation();
-                
+
         }
 
         private void UpdateDataOut()
         {
             if (IsUpdateFeezed)
                 return;
-            
+
             DataOut.Clear();
-            
+
             try
             {
                 var parsed = _cablesParser.Parse(DataIn.ToList());
@@ -120,12 +120,12 @@ namespace NamesExporterCSnA.Model
                 if (parsed.Count == 0)
                     return;
 
-                List<CableMarkDKC> marks = new();
+                List<ICableMark> marks = new();
 
                 foreach (var cable in parsed)
                     marks.AddRange(_cableMarkDKCFabric.GetMarksByCableName(cable));
 
-                GroupMarks(ref marks);
+                SetDataOutFromListICableMark(marks);
             }
             catch (Exception e)
             {
@@ -133,7 +133,11 @@ namespace NamesExporterCSnA.Model
                 if (_notificationThread == null || _notificationThread.ThreadState != ThreadState.Running)
                 {
                     _notificationThread = new Thread(() =>
-                    MessageBox.Show("Ошибка при генерации списка:\n" + e.Message, "Ошибка обновления", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK)
+                    MessageBox.Show("Ошибка при генерации списка:\n" + e.Message, 
+                    "Ошибка обновления", 
+                    MessageBoxButton.OK, 
+                    MessageBoxImage.Warning, 
+                    MessageBoxResult.OK)
                     );
                     _notificationThread.Start();
                 }
@@ -141,7 +145,7 @@ namespace NamesExporterCSnA.Model
             }
         }
 
-        private void GroupMarks(ref List<CableMarkDKC> marks)
+        private void SetDataOutFromListICableMark(List<ICableMark> marks)
         {
             var groupedMarks =
             from mark in marks
@@ -150,17 +154,7 @@ namespace NamesExporterCSnA.Model
             select newGroup;
 
             foreach (var item in groupedMarks)
-            {
-                DataOut.Add
-                (
-                    new DisplayableMark()
-                    {
-                        Name = item.First().FullName,
-                        Count = item.Count(),
-                        VendorPalletCount = item.First().PackageAmount
-                    }
-                );
-            }
+                DataOut.Add(new DisplayableMark(item));
         }
     }
 }

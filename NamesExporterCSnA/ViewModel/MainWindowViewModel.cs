@@ -22,12 +22,10 @@ namespace NamesExporterCSnA.ViewModel
         public ObservableCollection<MaxExportedCable> DataIn
         {
             get => _mainWindowModel.DataIn;
-            set => _mainWindowModel.DataIn = value;
         }
         public ObservableCollection<object> DataOut
         {
             get => _mainWindowModel.DataOut;
-            set => _mainWindowModel.DataOut = value;
         }
 
         public ICommand ImportData { get; private set; }

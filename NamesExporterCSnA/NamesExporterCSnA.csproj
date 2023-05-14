@@ -43,6 +43,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Properties\Configs\CableMarks.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Properties\UI.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>UI.Designer.cs</LastGenOutput>

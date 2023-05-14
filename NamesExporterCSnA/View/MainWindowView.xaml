@@ -55,6 +55,7 @@
         <KeyBinding Command="{Binding ExportData}" Gesture="Ctrl+Shift+C"/>
         <KeyBinding Command="{Binding ClearData}" Gesture="Ctrl+Shift+D"/>
     </Window.InputBindings>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -133,7 +134,8 @@
                 <tk:DataGridGK 
                     Margin="1"
                     Style="{StaticResource DefaultDataGridStyle}"
-                    ItemsSource="{Binding DataIn, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    ItemsSource="{Binding DataIn, UpdateSourceTrigger=PropertyChanged}"
+                    CanUserResizeRows="False"
                     SelectionUnit="CellOrRowHeader" 
                     AutoGenerateColumns="False" 
                     HorizontalScrollBarVisibility="Visible"
@@ -154,13 +156,12 @@
                 <tk:DataGridGK
                     Margin="1"
                     Style="{StaticResource DefaultDataGridStyle}"
-                    ItemsSource="{Binding DataOut, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                    ItemsSource="{Binding DataOut, UpdateSourceTrigger=PropertyChanged}"
+                    CanUserResizeRows="False"
                     SelectionUnit="CellOrRowHeader" 
                     HorizontalScrollBarVisibility="Auto"
                     GridLinesVisibility="All" IsReadOnly="True"/>
             </Border>
-
-            <!--<local:LowerPanel Margin="5" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"/>-->
         </Grid>
     </Grid>
 
