@@ -5,15 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using GeKtviWpfToolkit;
+using NamesExporterCSnA.Model.Data.Marks;
 
 namespace NamesExporterCSnA.Model.Data
 {
     public class CablesParser
     {
-        private string[] _whiteList = new string[] { "ШВВП", "ПУГВ", "КГВВ" };
+        private string[] _whiteList;
         public CablesParser()
         {
-
+            _whiteList = AppConfigHelper.LoadConfig<string[]>("CablesParser.config");
         }
 
         public List<Cable> Parse(List<MaxExportedCable> cables)

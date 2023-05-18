@@ -17,7 +17,6 @@ namespace NamesExporterCSnA.Model.Data.Marks
         public int PackageAmount { get; set; } = 200;
         public string Template { get; set; } = "{NotSet}";
 
-        private string _fullName = "{NotSet}";
         public string FullName 
         { 
             get
@@ -31,9 +30,9 @@ namespace NamesExporterCSnA.Model.Data.Marks
         }
         public CableMark() { }
 
-        public CableMark(string vendorСode, string symbol, double minSection, double maxSection)
+        public CableMark(string vendorCode, string symbol, double minSection, double maxSection)
         {
-            VendorCode = vendorСode;
+            VendorCode = vendorCode;
             Symbol = symbol;
             MinSection = minSection;
             MaxSection = maxSection;

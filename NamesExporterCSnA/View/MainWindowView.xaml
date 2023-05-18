@@ -14,11 +14,13 @@
         Title="Export Helper" 
 
         xmlns:properties="clr-namespace:NamesExporterCSnA.Properties"
-        Top=    "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Top, Mode=TwoWay}"
-        Left=   "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Left, Mode=TwoWay}"
-        Width=  "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Width, Mode=TwoWay}"
-        Height= "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Height, Mode=TwoWay}"
-        WindowState="{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.WindowState, Mode=TwoWay}"
+        Top=            "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Top,         Mode=TwoWay}"
+        Left=           "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Left,        Mode=TwoWay}"
+        Width=          "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Width,       Mode=TwoWay}"
+        Height=         "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Height,      Mode=TwoWay}"
+        WindowState=    "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.WindowState, Mode=TwoWay}"
+        MinHeight="150"
+        MinWidth="600"
         ui:TitleBar.ExtendViewIntoTitleBar="True"
         ui:TitleBar.BackButtonStyle="{DynamicResource AppTitleBarBackButtonStyle}"
         ui:WindowHelper.UseModernWindowStyle="True">
@@ -55,13 +57,14 @@
         <KeyBinding Command="{Binding ExportData}" Gesture="Ctrl+Shift+C"/>
         <KeyBinding Command="{Binding ClearData}" Gesture="Ctrl+Shift+D"/>
     </Window.InputBindings>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-
+        
+        <!--#region TitleBar-->
         <Grid
             x:Name="AppTitleBar"
             Height="{Binding ElementName=Window, Path=(ui:TitleBar.Height)}"
@@ -84,11 +87,12 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="{Binding ElementName=Window, Path=(ui:TitleBar.SystemOverlayRightInset)}" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Grid.ColumnSpan="7" Text="{Binding ElementName=Window, Path=Title}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="0" Grid.ColumnSpan="999" Text="{Binding ElementName=Window, Path=Title}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
             <ui:TitleBarButton 
                 Grid.Column="2" 
@@ -119,8 +123,22 @@
                     <ui:SymbolIcon Symbol="ClearSelection"/>
                 </ui:TitleBarButton.Content>
             </ui:TitleBarButton >
-        </Grid>
 
+
+            <ui:TitleBarButton  
+                MinWidth="100"
+                Grid.Column="5" 
+                >
+                <ui:TitleBarButton.Content>
+                    <ComboBox Grid.Column="1" SelectedItem="{Binding SelectedCableMarkVendor}" ItemsSource="{Binding CableMarksVendors}"  MinWidth="100">
+
+                    </ComboBox>
+                </ui:TitleBarButton.Content>
+            </ui:TitleBarButton >
+
+        </Grid>
+        <!--#endregion-->
+        
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.FirstColumn, Mode=TwoWay}" MinWidth="200"/>

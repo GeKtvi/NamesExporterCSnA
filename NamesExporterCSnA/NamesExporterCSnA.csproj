@@ -3,7 +3,6 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 	<StartupObject>NamesExporterCSnA.Program</StartupObject>
 	<ApplicationIcon>View\Icon.ico</ApplicationIcon>
@@ -35,6 +34,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Properties\Converter.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Converter.settings</DependentUpon>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Properties\UI.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
@@ -45,6 +49,13 @@
   <ItemGroup>
     <None Update="Properties\Configs\CableMarks.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Configs\CablesParser.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Converter.settings">
+      <LastGenOutput>Converter.Designer.cs</LastGenOutput>
+      <Generator>SettingsSingleFileGenerator</Generator>
     </None>
     <None Update="Properties\UI.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

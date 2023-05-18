@@ -28,6 +28,17 @@ namespace NamesExporterCSnA.ViewModel
             get => _mainWindowModel.DataOut;
         }
 
+        public string SelectedCableMarkVendor { 
+            get => _mainWindowModel.SelectedCableMarkVendor;
+            set
+            {
+                _mainWindowModel.SelectedCableMarkVendor = value;
+                _mainWindowModel.UpdateDataOut();
+            }
+        }
+
+        public ReadOnlyCollection<string> CableMarksVendors { get => _mainWindowModel.CableMarksVendors; }
+
         public ICommand ImportData { get; private set; }
         public ICommand ExportData { get; private set; }
         public ICommand ClearData { get; private set; }
@@ -46,12 +57,12 @@ namespace NamesExporterCSnA.ViewModel
             DataOut.CollectionChanged += DataOutCollectionChanged;
         }
 
-        private void DataInCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void DataInCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             (ClearData as DelegateCommand).RaiseCanExecuteChanged();
         }
 
-        private void DataOutCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void DataOutCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             (ExportData as DelegateCommand).RaiseCanExecuteChanged();
         }

@@ -1,21 +1,43 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using GeKtviWpfToolkit;
-using ModernWpf.Controls;
 using NamesExporterCSnA.Model.Data.Marks.Exceptions;
 
 namespace NamesExporterCSnA.Model.Data.Marks
 {
     class CableMarkFabric
     {
-        public CableMarkVendorData SelectedCableMarkVendorsData { get; set; }
-        public CableMarkVendorData[] CableMarkVendorsData { get; private set; }
+        private string _selectedVendorName;
+        public string SelectedVendorName 
+        {
+            get => _selectedVendorName;
+            set
+            {
+                var foundVendorData = _cableMarkVendorsData.Where(x => x.VendorName == value);
+                if (foundVendorData.Count() < 1)
+                    throw new VendorsDataNotFoundException($"В коллекции данных от производителей не найден аргумент: {value}");
+                else if (foundVendorData.Count() < 1)
+                    throw new VendorsMultiplyDataFoundException($"В коллекции данных от производителей найдены множественные совпадения для аргумента: {value}");
+
+                _selectedCableMarkVendorsData = foundVendorData.First();
+                _selectedVendorName = value;
+            }
+        }
+
+        public ReadOnlyCollection<string> VendorsNames { get; private set; }
+
+        private CableMarkVendorData _selectedCableMarkVendorsData;
+        private readonly CableMarkVendorData[] _cableMarkVendorsData;
 
         public CableMarkFabric()
         {
-            CableMarkVendorsData = AppConfigHelper.LoadConfig<CableMarkVendorData[]>("CableMarks.config");
-            SelectedCableMarkVendorsData = CableMarkVendorsData.First();
+            _cableMarkVendorsData = AppConfigHelper.LoadConfig<CableMarkVendorData[]>("CableMarks.config");
+
+            VendorsNames = new ReadOnlyCollection<string>(_cableMarkVendorsData.Select(x => x.VendorName).ToList());
+            SelectedVendorName = VendorsNames.First();
         }
 
         public List<ICableMark> GetMarksByCableName(Cable sourceCable)
@@ -30,7 +52,7 @@ namespace NamesExporterCSnA.Model.Data.Marks
 
             foreach (var symbol in symbolsInCable)
             {
-                IEnumerable<ICableMark> foundMarks = SelectedCableMarkVendorsData.ExistingMarks.Where(x => x.Symbol == symbol);
+                IEnumerable<ICableMark> foundMarks = _selectedCableMarkVendorsData.ExistingMarks.Where(x => x.Symbol == symbol);
 
                 if (foundMarks.Count() == 0)
                     throw new SymbolNotFoundException($"Символ \"{symbol}\" не найден в каталоге");
@@ -40,7 +62,8 @@ namespace NamesExporterCSnA.Model.Data.Marks
                     .MaxBy(x => x.MaxSection);
 
                 if (findetMark != null)
-                    marks.Add(findetMark);
+                    for (int i = 0; i < sourceCable.WireCount; i++)
+                        marks.Add(findetMark);
             }
 
             return marks;
@@ -51,7 +74,7 @@ namespace NamesExporterCSnA.Model.Data.Marks
             List<string> symbolsInCable = new();
 
 
-            foreach (var MultiCharacterSymbol in SelectedCableMarkVendorsData.MultiCharacterSymbols)
+            foreach (var MultiCharacterSymbol in _selectedCableMarkVendorsData.MultiCharacterSymbols)
             {
                 if (schemeName.Contains(MultiCharacterSymbol))
                 {
@@ -69,8 +92,8 @@ namespace NamesExporterCSnA.Model.Data.Marks
         private void CheckSelectedItem()
         {
             bool isFound = false;
-            foreach (var item in CableMarkVendorsData)
-                if (item == SelectedCableMarkVendorsData)
+            foreach (var item in _cableMarkVendorsData)
+                if (item == _selectedCableMarkVendorsData)
                     isFound = true;
 
             if (isFound == false)

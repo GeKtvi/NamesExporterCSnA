@@ -1,4 +1,7 @@
-﻿using NamesExporterCSnA.Model;
+﻿using GeKtviWpfToolkit;
+using NamesExporterCSnA.Model;
+using NamesExporterCSnA.Model.Data;
+using NamesExporterCSnA.Model.Data.Marks;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -8,20 +11,21 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using GeKtviWpfToolkit;
-using NamesExporterCSnA.Model.Data;
-using NamesExporterCSnA.Model.Data.Marks;
-using System.Windows.Threading;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace NamesExporterCSnA.Model
 {
-    public class MainWindowModel : BindableBase
+    public class MainWindowModel 
     {
         public ObservableCollection<MaxExportedCable> DataIn { get; private set; }
         public ObservableCollection<object> DataOut { get; private set; }
+
+        public string SelectedCableMarkVendor { get => _cableMarkDKCFabric.SelectedVendorName; set => _cableMarkDKCFabric.SelectedVendorName = value; }
+
+        public ReadOnlyCollection<string> CableMarksVendors { get => _cableMarkDKCFabric.VendorsNames; }
 
         public bool IsUpdateFeezed { get; set; } = false;
 
@@ -94,19 +98,7 @@ namespace NamesExporterCSnA.Model
             return data;
         }
 
-        private void DataInChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            _deferredUpdate.DoOperation();
-
-            if (e.NewItems == null)
-                return;
-
-            foreach (INotifyPropertyChanged item in e.NewItems)
-                item.PropertyChanged += (s, e) => _deferredUpdate.DoOperation();
-
-        }
-
-        private void UpdateDataOut()
+        public void UpdateDataOut()
         {
             if (IsUpdateFeezed)
                 return;
@@ -133,16 +125,27 @@ namespace NamesExporterCSnA.Model
                 if (_notificationThread == null || _notificationThread.ThreadState != ThreadState.Running)
                 {
                     _notificationThread = new Thread(() =>
-                    MessageBox.Show("Ошибка при генерации списка:\n" + e.Message, 
-                    "Ошибка обновления", 
-                    MessageBoxButton.OK, 
-                    MessageBoxImage.Warning, 
-                    MessageBoxResult.OK)
+                        MessageBox.Show("Ошибка при генерации списка:\n" + e.Message,
+                        "Ошибка обновления",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning, MessageBoxResult.OK)
                     );
                     _notificationThread.Start();
                 }
                 //заглушка
             }
+        }
+
+        private void DataInChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            _deferredUpdate.DoOperation();
+
+            if (e.NewItems == null)
+                return;
+
+            foreach (INotifyPropertyChanged item in e.NewItems)
+                item.PropertyChanged += (s, e) => _deferredUpdate.DoOperation();
+
         }
 
         private void SetDataOutFromListICableMark(List<ICableMark> marks)

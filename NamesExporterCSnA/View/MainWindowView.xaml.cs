@@ -37,7 +37,7 @@ namespace NamesExporterCSnA.View
                 Properties.UI.Default.WindowSettings.WindowState = WindowState.Normal;
         }
 
-        private void MainWindowClosed(object? sender, EventArgs e)
+        private void MainWindowClosed(object sender, EventArgs e)
         {
 
             //Properties.UI.Default.WindowSettings = Properties.UI.Default.WindowSettings;
