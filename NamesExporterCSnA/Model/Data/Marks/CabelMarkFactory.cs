@@ -8,10 +8,10 @@ using NamesExporterCSnA.Model.Data.Marks.Exceptions;
 
 namespace NamesExporterCSnA.Model.Data.Marks
 {
-    class CableMarkFabric
+    public class CableMarkFactory
     {
         private string _selectedVendorName;
-        public string SelectedVendorName 
+        public string SelectedVendorName
         {
             get => _selectedVendorName;
             set
@@ -32,7 +32,7 @@ namespace NamesExporterCSnA.Model.Data.Marks
         private CableMarkVendorData _selectedCableMarkVendorsData;
         private readonly CableMarkVendorData[] _cableMarkVendorsData;
 
-        public CableMarkFabric()
+        public CableMarkFactory()
         {
             _cableMarkVendorsData = AppConfigHelper.LoadConfig<CableMarkVendorData[]>("CableMarks.config");
 
@@ -40,7 +40,7 @@ namespace NamesExporterCSnA.Model.Data.Marks
             SelectedVendorName = VendorsNames.First();
         }
 
-        public List<ICableMark> GetMarksByCableName(Cable sourceCable)
+        public List<ICableMark> CreateMarksForCable(Cable sourceCable)
         {
             CheckSelectedItem();
 
@@ -57,15 +57,23 @@ namespace NamesExporterCSnA.Model.Data.Marks
                 if (foundMarks.Count() == 0)
                     throw new SymbolNotFoundException($"Символ \"{symbol}\" не найден в каталоге");
 
-                ICableMark findetMark = foundMarks
+                ICableMark fendedMark = foundMarks
                     .Where(item => item.MaxSection >= sourceCable.WireSection && item.MinSection <= sourceCable.WireSection)
                     .MaxBy(x => x.MaxSection);
 
-                if (findetMark != null)
+                if (fendedMark != null)
                     for (int i = 0; i < sourceCable.WireCount; i++)
-                        marks.Add(findetMark);
+                        marks.Add(fendedMark);
             }
 
+            return marks;
+        }
+
+        public List<ICableMark> CreateMarksForCables(List<Cable> sourceCables)
+        {
+            List<ICableMark> marks = new();
+            foreach (var sourceCable in sourceCables)
+                marks.AddRange(CreateMarksForCable(sourceCable));
             return marks;
         }
 
@@ -73,13 +81,12 @@ namespace NamesExporterCSnA.Model.Data.Marks
         {
             List<string> symbolsInCable = new();
 
-
-            foreach (var MultiCharacterSymbol in _selectedCableMarkVendorsData.MultiCharacterSymbols)
+            foreach (var MultiCharacterSymbol in _selectedCableMarkVendorsData.SymbolsMappers)
             {
-                if (schemeName.Contains(MultiCharacterSymbol))
+                if (schemeName.Contains(MultiCharacterSymbol.SymbolIn))
                 {
-                    symbolsInCable.Add(MultiCharacterSymbol);
-                    schemeName = schemeName.Replace(MultiCharacterSymbol, String.Empty);
+                    symbolsInCable.Add(MultiCharacterSymbol.SymbolOut);
+                    schemeName = schemeName.Replace(MultiCharacterSymbol.SymbolIn, String.Empty);
                 }
             }
 

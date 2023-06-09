@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.IO.Packaging;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -44,6 +46,22 @@ namespace NamesExporterCSnA.Model.Data.Marks
             Symbol = markDKC.Symbol;
             MinSection = markDKC.MinSection;
             MaxSection = markDKC.MaxSection;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is CableMark == false)
+                return false;
+
+            CableMark objectToCompare = obj as CableMark;
+
+            return (objectToCompare.VendorCode == VendorCode) &&
+                    (objectToCompare.Symbol == Symbol) &&
+                    (objectToCompare.MinSection == MinSection) &&
+                    (objectToCompare.MaxSection == MaxSection) &&
+                    (objectToCompare.PackageAmount == PackageAmount) &&
+                    (objectToCompare.Template == Template) &&
+                    (objectToCompare.FullName == FullName);
         }
     }
 }

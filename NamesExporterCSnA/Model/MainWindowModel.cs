@@ -30,7 +30,7 @@ namespace NamesExporterCSnA.Model
         public bool IsUpdateFeezed { get; set; } = false;
 
         private CablesParser _cablesParser = new();
-        private CableMarkFabric _cableMarkDKCFabric = new CableMarkFabric();
+        private CableMarkFactory _cableMarkDKCFabric = new CableMarkFactory();
 
         private DeferredOperation _deferredUpdate;
         private Thread _notificationThread; // заглушка
@@ -115,7 +115,7 @@ namespace NamesExporterCSnA.Model
                 List<ICableMark> marks = new();
 
                 foreach (var cable in parsed)
-                    marks.AddRange(_cableMarkDKCFabric.GetMarksByCableName(cable));
+                    marks.AddRange(_cableMarkDKCFabric.CreateMarksForCable(cable));
 
                 SetDataOutFromListICableMark(marks);
             }
