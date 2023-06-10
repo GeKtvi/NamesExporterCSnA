@@ -19,19 +19,18 @@ using System.Windows.Threading;
 
 namespace NamesExporterCSnA.Model
 {
-    public class MainWindowModel 
+    public class MainWindowModel
     {
         public ObservableCollection<MaxExportedCable> DataIn { get; private set; }
         public ObservableCollection<object> DataOut { get; private set; }
 
-        public string SelectedCableMarkVendor { get => _cableMarkDKCFabric.SelectedVendorName; set => _cableMarkDKCFabric.SelectedVendorName = value; }
+        public string SelectedCableMarkVendor { get => _converter.CableMarkDKCFabric.SelectedVendorName; set => _converter.CableMarkDKCFabric.SelectedVendorName = value; }
 
-        public ReadOnlyCollection<string> CableMarksVendors { get => _cableMarkDKCFabric.VendorsNames; }
+        public ReadOnlyCollection<string> CableMarksVendors { get => _converter.CableMarkDKCFabric.VendorsNames; }
 
         public bool IsUpdateFeezed { get; set; } = false;
 
-        private CablesParser _cablesParser = new();
-        private CableMarkFactory _cableMarkDKCFabric = new CableMarkFactory();
+        private DataConverter _converter { get; set; } = new DataConverter();
 
         private DeferredOperation _deferredUpdate;
         private Thread _notificationThread; // заглушка
@@ -108,17 +107,9 @@ namespace NamesExporterCSnA.Model
 
             try
             {
-                var parsed = _cablesParser.Parse(DataIn.ToList());
-
-                if (parsed.Count == 0)
-                    return;
-
-                List<ICableMark> marks = new();
-
-                foreach (var cable in parsed)
-                    marks.AddRange(_cableMarkDKCFabric.CreateMarksForCable(cable));
-
-                SetDataOutFromListICableMark(marks);
+                List<DisplayableDataOut> dataOut = _converter.Convert(DataIn.ToList());
+                foreach (var itemDataOut in dataOut)
+                    DataOut.Add(itemDataOut);
             }
             catch (Exception e)
             {
@@ -147,18 +138,6 @@ namespace NamesExporterCSnA.Model
             foreach (INotifyPropertyChanged item in e.NewItems)
                 item.PropertyChanged += (s, e) => _deferredUpdate.DoOperation();
 
-        }
-
-        private void SetDataOutFromListICableMark(List<ICableMark> marks)
-        {
-            var groupedMarks =
-            from mark in marks
-            group mark by mark.FullName into newGroup
-            orderby newGroup.Key
-            select newGroup;
-
-            foreach (var item in groupedMarks)
-                DataOut.Add(new DisplayableDataOut(item));
         }
     }
 }
