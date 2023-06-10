@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NamesExporterCSnA.Model
+namespace NamesExporterCSnA.Model.Data
 {
-    public class DisplayableMark
+    public class DisplayableDataOut
     {
         [Display(Name = "Наименование")]
         public string Name { get; set; } = "{NotSet}";
@@ -20,12 +20,12 @@ namespace NamesExporterCSnA.Model
         public int CountX2 => Count * 2;
 
         [Display(AutoGenerateField = false)]
-        public int VendorPalletCount {get; set;} = -1;
+        public int VendorPalletCount { get; set; } = -1;
 
         [Display(Name = "Окр.")]
-        public int RoundedToVendorPalletCount => ((CountX2 - 1) / VendorPalletCount) * VendorPalletCount + VendorPalletCount;
+        public int RoundedToVendorPalletCount => (CountX2 - 1) / VendorPalletCount * VendorPalletCount + VendorPalletCount;
 
-        public DisplayableMark(IGrouping<string, ICableMark> mark)
+        public DisplayableDataOut(IGrouping<string, ICableMark> mark)
         {
             Name = mark.First().FullName;
             Count = mark.Count();

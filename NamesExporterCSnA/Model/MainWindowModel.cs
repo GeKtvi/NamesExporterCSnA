@@ -2,6 +2,7 @@
 using NamesExporterCSnA.Model;
 using NamesExporterCSnA.Model.Data;
 using NamesExporterCSnA.Model.Data.Marks;
+using NamesExporterCSnA.View;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -157,7 +158,7 @@ namespace NamesExporterCSnA.Model
             select newGroup;
 
             foreach (var item in groupedMarks)
-                DataOut.Add(new DisplayableMark(item));
+                DataOut.Add(new DisplayableDataOut(item));
         }
     }
 }

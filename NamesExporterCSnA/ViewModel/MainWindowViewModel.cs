@@ -14,6 +14,7 @@ using System.Windows;
 using System.ComponentModel;
 using GeKtviWpfToolkit.Controls;
 using System.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NamesExporterCSnA.ViewModel
 {
@@ -45,9 +46,9 @@ namespace NamesExporterCSnA.ViewModel
 
         private MainWindowModel _mainWindowModel { get; set; }
 
-        public MainWindowViewModel(MainWindowModel model)
+        public MainWindowViewModel(MainWindowModel mainWindowModel)
         {
-            _mainWindowModel = model;
+            _mainWindowModel = mainWindowModel;
 
             ImportData = new DelegateCommand(SetTextFromClipboard);
             ExportData = new DelegateCommand(SetTextToClipboard, CanExecuteExportData);

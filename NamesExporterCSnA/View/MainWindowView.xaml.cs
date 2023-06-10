@@ -1,30 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NamesExporterCSnA.ViewModel;
+using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using NamesExporterCSnA.ViewModel;
 
 namespace NamesExporterCSnA.View
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindowView : Window
     {
-        public MainWindowView(MainWindowViewModel viewModel)
+        public MainWindowView(MainWindowViewModel mainWindowViewModel)
         {
             InitializeComponentUiSave();
-            DataContext = viewModel;
+            DataContext = mainWindowViewModel;
             InitializeComponent();
             this.Closed += MainWindowClosed;
         }
@@ -39,8 +24,6 @@ namespace NamesExporterCSnA.View
 
         private void MainWindowClosed(object sender, EventArgs e)
         {
-
-            //Properties.UI.Default.WindowSettings = Properties.UI.Default.WindowSettings;
             Properties.UI.Default.Save();
         }
     }
