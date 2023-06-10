@@ -1,10 +1,11 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NamesExporterCSnA.Model.Data;
 using NamesExporterCSnA.Model.Data.Marks;
 
 namespace NamesExporterCSnATests
 {
     [TestClass]
-    public class UnitTest1
+    public class NamesExporterCSnACommonTests
     {
         [TestMethod]
         public void CreateMarksForCable_SomeCables_ReturnedSomeDKCCableMark()
@@ -66,7 +67,6 @@ namespace NamesExporterCSnATests
                      PackageAmount = 200,
                      Template = "Ручная маркировка кабеля, сечением {MinSection}-{MaxSection} мм кв., символ '{Symbol}', арт. {VendorCode}, ДКС"
                 }
-
             };
 
             CableMarkFactory factory = new CableMarkFactory();
