@@ -1,4 +1,5 @@
 ﻿using NamesExporterCSnA.Model.Data.Marks;
+using NamesExporterCSnA.Services;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,27 +10,50 @@ using System.Threading.Tasks;
 
 namespace NamesExporterCSnA.Model.Data
 {
-    internal class DataConverter
+    public class DataConverter
     {
-        public CablesParser CablesParser { get; private set; } = new();
+        public CablesParser CablesParser { get; private set; }
         public CableMarkFactory CableMarkDKCFabric { get; private set; } = new CableMarkFactory();
 
-        public DataConverter() { }
+        public IUpdateLogger Logger { get; private set; }
+
+        public DataConverter(IUpdateLogger logger) 
+        {
+            Logger = logger;
+            CablesParser = new(Logger);
+        }  
 
         public List<DisplayableDataOut> Convert(List<MaxExportedCable> cables) 
         {
-            var parsed = CablesParser.Parse(cables);
+            Logger.ClearLog();
+            try
+            {
+                var parsed = CablesParser.Parse(cables);
 
-            if (parsed.Count == 0)
+                if (parsed.Count == 0)
+                    return new List<DisplayableDataOut>();
+
+                List<ICableMark> marks = new();
+
+                foreach (var cable in parsed)
+                    marks.AddRange(CableMarkDKCFabric.CreateMarksForCable(cable));
+
+                return GroupICableMark(marks);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(
+                        new UpdateFail()
+                        {
+                            Message = $"Необрабатываемая ошибка: {ex.Message}",
+                            Type = UpdateFailType.Error,
+                            SchemeName = "-",
+                            WireName = "-",
+                            Source = "Модуль конвертации"
+                        }
+                    );
                 return new List<DisplayableDataOut>();
-
-
-            List<ICableMark> marks = new();
-
-            foreach (var cable in parsed)
-                marks.AddRange(CableMarkDKCFabric.CreateMarksForCable(cable));
-
-            return GroupICableMark(marks);
+            }
         }
 
         private List<DisplayableDataOut> GroupICableMark(List<ICableMark> marks)

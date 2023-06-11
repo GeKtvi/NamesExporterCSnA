@@ -15,6 +15,7 @@ using System.ComponentModel;
 using GeKtviWpfToolkit.Controls;
 using System.Data;
 using Microsoft.Extensions.DependencyInjection;
+using NamesExporterCSnA.Services;
 
 namespace NamesExporterCSnA.ViewModel
 {
@@ -40,6 +41,8 @@ namespace NamesExporterCSnA.ViewModel
 
         public ReadOnlyCollection<string> CableMarksVendors { get => _mainWindowModel.CableMarksVendors; }
 
+        public IUpdateLogger Logger { get => _mainWindowModel.Logger; }
+
         public ICommand ImportData { get; private set; }
         public ICommand ExportData { get; private set; }
         public ICommand ClearData { get; private set; }
@@ -61,6 +64,7 @@ namespace NamesExporterCSnA.ViewModel
         private void DataInCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             (ClearData as DelegateCommand).RaiseCanExecuteChanged();
+            //OnPropertyChanged(new PropertyChangedEventArgs(nameof(Logger)));
         }
 
         private void DataOutCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ModernWpf.Controls;
+using NamesExporterCSnA.Model.Data.Marks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,11 +29,26 @@ namespace NamesExporterCSnA.Model.Data
 
         public Cable(Cable cable)
         {
-            CableType= cable.CableType;
+            CableType = cable.CableType;
             SchemeName = cable.SchemeName;
             WireSection = cable.WireSection;
             WireCount = cable.WireCount;
             NormativeDocument = cable.NormativeDocument;
+        }
+
+        public override bool Equals(object obj)
+        {
+            Cable objectToCompare;
+            if (obj is Cable == false)
+                return false;
+            else
+                objectToCompare = (Cable)obj;
+
+            return (objectToCompare.CableType == CableType) &&
+                   (objectToCompare.SchemeName == SchemeName) &&
+                   (objectToCompare.WireSection == WireSection) &&
+                   (objectToCompare.WireCount == WireCount) &&
+                   (objectToCompare.NormativeDocument == NormativeDocument);
         }
     }
 }

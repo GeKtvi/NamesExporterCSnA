@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NamesExporterCSnA.Model;
+using NamesExporterCSnA.Model.Data;
 using NamesExporterCSnA.Services;
 using NamesExporterCSnA.View;
 using NamesExporterCSnA.ViewModel;
@@ -22,6 +23,7 @@ namespace NamesExporterCSnA
                                 .AddSingleton<MainWindowModel>()
                                 .AddSingleton<MainWindowView>()
                                 .AddSingleton<MainWindowViewModel>()
+                                .AddSingleton<DataConverter>()
                                 .AddSingleton<IUpdateLogger, UpdateLogger>()
                                 .BuildServiceProvider();
                 

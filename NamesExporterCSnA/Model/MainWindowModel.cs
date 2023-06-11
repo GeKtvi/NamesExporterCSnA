@@ -1,21 +1,10 @@
-﻿using GeKtviWpfToolkit;
-using NamesExporterCSnA.Model;
-using NamesExporterCSnA.Model.Data;
-using NamesExporterCSnA.Model.Data.Marks;
-using NamesExporterCSnA.View;
-using Prism.Mvvm;
-using System;
+﻿using NamesExporterCSnA.Model.Data;
+using NamesExporterCSnA.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
 
 namespace NamesExporterCSnA.Model
 {
@@ -23,25 +12,19 @@ namespace NamesExporterCSnA.Model
     {
         public ObservableCollection<MaxExportedCable> DataIn { get; private set; }
         public ObservableCollection<object> DataOut { get; private set; }
-
         public string SelectedCableMarkVendor { get => _converter.CableMarkDKCFabric.SelectedVendorName; set => _converter.CableMarkDKCFabric.SelectedVendorName = value; }
-
         public ReadOnlyCollection<string> CableMarksVendors { get => _converter.CableMarkDKCFabric.VendorsNames; }
-
+        public IUpdateLogger Logger => _converter.Logger;
         public bool IsUpdateFeezed { get; set; } = false;
 
-        private DataConverter _converter { get; set; } = new DataConverter();
+        private DataConverter _converter;
 
-        private DeferredOperation _deferredUpdate;
-        private Thread _notificationThread; // заглушка
-
-        public MainWindowModel()
+        public MainWindowModel(DataConverter converter)
         {
             DataIn = new ObservableCollection<MaxExportedCable>();
             DataOut = new ObservableCollection<object>();
+            _converter = converter;
             DataIn.CollectionChanged += DataInChanged;
-            Dispatcher disp = Dispatcher.CurrentDispatcher;
-            _deferredUpdate = new DeferredOperation(() => disp.BeginInvoke(UpdateDataOut), 500);
         }
 
         public void SetDataIn(List<string[]> values)
@@ -105,38 +88,20 @@ namespace NamesExporterCSnA.Model
 
             DataOut.Clear();
 
-            try
-            {
                 List<DisplayableDataOut> dataOut = _converter.Convert(DataIn.ToList());
                 foreach (var itemDataOut in dataOut)
                     DataOut.Add(itemDataOut);
-            }
-            catch (Exception e)
-            {
-                //заглушка
-                if (_notificationThread == null || _notificationThread.ThreadState != ThreadState.Running)
-                {
-                    _notificationThread = new Thread(() =>
-                        MessageBox.Show("Ошибка при генерации списка:\n" + e.Message,
-                        "Ошибка обновления",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning, MessageBoxResult.OK)
-                    );
-                    _notificationThread.Start();
-                }
-                //заглушка
-            }
         }
 
         private void DataInChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            _deferredUpdate.DoOperation();
+            UpdateDataOut();
 
             if (e.NewItems == null)
                 return;
 
             foreach (INotifyPropertyChanged item in e.NewItems)
-                item.PropertyChanged += (s, e) => _deferredUpdate.DoOperation();
+                item.PropertyChanged += (s, e) => UpdateDataOut(); 
 
         }
     }

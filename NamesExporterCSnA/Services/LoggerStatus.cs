@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace NamesExporterCSnA.Services
 {
-    public enum UpdateFailType
+    public enum LoggerStatus
     {
-        Error,
-        Exception
+        NoFails,
+        HasExceptionFails,
+        HasErrorFails
     }
 }

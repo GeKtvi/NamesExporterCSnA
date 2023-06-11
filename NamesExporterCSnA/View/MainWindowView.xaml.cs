@@ -26,5 +26,12 @@ namespace NamesExporterCSnA.View
         {
             Properties.UI.Default.Save();
         }
+
+        private async void ShowUpdateFails(object sender, RoutedEventArgs e)
+        {
+            var sdf = new UpdateFails();
+            sdf.DataContext = (this.DataContext as MainWindowViewModel).Logger;
+            var result = await sdf.ShowAsync().ConfigureAwait(true);
+        }
     }
 }

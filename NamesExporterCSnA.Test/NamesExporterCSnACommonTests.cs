@@ -1,6 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NamesExporterCSnA.Model.Data;
 using NamesExporterCSnA.Model.Data.Marks;
+using NamesExporterCSnA.Services;
+using System.Collections.Generic;
 
 namespace NamesExporterCSnATests
 {
@@ -74,6 +76,59 @@ namespace NamesExporterCSnATests
 
 
             CollectionAssert.AreEqual(result, cableMarksExpected);
+        }
+
+        [TestMethod]
+        public void Parse_SomeMaxCables_ReturnedSomeCables()
+        {
+            List<MaxExportedCable> maxExportedCable = new List<MaxExportedCable>()
+            {
+                new MaxExportedCable() { SchemeName = "¯ËÌ‡ L2(1)", WireName ="ÿËÌ‡ ÏÂ‰Ì‡ˇ L2"},
+                new MaxExportedCable() { SchemeName = "15/N",       WireName ="ÿ¬¬œ 2ı0,5"},
+                new MaxExportedCable() { SchemeName = "PE(28)",     WireName ="œ”√¬Ì„(¿)-LS 1ı10"},
+                new MaxExportedCable() { SchemeName = "A11-1",      WireName ="œ”√¬Ì„(¿)-LS 1ı0,5"},
+                new MaxExportedCable() { SchemeName = "L334",       WireName =" √¬¬Ì„(¿)-LS 3ı0,75"}
+            };
+
+            List<Cable> cablesResult = new CablesParser(new UpdateLogger()).Parse(maxExportedCable);
+            List<Cable> cablesExpected = new List<Cable>()
+            {
+
+                new Cable()
+                {
+                    CableType = "ÿ¬¬œ",
+                    NormativeDocument = "{NotSet}",
+                    SchemeName = "15/N",
+                    WireCount = 2,
+                    WireSection = 0.5
+                },
+                new Cable()
+                {
+                    CableType = "œ”√¬Ì„(¿)-LS",
+                    NormativeDocument = "{NotSet}",
+                    SchemeName = "PE",
+                    WireCount = 1,
+                    WireSection = 10
+                },
+                new Cable()
+                {
+                    CableType = "œ”√¬Ì„(¿)-LS",
+                    NormativeDocument = "{NotSet}",
+                    SchemeName = "A11-1",
+                    WireCount = 1,
+                    WireSection = 0.5
+                },
+                new Cable()
+                {
+                    CableType = " √¬¬Ì„(¿)-LS",
+                    NormativeDocument = "{NotSet}",
+                    SchemeName = "L334",
+                    WireCount = 3,
+                    WireSection = 0.75
+                },
+            };
+
+            CollectionAssert.AreEqual(cablesResult, cablesExpected);
         }
     }
 }

@@ -4,6 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:localV="clr-namespace:NamesExporterCSnA.View" 
         xmlns:localVM="clr-namespace:NamesExporterCSnA.ViewModel" 
         xmlns:tk="clr-namespace:GeKtviWpfToolkit.Controls;assembly=GeKtviWpfToolkit"
         mc:Ignorable="d"
@@ -50,6 +51,8 @@
             </Style.Triggers>
         </Style>
 
+        <localV:LoggerStatusToBrushConverter x:Key="LoggerStatusToBrushConverter"/>
+        <localV:LoggerStatusToVisibleConverter x:Key="LoggerStatusToVisibleConverter"/>
     </Window.Resources>
 
     <Window.InputBindings>
@@ -89,6 +92,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="{Binding ElementName=Window, Path=(ui:TitleBar.SystemOverlayRightInset)}" />
             </Grid.ColumnDefinitions>
 
@@ -97,7 +101,7 @@
             <ui:TitleBarButton 
                 Grid.Column="2" 
                 Width="45" 
-                ToolTip="Импортировать из буфера Ctrl+Shift+V"
+                ToolTip="Импортировать из буфера (Ctrl+Shift+V)"
                 Command="{Binding ImportData}">
                 <ui:TitleBarButton.Content>
                     <ui:SymbolIcon Symbol="Download"/>
@@ -107,7 +111,7 @@
             <ui:TitleBarButton 
                 Grid.Column="3" 
                 Width="45" 
-                ToolTip="Экспортировать в буфер Ctrl+Shift+C" 
+                ToolTip="Экспортировать в буфер (Ctrl+Shift+C)" 
                 Command="{Binding ExportData}">
                 <ui:TitleBarButton.Content>
                     <ui:SymbolIcon Symbol="Upload"/>
@@ -117,7 +121,7 @@
             <ui:TitleBarButton 
                 Grid.Column="4" 
                 Width="45" 
-                ToolTip="Очистить входные данные Ctrl+Shift+D"
+                ToolTip="Очистить входные данные (Ctrl+Shift+D)"
                 Command="{Binding ClearData}">
                 <ui:TitleBarButton.Content>
                     <ui:SymbolIcon Symbol="ClearSelection"/>
@@ -133,6 +137,18 @@
                     <ComboBox Grid.Column="1" SelectedItem="{Binding SelectedCableMarkVendor}" ItemsSource="{Binding CableMarksVendors}"  MinWidth="100">
 
                     </ComboBox>
+                </ui:TitleBarButton.Content>
+            </ui:TitleBarButton >
+
+            <ui:TitleBarButton 
+                Grid.Column="7" 
+                Width="45" 
+                ToolTip="Показать окно проблем при обновлении"
+                Click="ShowUpdateFails"
+                Visibility="{Binding Logger.Status, Converter={StaticResource LoggerStatusToVisibleConverter}, Delay=10}"
+                Background="{Binding Logger.Status, Converter={StaticResource LoggerStatusToBrushConverter}, Delay=10}">               
+                <ui:TitleBarButton.Content>
+                    <ui:SymbolIcon Symbol="Important"/>
                 </ui:TitleBarButton.Content>
             </ui:TitleBarButton >
 
@@ -152,7 +168,7 @@
                 <tk:DataGridGK 
                     Margin="1"
                     Style="{StaticResource DefaultDataGridStyle}"
-                    ItemsSource="{Binding DataIn, UpdateSourceTrigger=PropertyChanged}"
+                    ItemsSource="{Binding DataIn, UpdateSourceTrigger=PropertyChanged, Delay=250}"
                     CanUserResizeRows="False"
                     SelectionUnit="CellOrRowHeader" 
                     AutoGenerateColumns="False" 
@@ -160,8 +176,8 @@
                     GridLinesVisibility="All">
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Обозначение"  Binding="{Binding SchemeName, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
-                        <DataGridTextColumn Header="Наименование" Binding="{Binding WireName,       UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
+                        <DataGridTextColumn Header="Обозначение"  Binding="{Binding SchemeName,     UpdateSourceTrigger=PropertyChanged, Delay=250}" Width="Auto"/>
+                        <DataGridTextColumn Header="Наименование" Binding="{Binding WireName,       UpdateSourceTrigger=PropertyChanged, Delay=250}" Width="Auto"/>
                     </DataGrid.Columns>
 
                 </tk:DataGridGK>

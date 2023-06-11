@@ -6,6 +6,9 @@
     <UseWPF>true</UseWPF>
 	<StartupObject>NamesExporterCSnA.App</StartupObject>
 	<ApplicationIcon>View\Icon.ico</ApplicationIcon>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<Deterministic>false</Deterministic>
+	<AssemblyVersion>0.0.*</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +25,7 @@
     <PackageReference Include="ModernWpfUI" Version="0.9.6" />
     <PackageReference Include="Prism.Wpf" Version="8.1.97" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
