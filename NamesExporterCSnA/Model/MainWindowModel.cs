@@ -1,10 +1,12 @@
-﻿using NamesExporterCSnA.Model.Data;
+﻿using GeKtviWpfToolkit;
+using NamesExporterCSnA.Model.Data;
 using NamesExporterCSnA.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Threading;
 
 namespace NamesExporterCSnA.Model
 {
@@ -18,6 +20,7 @@ namespace NamesExporterCSnA.Model
         public bool IsUpdateFeezed { get; set; } = false;
 
         private DataConverter _converter;
+        private DeferredOperation _deferredUpdate;
 
         public MainWindowModel(DataConverter converter)
         {
@@ -25,6 +28,8 @@ namespace NamesExporterCSnA.Model
             DataOut = new ObservableCollection<object>();
             _converter = converter;
             DataIn.CollectionChanged += DataInChanged;
+            Dispatcher disp = Dispatcher.CurrentDispatcher;
+            _deferredUpdate = new DeferredOperation(() => disp.BeginInvoke(UpdateDataOut), 5);
         }
 
         public void SetDataIn(List<string[]> values)
@@ -88,20 +93,20 @@ namespace NamesExporterCSnA.Model
 
             DataOut.Clear();
 
-                List<DisplayableDataOut> dataOut = _converter.Convert(DataIn.ToList());
-                foreach (var itemDataOut in dataOut)
-                    DataOut.Add(itemDataOut);
+            List<DisplayableDataOut> dataOut = _converter.Convert(DataIn.ToList());
+            foreach (var itemDataOut in dataOut)
+                DataOut.Add(itemDataOut);
         }
 
         private void DataInChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            UpdateDataOut();
+            _deferredUpdate.DoOperation();
 
             if (e.NewItems == null)
                 return;
 
             foreach (INotifyPropertyChanged item in e.NewItems)
-                item.PropertyChanged += (s, e) => UpdateDataOut(); 
+                item.PropertyChanged += (s, e) => _deferredUpdate.DoOperation();
 
         }
     }

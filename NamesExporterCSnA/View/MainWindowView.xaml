@@ -167,8 +167,9 @@
             <Border x:Name="LeftBorder" Style="{DynamicResource BorderStyle}" Grid.Column="0">
                 <tk:DataGridGK 
                     Margin="1"
+                    UseDirectPaste="True"
                     Style="{StaticResource DefaultDataGridStyle}"
-                    ItemsSource="{Binding DataIn, UpdateSourceTrigger=PropertyChanged, Delay=250}"
+                    ItemsSource="{Binding DataIn, UpdateSourceTrigger=PropertyChanged, Delay=2500}"
                     CanUserResizeRows="False"
                     SelectionUnit="CellOrRowHeader" 
                     AutoGenerateColumns="False" 
@@ -176,8 +177,8 @@
                     GridLinesVisibility="All">
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Обозначение"  Binding="{Binding SchemeName,     UpdateSourceTrigger=PropertyChanged, Delay=250}" Width="Auto"/>
-                        <DataGridTextColumn Header="Наименование" Binding="{Binding WireName,       UpdateSourceTrigger=PropertyChanged, Delay=250}" Width="Auto"/>
+                        <DataGridTextColumn Header="Обозначение"  Binding="{Binding SchemeName,     UpdateSourceTrigger=PropertyChanged, Delay=2500}" Width="Auto"/>
+                        <DataGridTextColumn Header="Наименование" Binding="{Binding WireName,       UpdateSourceTrigger=PropertyChanged, Delay=2500}" Width="Auto"/>
                     </DataGrid.Columns>
 
                 </tk:DataGridGK>
