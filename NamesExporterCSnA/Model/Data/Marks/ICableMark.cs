@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NamesExporterCSnA.Model.Data.Marks
 {
-    public interface ICableMark
+    public interface ICableMark : IFullName
     {
         public string VendorCode { get; set; }
         public string Symbol { get; set; }
@@ -14,7 +14,5 @@ namespace NamesExporterCSnA.Model.Data.Marks
         public double MaxSection { get; set; }
 
         public int PackageAmount { get; set; }
-
-        public string FullName { get; }
     }
 }

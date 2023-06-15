@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NamesExporterCSnA.Services
+namespace NamesExporterCSnA.Services.UpdateLog
 {
     public enum UpdateFailType
     {

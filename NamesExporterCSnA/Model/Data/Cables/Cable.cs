@@ -1,20 +1,18 @@
-﻿using ModernWpf.Controls;
-using NamesExporterCSnA.Model.Data.Marks;
-using System;
-using System.Collections.Generic;
+﻿using NamesExporterCSnA.Model.Data.Marks;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace NamesExporterCSnA.Model.Data
+namespace NamesExporterCSnA.Model.Data.Cables
 {
-    public class Cable
+    public class Cable : FullNameBase, IFullName
     {
         public string CableType { get; set; } = "{NotSet}";
         public string SchemeName { get; set; } = "{NotSet}";
         public double WireSection { get; set; } = 0;
         public int WireCount { get; set; } = 0;
         public string NormativeDocument { get; set; } = "{NotSet}";
+        public string Template { get; set; } = "{NotSet}";
+
+        public override string FullName => GetFullName(Template, PropertyHolder<Cable>.GetProperties());
 
         public Cable() { }
 
@@ -39,16 +37,19 @@ namespace NamesExporterCSnA.Model.Data
         public override bool Equals(object obj)
         {
             Cable objectToCompare;
-            if (obj is Cable == false)
-                return false;
+            if (obj is Cable cable)
+                objectToCompare = cable;
             else
-                objectToCompare = (Cable)obj;
+                return false;
 
-            return (objectToCompare.CableType == CableType) &&
-                   (objectToCompare.SchemeName == SchemeName) &&
-                   (objectToCompare.WireSection == WireSection) &&
-                   (objectToCompare.WireCount == WireCount) &&
-                   (objectToCompare.NormativeDocument == NormativeDocument);
+            bool isEqual = true;
+
+            foreach (var prop in PropertyHolder<Cable>.GetProperties())
+                if (prop.GetType() != typeof(Cable) && 
+                    prop.GetValue(this).Equals(prop.GetValue(objectToCompare)) == false)
+                    isEqual = false;
+
+            return isEqual;
         }
     }
 }

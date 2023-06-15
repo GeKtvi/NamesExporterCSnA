@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using GeKtviWpfToolkit;
+using NamesExporterCSnA.Model.Data.Cables;
 using NamesExporterCSnA.Model.Data.Marks.Exceptions;
 
 namespace NamesExporterCSnA.Model.Data.Marks

@@ -1,8 +1,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NamesExporterCSnA.Model.Data;
+using NamesExporterCSnA.Model.Data.Cables;
 using NamesExporterCSnA.Model.Data.Marks;
-using NamesExporterCSnA.Services;
+using NamesExporterCSnA.Services.UpdateLog;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NamesExporterCSnATests
 {
@@ -90,8 +92,8 @@ namespace NamesExporterCSnATests
                 new MaxExportedCable() { SchemeName = "L334",       WireName ="КГВВнг(А)-LS 3х0,75"}
             };
 
-            List<Cable> cablesResult = new CablesParser(new UpdateLogger()).Parse(maxExportedCable);
-            List<Cable> cablesExpected = new List<Cable>()
+            List<object> cablesResult = new CablesParser(new UpdateLogger()).Parse(maxExportedCable).Cast<object>().ToList();
+            List<object> cablesExpected = new List<object>()
             {
 
                 new Cable()
@@ -100,7 +102,8 @@ namespace NamesExporterCSnATests
                     NormativeDocument = "{NotSet}",
                     SchemeName = "15/N",
                     WireCount = 2,
-                    WireSection = 0.5
+                    WireSection = 0.5,
+                    Template = "Провод, {CableType} {WireCount}х{WireSection}, РЭК"
                 },
                 new Cable()
                 {
@@ -108,7 +111,8 @@ namespace NamesExporterCSnATests
                     NormativeDocument = "{NotSet}",
                     SchemeName = "PE",
                     WireCount = 1,
-                    WireSection = 10
+                    WireSection = 10,
+                    Template = "Провод, {CableType} {WireCount}х{WireSection}, РЭК"
                 },
                 new Cable()
                 {
@@ -116,7 +120,8 @@ namespace NamesExporterCSnATests
                     NormativeDocument = "{NotSet}",
                     SchemeName = "A11-1",
                     WireCount = 1,
-                    WireSection = 0.5
+                    WireSection = 0.5,
+                    Template = "Провод, {CableType} {WireCount}х{WireSection}, РЭК"
                 },
                 new Cable()
                 {
@@ -124,7 +129,8 @@ namespace NamesExporterCSnATests
                     NormativeDocument = "{NotSet}",
                     SchemeName = "L334",
                     WireCount = 3,
-                    WireSection = 0.75
+                    WireSection = 0.75,
+                    Template = "Кабель силовой, {CableType} {WireCount}х{WireSection}, РЭК"
                 },
             };
 

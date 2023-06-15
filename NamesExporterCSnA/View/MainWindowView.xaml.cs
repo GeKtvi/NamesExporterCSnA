@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace NamesExporterCSnA.View
 {
-    public partial class MainWindowView : Window
+    public partial class MainWindowView : System.Windows.Window
     {
         public MainWindowView(MainWindowViewModel mainWindowViewModel)
         {
@@ -32,6 +32,11 @@ namespace NamesExporterCSnA.View
             var sdf = new UpdateFails();
             sdf.DataContext = (this.DataContext as MainWindowViewModel).Logger;
             var result = await sdf.ShowAsync().ConfigureAwait(true);
+        }
+
+        private void CollectionViewSource_Filter(object sender, System.Windows.Data.FilterEventArgs e)
+        {
+
         }
     }
 }

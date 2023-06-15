@@ -1,4 +1,4 @@
-﻿namespace NamesExporterCSnA.Services
+﻿namespace NamesExporterCSnA.Services.UpdateLog
 {
     public struct UpdateFail
     {

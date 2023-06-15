@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NamesExporterCSnA.Services
+namespace NamesExporterCSnA.Services.UpdateLog
 {
     public class UpdateLogger : BindableBase, IUpdateLogger
     {

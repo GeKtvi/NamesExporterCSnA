@@ -1,21 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GeKtviWpfToolkit;
 using NamesExporterCSnA.Model;
 using NamesExporterCSnA.Model.Data;
-using Prism.Mvvm;
+using NamesExporterCSnA.Services.UpdateLog;
 using Prism.Commands;
+using Prism.Mvvm;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
-using GeKtviWpfToolkit;
-using System.Windows;
-using System.ComponentModel;
-using GeKtviWpfToolkit.Controls;
-using System.Data;
-using Microsoft.Extensions.DependencyInjection;
-using NamesExporterCSnA.Services;
 
 namespace NamesExporterCSnA.ViewModel
 {
@@ -25,7 +16,7 @@ namespace NamesExporterCSnA.ViewModel
         {
             get => _mainWindowModel.DataIn;
         }
-        public ObservableCollection<object> DataOut
+        public ObservableCollection<IDisplayableData> DataOut
         {
             get => _mainWindowModel.DataOut;
         }

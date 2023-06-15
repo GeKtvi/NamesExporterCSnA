@@ -1,12 +1,10 @@
 ﻿using NamesExporterCSnA.Model.Data.Marks;
-using NamesExporterCSnA.Services;
+using NamesExporterCSnA.Model.Data.Cables;
+using NamesExporterCSnA.Services.UpdateLog;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NamesExporterCSnA.Model.Data
 {
@@ -23,22 +21,25 @@ namespace NamesExporterCSnA.Model.Data
             CablesParser = new(Logger);
         }  
 
-        public List<DisplayableDataOut> Convert(List<MaxExportedCable> cables) 
+        public List<IDisplayableData> Convert(List<MaxExportedCable> cables) 
         {
+            List<IDisplayableData> displayableData = new List<IDisplayableData>();
             Logger.ClearLog();
             try
             {
                 var parsed = CablesParser.Parse(cables);
 
                 if (parsed.Count == 0)
-                    return new List<DisplayableDataOut>();
+                    return displayableData;
 
                 List<ICableMark> marks = new();
 
                 foreach (var cable in parsed)
                     marks.AddRange(CableMarkDKCFabric.CreateMarksForCable(cable));
 
-                return GroupICableMark(marks);
+                displayableData.AddRange(Group<DisplayableCable, Cable>(parsed));
+                displayableData.AddRange(Group<DisplayableCableMark, ICableMark>(marks));
+                return displayableData;
             }
             catch (Exception ex)
             {
@@ -52,13 +53,15 @@ namespace NamesExporterCSnA.Model.Data
                             Source = "Модуль конвертации"
                         }
                     );
-                return new List<DisplayableDataOut>();
+                return new List<IDisplayableData>();
             }
         }
 
-        private List<DisplayableDataOut> GroupICableMark(List<ICableMark> marks)
+        private List<IDisplayableData> Group<DisplayableObj, GroupingObj>(List<GroupingObj> marks)
+            where DisplayableObj : class, IFromGroup<GroupingObj>, new() 
+            where GroupingObj : IFullName
         {
-            List<DisplayableDataOut> groupedList = new(); 
+            List<IDisplayableData> groupedList = new(); 
 
             var groupedMarks =
             from mark in marks
@@ -67,7 +70,7 @@ namespace NamesExporterCSnA.Model.Data
             select newGroup;
 
             foreach (var item in groupedMarks)
-                groupedList.Add(new DisplayableDataOut(item));
+                groupedList.Add(new DisplayableObj().SetFromGrouping(item));
 
             return groupedList;
         }

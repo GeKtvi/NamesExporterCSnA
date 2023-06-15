@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NamesExporterCSnA.Model;
 using NamesExporterCSnA.Model.Data;
-using NamesExporterCSnA.Services;
+using NamesExporterCSnA.Services.UpdateLog;
 using NamesExporterCSnA.View;
 using NamesExporterCSnA.ViewModel;
 using System;

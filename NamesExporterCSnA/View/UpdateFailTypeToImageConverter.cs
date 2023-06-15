@@ -1,4 +1,4 @@
-﻿using NamesExporterCSnA.Services;
+﻿using NamesExporterCSnA.Services.UpdateLog;
 using System;
 using System.Drawing;
 using System.Globalization;

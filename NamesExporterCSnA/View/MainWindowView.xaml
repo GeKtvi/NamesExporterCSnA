@@ -27,32 +27,14 @@
         ui:WindowHelper.UseModernWindowStyle="True">
 
     <Window.Resources>
-        <Style  TargetType="ui:TitleBarButton">
-            <Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
-            <Setter Property="InactiveForeground" Value="{DynamicResource SystemControlBackgroundBaseHighBrush}"/>
-        </Style>
-
-        <Style x:Key="AppTitleBarBackButtonStyle" TargetType="ui:TitleBarButton" BasedOn="{StaticResource TitleBarBackButtonStyle}">
-            <Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
-        </Style>
-
-        <Style x:Key="BorderStyle" TargetType="Border">
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="CornerRadius" Value="5"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
-        </Style>
-
-        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCellExpanded}">
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True" >
-                    <Setter Property="Background" Value="{DynamicResource ResourceKey=SystemControlHighlightListAccentLowBrush}" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <localV:LoggerStatusToBrushConverter x:Key="LoggerStatusToBrushConverter"/>
-        <localV:LoggerStatusToVisibleConverter x:Key="LoggerStatusToVisibleConverter"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="MainWindowResourses.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+            <localV:LoggerStatusToBrushConverter x:Key="LoggerStatusToBrushConverter"/>
+            <localV:LoggerStatusToVisibleConverter x:Key="LoggerStatusToVisibleConverter"/>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Window.InputBindings>
@@ -169,7 +151,7 @@
                     Margin="1"
                     UseDirectPaste="True"
                     Style="{StaticResource DefaultDataGridStyle}"
-                    ItemsSource="{Binding DataIn, UpdateSourceTrigger=PropertyChanged, Delay=2500}"
+                    ItemsSource="{Binding DataIn, UpdateSourceTrigger=PropertyChanged, Delay=250}"
                     CanUserResizeRows="False"
                     SelectionUnit="CellOrRowHeader" 
                     AutoGenerateColumns="False" 
@@ -191,11 +173,19 @@
                 <tk:DataGridGK
                     Margin="1"
                     Style="{StaticResource DefaultDataGridStyle}"
-                    ItemsSource="{Binding DataOut, UpdateSourceTrigger=PropertyChanged}"
+                    ItemsSource="{Binding Source={StaticResource GroupedDataOut}, UpdateSourceTrigger=PropertyChanged}"
                     CanUserResizeRows="False"
                     SelectionUnit="CellOrRowHeader" 
                     HorizontalScrollBarVisibility="Auto"
-                    GridLinesVisibility="All" IsReadOnly="True"/>
+                    GridLinesVisibility="All" 
+                    IsReadOnly="True"
+                    >
+                    <DataGrid.GroupStyle>
+                        <GroupStyle
+                            ContainerStyle="{StaticResource DataGridRowGroupContainerStyle}"
+                            HeaderTemplate="{StaticResource RowGroupHeaderTemplate}" />
+                    </DataGrid.GroupStyle>
+                </tk:DataGridGK>
             </Border>
         </Grid>
     </Grid>

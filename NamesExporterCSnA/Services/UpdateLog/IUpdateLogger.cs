@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NamesExporterCSnA.Services
+namespace NamesExporterCSnA.Services.UpdateLog
 {
     public interface IUpdateLogger
     {

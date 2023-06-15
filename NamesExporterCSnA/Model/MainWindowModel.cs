@@ -1,6 +1,6 @@
 ﻿using GeKtviWpfToolkit;
 using NamesExporterCSnA.Model.Data;
-using NamesExporterCSnA.Services;
+using NamesExporterCSnA.Services.UpdateLog;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -13,7 +13,7 @@ namespace NamesExporterCSnA.Model
     public class MainWindowModel
     {
         public ObservableCollection<MaxExportedCable> DataIn { get; private set; }
-        public ObservableCollection<object> DataOut { get; private set; }
+        public ObservableCollection<IDisplayableData> DataOut { get; private set; }
         public string SelectedCableMarkVendor { get => _converter.CableMarkDKCFabric.SelectedVendorName; set => _converter.CableMarkDKCFabric.SelectedVendorName = value; }
         public ReadOnlyCollection<string> CableMarksVendors { get => _converter.CableMarkDKCFabric.VendorsNames; }
         public IUpdateLogger Logger => _converter.Logger;
@@ -25,7 +25,7 @@ namespace NamesExporterCSnA.Model
         public MainWindowModel(DataConverter converter)
         {
             DataIn = new ObservableCollection<MaxExportedCable>();
-            DataOut = new ObservableCollection<object>();
+            DataOut = new ObservableCollection<IDisplayableData>();
             _converter = converter;
             DataIn.CollectionChanged += DataInChanged;
             Dispatcher disp = Dispatcher.CurrentDispatcher;
@@ -93,7 +93,7 @@ namespace NamesExporterCSnA.Model
 
             DataOut.Clear();
 
-            List<DisplayableDataOut> dataOut = _converter.Convert(DataIn.ToList());
+            List<IDisplayableData> dataOut = _converter.Convert(DataIn.ToList());
             foreach (var itemDataOut in dataOut)
                 DataOut.Add(itemDataOut);
         }

@@ -1,20 +1,22 @@
 ﻿using GeKtviWpfToolkit;
-using NamesExporterCSnA.Services;
+using NamesExporterCSnA.Services.UpdateLog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace NamesExporterCSnA.Model.Data
+namespace NamesExporterCSnA.Model.Data.Cables
 {
     public class CablesParser
     {
         public IUpdateLogger Logger { get; private set; }
 
-        private string[] _whiteList;
+        private CableTemplate[] _templateList;
+
         public CablesParser(IUpdateLogger logger)
         {
             Logger = logger;
-            _whiteList = AppConfigHelper.LoadConfig<string[]>("CablesParser.config");
+            _templateList = AppConfigHelper.LoadConfig<CableTemplate[]>("CablesParser.config");
         }
 
         public List<Cable> Parse(List<MaxExportedCable> cables)
@@ -46,7 +48,8 @@ namespace NamesExporterCSnA.Model.Data
                     SchemeName = cable.SchemeName,
                     CableType = cableType,
                     WireSection = wireSection,
-                    WireCount = wireCount
+                    WireCount = wireCount,
+                    Template = _templateList.Where(x => cableType.Contains(x.SubCableType)).First().Template
                 };
                 parsedCables.Add(parsedCable);
             }
@@ -95,7 +98,7 @@ namespace NamesExporterCSnA.Model.Data
             foreach (var cable in cables)
             {
                 bool isCableAdded = false;
-                foreach (var pattern in _whiteList)
+                foreach (var pattern in _templateList.Select(x => x.SubCableType))
                 {
                     Regex regex = new Regex(pattern);
                     if (regex.IsMatch(cable.WireName))

@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 
 namespace NamesExporterCSnA.Model.Data.Marks
 {
-    public class CableMark : ICableMark
+    public class CableMark : FullNameBase, ICableMark, IFullName
     {
         public string VendorCode { get; set; } = "{NotSet}";
         public string Symbol { get; set; } = "{NotSet}";
@@ -19,17 +19,8 @@ namespace NamesExporterCSnA.Model.Data.Marks
         public int PackageAmount { get; set; } = 200;
         public string Template { get; set; } = "{NotSet}";
 
-        public string FullName 
-        { 
-            get
-            {
-                string template = Template;
-                foreach (var prop in this.GetType().GetProperties())
-                    if(prop.Name != nameof(FullName))
-                        template = template.Replace('{' + prop.Name + '}', prop.GetValue(this).ToString());
-                return template;
-            }
-        }
+        public override string FullName => GetFullName(Template, PropertyHolder<CableMark>.GetProperties());
+        
         public CableMark() { }
 
         public CableMark(string vendorCode, string symbol, double minSection, double maxSection)
