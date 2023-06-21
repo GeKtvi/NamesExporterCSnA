@@ -5,23 +5,25 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using NamesExporterCSnA.Services.Settings;
 
 namespace NamesExporterCSnA.Model.Data
 {
     public class DataConverter
     {
         public CablesParser CablesParser { get; private set; }
-        public CableMarkFactory CableMarkDKCFabric { get; private set; } = new CableMarkFactory();
+        public CableMarkFactory CableMarkDKCFabric { get; private set; }
 
         public IUpdateLogger Logger { get; private set; }
 
-        public DataConverter(IUpdateLogger logger) 
+        public DataConverter(IUpdateLogger logger, IPreferencesSettings settings)
         {
             Logger = logger;
             CablesParser = new(Logger);
-        }  
+            CableMarkDKCFabric = new(Logger, settings);
+        }
 
-        public List<IDisplayableData> Convert(List<MaxExportedCable> cables) 
+        public List<IDisplayableData> Convert(List<MaxExportedCable> cables)
         {
             List<IDisplayableData> displayableData = new List<IDisplayableData>();
             Logger.ClearLog();
@@ -37,8 +39,8 @@ namespace NamesExporterCSnA.Model.Data
                 foreach (var cable in parsed)
                     marks.AddRange(CableMarkDKCFabric.CreateMarksForCable(cable));
 
-                displayableData.AddRange(Group<DisplayableCable, Cable>(parsed));
-                displayableData.AddRange(Group<DisplayableCableMark, ICableMark>(marks));
+                displayableData.AddRange(ConvertToIDisplayableData<DisplayableCable, Cable>(parsed));
+                displayableData.AddRange(ConvertToIDisplayableData<DisplayableCableMark, ICableMark>(marks));
                 return displayableData;
             }
             catch (Exception ex)
@@ -57,11 +59,11 @@ namespace NamesExporterCSnA.Model.Data
             }
         }
 
-        private List<IDisplayableData> Group<DisplayableObj, GroupingObj>(List<GroupingObj> marks)
-            where DisplayableObj : class, IFromGroup<GroupingObj>, new() 
+        private List<IDisplayableData> ConvertToIDisplayableData<DisplayableObj, GroupingObj>(List<GroupingObj> marks)
+            where DisplayableObj : class, IFromGroup<GroupingObj>, new()
             where GroupingObj : IFullName
         {
-            List<IDisplayableData> groupedList = new(); 
+            List<IDisplayableData> groupedList = new();
 
             var groupedMarks =
             from mark in marks

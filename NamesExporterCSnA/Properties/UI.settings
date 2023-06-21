@@ -2,7 +2,10 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NamesExporterCSnA.Properties" GeneratedClassName="UI">
   <Profiles />
   <Settings>
-    <Setting Name="WindowSettings" Type="NamesExporterCSnA.View.WindowSettings" Scope="User">
+    <Setting Name="MainWindowSettings" Type="NamesExporterCSnA.View.WindowSettings" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SettingsWindowSettings" Type="GeKtviWpfToolkit.DefaultWindowSettings" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

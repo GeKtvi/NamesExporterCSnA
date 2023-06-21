@@ -25,12 +25,23 @@ namespace NamesExporterCSnA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::NamesExporterCSnA.View.WindowSettings WindowSettings {
+        public global::NamesExporterCSnA.View.WindowSettings MainWindowSettings {
             get {
-                return ((global::NamesExporterCSnA.View.WindowSettings)(this["WindowSettings"]));
+                return ((global::NamesExporterCSnA.View.WindowSettings)(this["MainWindowSettings"]));
             }
             set {
-                this["WindowSettings"] = value;
+                this["MainWindowSettings"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::GeKtviWpfToolkit.DefaultWindowSettings SettingsWindowSettings {
+            get {
+                return ((global::GeKtviWpfToolkit.DefaultWindowSettings)(this["SettingsWindowSettings"]));
+            }
+            set {
+                this["SettingsWindowSettings"] = value;
             }
         }
     }

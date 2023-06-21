@@ -4,11 +4,11 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-	<StartupObject>NamesExporterCSnA.App</StartupObject>
-	<ApplicationIcon>View\Icon.ico</ApplicationIcon>
-	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	<Deterministic>false</Deterministic>
-	<AssemblyVersion>0.0.*</AssemblyVersion>
+	  <StartupObject>NamesExporterCSnA.App</StartupObject>
+	  <ApplicationIcon>View\Icon.ico</ApplicationIcon>
+	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  <Deterministic>false</Deterministic>
+	  <AssemblyVersion>0.0.*</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,9 +39,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Properties\Converter.Designer.cs">
+    <Compile Update="Properties\Settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Converter.settings</DependentUpon>
+      <DependentUpon>Settings.settings</DependentUpon>
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="Properties\UI.Designer.cs">
@@ -52,14 +52,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Properties\Configs\CableForMarkingWhiteList.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Properties\Configs\CableMarks.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Properties\Configs\CablesParser.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Properties\Converter.settings">
-      <LastGenOutput>Converter.Designer.cs</LastGenOutput>
+    <None Update="Properties\Settings.settings">
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
       <Generator>SettingsSingleFileGenerator</Generator>
     </None>
     <None Update="Properties\UI.settings">

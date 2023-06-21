@@ -33,6 +33,7 @@
         </Style.Triggers>
     </Style>
 
+    
     <DataTemplate x:Key="RowGroupHeaderTemplate">
         <StackPanel
                 Orientation="Horizontal"

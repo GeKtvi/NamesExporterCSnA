@@ -29,6 +29,8 @@ namespace NamesExporterCSnA.Model.Data
         [Display(Name = "Окр.")]
         public int Rounded => (CountX2 - 1) / VendorPalletCount * VendorPalletCount + VendorPalletCount;
 
+        public string Measure => "шт.";
+
         public DisplayableCableMark() { }
 
         public IDisplayableData SetFromGrouping(IGrouping<string, ICableMark> group)

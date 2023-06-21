@@ -1,0 +1,38 @@
+﻿<Window x:Class="NamesExporterCSnA.View.SettingsWindowView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:local="clr-namespace:NamesExporterCSnA.View"
+        xmlns:properties="clr-namespace:NamesExporterCSnA.Properties"
+        xmlns:localVM="clr-namespace:NamesExporterCSnA.ViewModel" 
+        d:DataContext="{d:DesignInstance Type=localVM:SettingsWindowViewModel}"
+        mc:Ignorable="d"
+        d:Width="700"
+        d:Height="500"
+        Title="SettingsWindowView" 
+        Top=            "{Binding Source={x:Static properties:UI.Default}, Path=Default.SettingsWindowSettings.Top,         Mode=TwoWay}"
+        Left=           "{Binding Source={x:Static properties:UI.Default}, Path=Default.SettingsWindowSettings.Left,        Mode=TwoWay}"
+        Width=          "{Binding Source={x:Static properties:UI.Default}, Path=Default.SettingsWindowSettings.Width,       Mode=TwoWay}"
+        Height=         "{Binding Source={x:Static properties:UI.Default}, Path=Default.SettingsWindowSettings.Height,      Mode=TwoWay}"
+        WindowState=    "{Binding Source={x:Static properties:UI.Default}, Path=Default.SettingsWindowSettings.WindowState, Mode=TwoWay}"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        Closing="SettingsWindowClosed">
+    <Grid>
+        <StackPanel>
+            <ComboBox 
+                Margin="5" 
+                ui:ControlHelper.Header="VerticalScrollBarVisibility"
+                SelectedItem="{Binding CableMarkSelectedVendorName, Mode=TwoWay}" 
+                ItemsSource="{Binding PossibleCableMarkVendorName, Mode=TwoWay}"/>
+
+            <ui:NumberBox Margin="5"  ui:ControlHelper.Header="Ширина"     Minimum="0" Maximum="10000" SmallChange="100" LargeChange="1000" SpinButtonPlacementMode="Inline" Text="{Binding ApproximateCableLength.BoxWidth,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=10}"/>
+            <ui:NumberBox Margin="5"  ui:ControlHelper.Header="Высота"     Minimum="0" Maximum="10000" SmallChange="100" LargeChange="1000" SpinButtonPlacementMode="Inline" Text="{Binding ApproximateCableLength.BoxHeight,    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=10}"/>
+            <ui:NumberBox Margin="5"  ui:ControlHelper.Header="Глубина"    Minimum="0" Maximum="10000" SmallChange="100" LargeChange="1000" SpinButtonPlacementMode="Inline" Text="{Binding ApproximateCableLength.BoxDepth,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=10}"/>
+            <ui:NumberBox Margin="5"  ui:ControlHelper.Header="Коэфицент"  Minimum="0" Maximum="10000" SmallChange="0.1" LargeChange="1" SpinButtonPlacementMode="Inline" Text="{Binding ApproximateCableLength.K,            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=10}"/>
+            
+            <TextBlock Margin="5" Text="{Binding ApproximateCableLength.FinalMultiplier , UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+    </Grid>
+</Window>

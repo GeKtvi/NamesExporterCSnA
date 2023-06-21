@@ -13,13 +13,24 @@ namespace NamesExporterCSnA.Properties {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.5.0.0")]
-    internal sealed partial class Converter : global::System.Configuration.ApplicationSettingsBase {
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
-        private static Converter defaultInstance = ((Converter)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Converter())));
+        private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
-        public static Converter Default {
+        public static Settings Default {
             get {
                 return defaultInstance;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::NamesExporterCSnA.Services.Settings.PreferencesSettings PreferencesSettings {
+            get {
+                return ((global::NamesExporterCSnA.Services.Settings.PreferencesSettings)(this["PreferencesSettings"]));
+            }
+            set {
+                this["PreferencesSettings"] = value;
             }
         }
     }

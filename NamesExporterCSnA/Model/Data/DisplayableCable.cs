@@ -19,6 +19,7 @@ namespace NamesExporterCSnA.Model.Data
 
         public int Rounded => (CountX2 - 1) / VendorPalletCount * VendorPalletCount + VendorPalletCount;
 
+        public string Measure => "м";
 
         public DisplayableCable()
         {

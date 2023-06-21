@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:localV="clr-namespace:NamesExporterCSnA.View" 
         xmlns:localVM="clr-namespace:NamesExporterCSnA.ViewModel" 
+        xmlns:conv="clr-namespace:NamesExporterCSnA.View.Converters"
         xmlns:tk="clr-namespace:GeKtviWpfToolkit.Controls;assembly=GeKtviWpfToolkit"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=localVM:MainWindowViewModel}"
@@ -13,13 +14,12 @@
         d:Height="500"
         x:Name="Window"
         Title="Export Helper" 
-
         xmlns:properties="clr-namespace:NamesExporterCSnA.Properties"
-        Top=            "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Top,         Mode=TwoWay}"
-        Left=           "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Left,        Mode=TwoWay}"
-        Width=          "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Width,       Mode=TwoWay}"
-        Height=         "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.Height,      Mode=TwoWay}"
-        WindowState=    "{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.WindowState, Mode=TwoWay}"
+        Top=            "{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.Top,         Mode=TwoWay}"
+        Left=           "{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.Left,        Mode=TwoWay}"
+        Width=          "{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.Width,       Mode=TwoWay}"
+        Height=         "{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.Height,      Mode=TwoWay}"
+        WindowState=    "{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.WindowState, Mode=TwoWay}"
         MinHeight="150"
         MinWidth="600"
         ui:TitleBar.ExtendViewIntoTitleBar="True"
@@ -31,9 +31,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MainWindowResourses.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            
-            <localV:LoggerStatusToBrushConverter x:Key="LoggerStatusToBrushConverter"/>
-            <localV:LoggerStatusToVisibleConverter x:Key="LoggerStatusToVisibleConverter"/>
+
+            <conv:LoggerStatusToBrushConverter x:Key="LoggerStatusToBrushConverter"/>
+            <conv:LoggerStatusToVisibleConverter x:Key="LoggerStatusToVisibleConverter"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -74,6 +74,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="{Binding ElementName=Window, Path=(ui:TitleBar.SystemOverlayRightInset)}" />
             </Grid.ColumnDefinitions>
@@ -134,13 +135,23 @@
                 </ui:TitleBarButton.Content>
             </ui:TitleBarButton >
 
+            <ui:TitleBarButton  
+                Width="45" 
+                Grid.Column="8" 
+                Click="ShowSettings"
+                >
+                <ui:TitleBarButton.Content>
+                    <ui:SymbolIcon Symbol="Setting"/>
+                </ui:TitleBarButton.Content>
+            </ui:TitleBarButton >
+
         </Grid>
         <!--#endregion-->
         
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.FirstColumn, Mode=TwoWay}" MinWidth="200"/>
-                <ColumnDefinition Width="{Binding Source={x:Static properties:UI.Default}, Path=Default.WindowSettings.SecondColumn, Mode=TwoWay}" MinWidth="200"/>
+                <ColumnDefinition Width="{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.FirstColumn, Mode=TwoWay}" MinWidth="200"/>
+                <ColumnDefinition Width="{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.SecondColumn, Mode=TwoWay}" MinWidth="200"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -178,8 +189,7 @@
                     SelectionUnit="CellOrRowHeader" 
                     HorizontalScrollBarVisibility="Auto"
                     GridLinesVisibility="All" 
-                    IsReadOnly="True"
-                    >
+                    IsReadOnly="True">
                     <DataGrid.GroupStyle>
                         <GroupStyle
                             ContainerStyle="{StaticResource DataGridRowGroupContainerStyle}"

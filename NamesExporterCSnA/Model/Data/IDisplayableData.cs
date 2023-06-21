@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
 
 namespace NamesExporterCSnA.Model.Data
 {
@@ -9,18 +8,18 @@ namespace NamesExporterCSnA.Model.Data
         string DataType { get; }
 
         [Display(Name = "Наименование")]
-        string Name { get; set; }
+        string Name { get; }
 
-        [Display(Name = "Кол-во")] 
-        int Count { get; set; }
+        [Display(Name = "Кол.")] 
+        int Count { get; }
 
-        [Display(Name = "Кол-во х2")]
+        [Display(Name = "Кол. хK")]
         int CountX2 { get; }
 
         [Display(Name = "Окр.")]
         int Rounded { get; }
 
-        //[Display(AutoGenerateField = false)]
-        //int VendorPalletCount { get; set; }
+        [Display(Name = "Е.И")]
+        string Measure { get; }
     }
 }

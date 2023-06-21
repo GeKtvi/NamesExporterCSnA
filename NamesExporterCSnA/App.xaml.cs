@@ -4,6 +4,7 @@ using NamesExporterCSnA.Model.Data;
 using NamesExporterCSnA.Services.UpdateLog;
 using NamesExporterCSnA.View;
 using NamesExporterCSnA.ViewModel;
+using NamesExporterCSnA.Services.Settings;
 using System;
 using System.Windows;
 
@@ -21,13 +22,21 @@ namespace NamesExporterCSnA
             {
                 CurrentServiceProvider = new ServiceCollection()
                                 .AddSingleton<MainWindowModel>()
-                                .AddSingleton<MainWindowView>()
                                 .AddSingleton<MainWindowViewModel>()
+                                .AddSingleton<MainWindowView>()
                                 .AddSingleton<DataConverter>()
                                 .AddSingleton<IUpdateLogger, UpdateLogger>()
+                                .AddTransient<SettingsWindowModel>()
+                                .AddTransient<SettingsWindowViewModel>()
+                                .AddTransient<SettingsWindowView>()
+                                .AddSingleton<IPreferencesSettings, PreferencesSettings>()
+                                .AddSingleton<SettingsSaveLoadManager>()
                                 .BuildServiceProvider();
-                
-                (CurrentServiceProvider.GetService(typeof(MainWindowView)) as MainWindowView).Show();
+
+                CurrentServiceProvider.GetRequiredService<SettingsSaveLoadManager>(); //Иначе инстанс не создастся
+
+                MainWindow = CurrentServiceProvider.GetService<MainWindowView>();  
+                CurrentServiceProvider.GetRequiredService<MainWindowView>().Show();
             }
             catch (Exception)
             {

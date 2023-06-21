@@ -9,6 +9,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
         public string SchemeName { get; set; } = "{NotSet}";
         public double WireSection { get; set; } = 0;
         public int WireCount { get; set; } = 0;
+        public int WirePairs { get; set; } = 0; 
         public string NormativeDocument { get; set; } = "{NotSet}";
         public string Template { get; set; } = "{NotSet}";
 

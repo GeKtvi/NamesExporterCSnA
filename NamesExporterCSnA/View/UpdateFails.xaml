@@ -6,19 +6,20 @@
         xmlns:local="clr-namespace:NamesExporterCSnA.View"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         xmlns:tk="clr-namespace:GeKtviWpfToolkit.Controls;assembly=GeKtviWpfToolkit"
-        xmlns:serv="clr-namespace:NamesExporterCSnA.Services" 
+        xmlns:log="clr-namespace:NamesExporterCSnA.Services.UpdateLog" 
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:conv="clr-namespace:NamesExporterCSnA.View.Converters"
         xmlns:localV="clr-namespace:NamesExporterCSnA.View" 
         x:Name="ContentDialog"
         CloseButtonText="Закрыть"
         mc:Ignorable="d"
         d:DesignHeight="450" 
         d:DesignWidth="800"
-        d:DataContext="{d:DesignInstance {x:Type serv:UpdateLogger}}"
+        d:DataContext="{d:DesignInstance {x:Type log:UpdateLogger}}"
         Title="Проблемы обновления">
     <ui:ContentDialog.Resources>
         <sys:Double x:Key="ContentDialogMaxWidth">1800</sys:Double>
-        <localV:UpdateFailTypeToImageConverter x:Key="UpdateFailTypeToImageConverter"/>
+        <conv:UpdateFailTypeToImageConverter x:Key="UpdateFailTypeToImageConverter"/>
     </ui:ContentDialog.Resources>
 
     <Grid >

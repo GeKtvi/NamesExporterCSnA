@@ -73,7 +73,7 @@ namespace NamesExporterCSnATests
                 }
             };
 
-            CableMarkFactory factory = new CableMarkFactory();
+            CableMarkFactory factory = new CableMarkFactory(new UpdateLogger());
             List<ICableMark> result = factory.CreateMarksForCables(cables);
 
 

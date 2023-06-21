@@ -1,9 +1,11 @@
 ﻿using GeKtviWpfToolkit;
 using NamesExporterCSnA.Services.UpdateLog;
+using NamesExporterCSnA.Model.Data.Cables.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 
 namespace NamesExporterCSnA.Model.Data.Cables
 {
@@ -32,26 +34,24 @@ namespace NamesExporterCSnA.Model.Data.Cables
             {
                 string cableType = GetCableType(cable); //ШВВП_
 
-                string cableData = GetCableData(cable); //_1х0,5
-                if (cableData == string.Empty)
+                try
+                {
+                    GetCableData(cable, out int pairCount, out int wireCount , out double wireSection);
+                    Cable parsedCable = new Cable()
+                    {
+                        SchemeName = cable.SchemeName,
+                        CableType = cableType,
+                        WireSection = wireSection,
+                        WireCount = wireCount,
+                        WirePairs = pairCount,
+                        Template = _templateList.Where(x => cableType.Contains(x.SubCableType)).First().Template
+                    };
+                    parsedCables.Add(parsedCable);
+                }
+                catch (InvalidCableDataException)
                 {
                     LogError("Информация о кабеле должна иметь верный формат \" DхD,D\"", cable);
-                    continue;
                 }
-
-                int wireCount = GetWireCount(cableData); //1х
-
-                double wireSection = GetWireSection(cableData); //х0,5
-
-                Cable parsedCable = new Cable()
-                {
-                    SchemeName = cable.SchemeName,
-                    CableType = cableType,
-                    WireSection = wireSection,
-                    WireCount = wireCount,
-                    Template = _templateList.Where(x => cableType.Contains(x.SubCableType)).First().Template
-                };
-                parsedCables.Add(parsedCable);
             }
             return parsedCables;
         }
@@ -64,32 +64,32 @@ namespace NamesExporterCSnA.Model.Data.Cables
             return cableType;
         }
 
-        private static string GetCableData(MaxExportedCable cable)
+        private static void GetCableData(MaxExportedCable cable, out int pairCount, out int wireCount, out double wireSection)
         {
-            Regex signPartRegex = new Regex(@"\s\d+(x|х)(\d+\,\d+|\d+\.\d+|\d+$)"); //_1х0,5
+            pairCount = 0;
+            wireCount = 0;
+            wireSection = 0;
+
+            bool isCableHasPairs = false;
+
+            Regex signPartRegex = new Regex(@"\s(?<wireCount>\d)+(x|х)(?<wireSection>\d+\,\d+|\d+\.\d+|\d+$)"); //_1х0,5
+
             if (!signPartRegex.IsMatch(cable.WireName))
             {
-                return string.Empty;
+                signPartRegex = new Regex(@"\s(?<pairCount>\d)+(x|х)(?<wireCount>\d)+(x|х)(?<wireSection>\d+\,\d+|\d+\.\d+|\d+$)"); //_1х1х0,5
+                isCableHasPairs = true;
             }
-            string cableData = signPartRegex.Match(cable.WireName).Value.Remove(0, 1); //1х0,5
-            return cableData;
-        }
 
-        private static int GetWireCount(string cableData)
-        {
-            Regex wireCountRegex = new Regex(@"[\d]+[xх]"); //1х
-            string wireCountS = wireCountRegex.Match(cableData).Value; //1
-            wireCountS = wireCountS.Remove(wireCountS.Length - 1, 1);
-            int wireCount = Convert.ToInt32(wireCountS);
-            return wireCount;
-        }
+            if (!signPartRegex.IsMatch(cable.WireName))
+                throw new InvalidCableDataException($"Некорректная информация в данных о кабеле: {cable.WireName}");
 
-        private static double GetWireSection(string cableData)
-        {
-            Regex wireSectionRegex = new Regex(@"[xх][\d,.]+"); //х0,5
-            string wireSectionS = wireSectionRegex.Match(cableData).Value.Remove(0, 1).Replace('.', ','); //0,5
-            double wireSection = Convert.ToDouble(wireSectionS);
-            return wireSection;
+            Match match = signPartRegex.Match(cable.WireName);
+            if(isCableHasPairs)
+                pairCount = Convert.ToInt32(match.Groups["pairCount"].Value);
+            wireCount = Convert.ToInt32(match.Groups["wireCount"].Value);
+            wireSection = Convert.ToDouble(match.Groups["wireSection"].Value);
+
+            return;
         }
 
         private List<MaxExportedCable> FiltrateByWhiteList(List<MaxExportedCable> cables)

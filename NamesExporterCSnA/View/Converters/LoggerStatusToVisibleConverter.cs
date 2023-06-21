@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace NamesExporterCSnA.View
+namespace NamesExporterCSnA.View.Converters
 {
     public class LoggerStatusToVisibleConverter : IValueConverter
     {
@@ -18,9 +18,9 @@ namespace NamesExporterCSnA.View
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if((Visibility)value != Visibility.Visible)
+            if ((Visibility)value != Visibility.Visible)
                 return LoggerStatus.HasExceptionFails;
-            else 
+            else
                 return LoggerStatus.NoFails;
         }
     }

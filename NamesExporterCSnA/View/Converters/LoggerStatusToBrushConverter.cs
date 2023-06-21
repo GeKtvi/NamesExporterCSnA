@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace NamesExporterCSnA.View
+namespace NamesExporterCSnA.View.Converters
 {
     public class LoggerStatusToBrushConverter : IValueConverter
     {

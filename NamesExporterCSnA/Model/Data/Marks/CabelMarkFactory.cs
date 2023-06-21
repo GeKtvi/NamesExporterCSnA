@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections;
+﻿using GeKtviWpfToolkit;
+using NamesExporterCSnA.Model.Data.Cables;
+using NamesExporterCSnA.Model.Data.Marks.Exceptions;
+using NamesExporterCSnA.Services.UpdateLog;
+using NamesExporterCSnA.Services.Settings;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using GeKtviWpfToolkit;
-using NamesExporterCSnA.Model.Data.Cables;
-using NamesExporterCSnA.Model.Data.Marks.Exceptions;
+using NamesExporterCSnA.Properties;
 
 namespace NamesExporterCSnA.Model.Data.Marks
 {
@@ -25,6 +27,8 @@ namespace NamesExporterCSnA.Model.Data.Marks
 
                 _selectedCableMarkVendorsData = foundVendorData.First();
                 _selectedVendorName = value;
+
+                _settings.CableMarkSelectedVendorName = value;
             }
         }
 
@@ -32,18 +36,32 @@ namespace NamesExporterCSnA.Model.Data.Marks
 
         private CableMarkVendorData _selectedCableMarkVendorsData;
         private readonly CableMarkVendorData[] _cableMarkVendorsData;
+        private string[] _cableForMarkingWhiteList;
 
-        public CableMarkFactory()
+        private readonly IUpdateLogger _logger;
+        private readonly IPreferencesSettings _settings;
+
+        public CableMarkFactory(IUpdateLogger logger, IPreferencesSettings settings)
         {
+            _logger = logger;
+            _settings = settings;
             _cableMarkVendorsData = AppConfigHelper.LoadConfig<CableMarkVendorData[]>("CableMarks.config");
+            _cableForMarkingWhiteList = AppConfigHelper.LoadConfig<string[]>("CableForMarkingWhiteList.config");
 
             VendorsNames = new ReadOnlyCollection<string>(_cableMarkVendorsData.Select(x => x.VendorName).ToList());
             SelectedVendorName = VendorsNames.First();
+
+            settings.CableMarkSelectedVendorName = SelectedVendorName;
+            settings.PossibleCableMarkVendorName = VendorsNames.ToArray();
+            settings.PropertyChanged += (s, e) => SelectedVendorName = settings.CableMarkSelectedVendorName;
         }
 
         public List<ICableMark> CreateMarksForCable(Cable sourceCable)
         {
-            CheckSelectedItem();
+            if (IsCableValidForMarking(sourceCable) == false)
+                return new List<ICableMark>();
+
+            CheckSelectedVendorData();
 
             sourceCable = new Cable(sourceCable);
 
@@ -97,7 +115,7 @@ namespace NamesExporterCSnA.Model.Data.Marks
             return symbolsInCable;
         }
 
-        private void CheckSelectedItem()
+        private void CheckSelectedVendorData()
         {
             bool isFound = false;
             foreach (var item in _cableMarkVendorsData)
@@ -106,6 +124,26 @@ namespace NamesExporterCSnA.Model.Data.Marks
 
             if (isFound == false)
                 throw new InvalidOperationException("Установленный объект отсутствует в списке");
+        }
+
+        private bool IsCableValidForMarking(Cable sourceCable)
+        {
+            if (_cableForMarkingWhiteList.Where(x => sourceCable.CableType.Contains(x)).ToList().Count != 0)
+            {
+                return true;
+            }
+            else
+            {
+                _logger.Log(new UpdateFail()
+                {
+                    Message = "Кабель не разрешен для маркировки",
+                    SchemeName = sourceCable.SchemeName,
+                    WireName = sourceCable.CableType,
+                    Source = "Модуль маркировки",
+                    Type = UpdateFailType.Exception
+                });
+                return false;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using NamesExporterCSnA.ViewModel;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NamesExporterCSnA.ViewModel;
 using System;
 using System.Windows;
 
@@ -6,8 +7,11 @@ namespace NamesExporterCSnA.View
 {
     public partial class MainWindowView : System.Windows.Window
     {
-        public MainWindowView(MainWindowViewModel mainWindowViewModel)
+        private IServiceProvider _services;
+
+        public MainWindowView(MainWindowViewModel mainWindowViewModel, IServiceProvider serviceProvider)
         {
+            _services = serviceProvider;
             InitializeComponentUiSave();
             DataContext = mainWindowViewModel;
             InitializeComponent();
@@ -16,10 +20,10 @@ namespace NamesExporterCSnA.View
 
         private void InitializeComponentUiSave()
         {
-            if (Properties.UI.Default.WindowSettings == null)
-                Properties.UI.Default.WindowSettings = new WindowSettings();
-            if (Properties.UI.Default.WindowSettings.WindowState == WindowState.Minimized)
-                Properties.UI.Default.WindowSettings.WindowState = WindowState.Normal;
+            if (Properties.UI.Default.MainWindowSettings == null)
+                Properties.UI.Default.MainWindowSettings = new WindowSettings();
+            if (Properties.UI.Default.MainWindowSettings.WindowState == WindowState.Minimized)
+                Properties.UI.Default.MainWindowSettings.WindowState = WindowState.Normal;
         }
 
         private void MainWindowClosed(object sender, EventArgs e)
@@ -29,14 +33,14 @@ namespace NamesExporterCSnA.View
 
         private async void ShowUpdateFails(object sender, RoutedEventArgs e)
         {
-            var sdf = new UpdateFails();
-            sdf.DataContext = (this.DataContext as MainWindowViewModel).Logger;
-            var result = await sdf.ShowAsync().ConfigureAwait(true);
+            var updateDialog = new UpdateFails();
+            updateDialog.DataContext = (this.DataContext as MainWindowViewModel).Logger;
+            var result = await updateDialog.ShowAsync().ConfigureAwait(true);
         }
 
-        private void CollectionViewSource_Filter(object sender, System.Windows.Data.FilterEventArgs e)
+        private void ShowSettings(object sender, RoutedEventArgs e)
         {
-
+            _services.GetRequiredService<SettingsWindowView>().Show();
         }
     }
 }
