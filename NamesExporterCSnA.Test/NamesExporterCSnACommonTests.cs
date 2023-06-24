@@ -2,9 +2,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NamesExporterCSnA.Model.Data;
 using NamesExporterCSnA.Model.Data.Cables;
 using NamesExporterCSnA.Model.Data.Marks;
+using NamesExporterCSnA.Services.Settings;
 using NamesExporterCSnA.Services.UpdateLog;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace NamesExporterCSnATests
 {
@@ -73,7 +72,7 @@ namespace NamesExporterCSnATests
                 }
             };
 
-            CableMarkFactory factory = new CableMarkFactory(new UpdateLogger());
+            CableMarkFactory factory = new CableMarkFactory(new UpdateLogger(), new PreferencesSettings());
             List<ICableMark> result = factory.CreateMarksForCables(cables);
 
 

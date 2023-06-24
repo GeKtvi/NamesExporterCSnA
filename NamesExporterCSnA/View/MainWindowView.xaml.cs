@@ -5,7 +5,7 @@ using System.Windows;
 
 namespace NamesExporterCSnA.View
 {
-    public partial class MainWindowView : System.Windows.Window
+    public partial class MainWindowView : Window
     {
         private IServiceProvider _services;
 
@@ -15,7 +15,7 @@ namespace NamesExporterCSnA.View
             InitializeComponentUiSave();
             DataContext = mainWindowViewModel;
             InitializeComponent();
-            this.Closed += MainWindowClosed;
+            Closed += MainWindowClosed;
         }
 
         private void InitializeComponentUiSave()
@@ -33,9 +33,9 @@ namespace NamesExporterCSnA.View
 
         private async void ShowUpdateFails(object sender, RoutedEventArgs e)
         {
-            var updateDialog = new UpdateFails();
-            updateDialog.DataContext = (this.DataContext as MainWindowViewModel).Logger;
-            var result = await updateDialog.ShowAsync().ConfigureAwait(true);
+            UpdateFails updateDialog = new();
+            updateDialog.DataContext = (DataContext as MainWindowViewModel).Logger;
+            await updateDialog.ShowAsync().ConfigureAwait(true);
         }
 
         private void ShowSettings(object sender, RoutedEventArgs e)

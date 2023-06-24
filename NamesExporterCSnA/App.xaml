@@ -45,7 +45,34 @@
                     <Thickness x:Key="DatePickerFlyoutPresenterItemPadding">0,0,0,1</Thickness>
                     <Thickness x:Key="DatePickerFlyoutPresenterMonthPadding">9,0,0,1</Thickness>
 
+                    <Style TargetType="ui:TitleBarButton">
+                        <Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
+                        <Setter Property="InactiveForeground" Value="{DynamicResource SystemControlBackgroundBaseHighBrush}"/>
+                    </Style>
 
+                    <Style x:Key="AppTitleBarBackButtonStyle" TargetType="ui:TitleBarButton" BasedOn="{StaticResource TitleBarBackButtonStyle}">
+                        <Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
+                    </Style>
+
+                    <Style x:Key="BorderStyle" TargetType="Border">
+                        <Setter Property="BorderThickness" Value="2"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="CornerRadius" Value="5"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+                    </Style>
+
+                    <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCellExpanded}">
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True" >
+                                <Setter Property="Background" Value="{DynamicResource ResourceKey=SystemControlHighlightListAccentLowBrush}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+
+                    <Style TargetType="{x:Type Label}" BasedOn="{StaticResource DefaultLabelStyle}">
+                        <Setter Property="FontSize" Value="18"/>
+                        <Setter Property="Margin" Value="5,5,5,0"/>
+                    </Style>
                 </ResourceDictionary>
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>

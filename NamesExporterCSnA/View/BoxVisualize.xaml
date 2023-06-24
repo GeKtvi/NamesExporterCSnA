@@ -1,0 +1,158 @@
+﻿<UserControl x:Class="NamesExporterCSnA.View.BoxVisualize"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             mc:Ignorable="d" 
+             x:Name="Box"
+             d:Width="250" 
+             d:Height="275">
+    <UserControl.Resources>
+        <Style TargetType="Rectangle">
+            <Setter Property="Stroke" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            <Setter Property="StrokeThickness" Value="1.0"/>
+        </Style>
+        <Style TargetType="Path">
+            <Setter Property="Stroke" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            <Setter Property="StrokeThickness" Value="1.0"/>
+        </Style>
+
+        <Style x:Key="DimensionLine" TargetType="Path">
+            <Setter Property="Stroke" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            <Setter Property="StrokeThickness" Value="0.5"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="50,0,-50,0">
+        <Grid>
+            <Rectangle HorizontalAlignment="Left" Height="196" Margin="33,2,0,0" VerticalAlignment="Top" Width="122" RadiusX="10" RadiusY="10"/>
+            <Rectangle HorizontalAlignment="Left" Height="196" Margin="1,35,0,0" VerticalAlignment="Top" Width="122" RadiusX="10" RadiusY="10"/>
+            <Path Data="M1.6108568,30.838099 L21.411109,9.2831773" HorizontalAlignment="Left" Height="34" Margin="1,12,0,0"  Stretch="Fill" VerticalAlignment="Top" Width="33"/>
+            <Path Data="M2.2339978,29.29744 L22.116173,9.3112306" HorizontalAlignment="Left" Height="34" Margin="122,12,0,0"  Stretch="Fill" VerticalAlignment="Top" Width="33"/>
+            <Rectangle HorizontalAlignment="Left" Height="196" Margin="1,35,0,0" VerticalAlignment="Top" Width="122" RadiusX="10" RadiusY="10"/>
+            <Path Data="M1.6108568,30.838099 L21.411109,9.2831773" HorizontalAlignment="Left" Height="34" Margin="1,187,0,0"  Stretch="Fill" VerticalAlignment="Top" Width="33"/>
+            <Path Data="M2.2339978,29.29744 L22.116173,9.3112306" HorizontalAlignment="Left" Height="34" Margin="122,187,0,0"  Stretch="Fill" VerticalAlignment="Top" Width="33"/>
+            <Rectangle HorizontalAlignment="Left" Height="31" Margin="12,118,0,0" VerticalAlignment="Top" Width="10" RadiusX="2" RadiusY="2"/>
+            <Ellipse Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" HorizontalAlignment="Left" Height="6" Margin="14,140,0,0" VerticalAlignment="Top" Width="6"/>
+            <Rectangle HorizontalAlignment="Left" Height="18" Margin="14,120,0,0" VerticalAlignment="Top" Width="6" RadiusX="2" RadiusY="2"/>
+
+        </Grid>
+        <Grid>
+            <Grid>
+                <Path Style="{StaticResource DimensionLine}" Data="M1.1899083,220.23396 L1.1899083,254.7014" HorizontalAlignment="Left" Height="30" Margin="1,220,0,0" Stretch="Fill" VerticalAlignment="Top" Width="10"/>
+                <Path Data="M5.7295111,242.62281 L0.40625,244.25 C0.40625,244.25 5.6116873,245.68983 5.6116873,245.68983 5.0474684,244.14035 5.7295111,242.62281 5.7295111,242.62281 z" Fill="{DynamicResource SystemControlForegroundBaseHighBrush}" Margin="2,243,244,29" Stretch="Fill"/>
+                <Path Data="M5.7295111,242.62281 L0.40625,244.25 C0.40625,244.25 5.6116873,245.68983 5.6116873,245.68983 5.0474684,244.14035 5.7295111,242.62281 5.7295111,242.62281 z" Fill="{DynamicResource SystemControlForegroundBaseHighBrush}" HorizontalAlignment="Left" Margin="118,243,0,29" Stretch="Fill" Width="4" RenderTransformOrigin="0.5,0.5">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="180"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                </Path>
+                <Path Style="{StaticResource DimensionLine}" Data="M1.1899083,220.23396 L1.1899083,254.7014" HorizontalAlignment="Left" Height="30" Margin="122.5,220,0,0" Stretch="Fill" VerticalAlignment="Top" Width="10"/>
+                <Path Style="{StaticResource DimensionLine}" Data="M4,244.5 L118.625,244.5" HorizontalAlignment="Left" Height="0.5" Margin="4,244.25,0,0" Stretch="Fill" VerticalAlignment="Top" Width="116"/>
+            </Grid>
+            <Grid>
+                <Path Style="{StaticResource DimensionLine}" Data="M1.1899083,220.23396 L1.1899083,254.7014" HorizontalAlignment="Left" Height="35" Margin="-63,78.25,0,0" Stretch="Fill" VerticalAlignment="Top" Width="10" RenderTransformOrigin="0.5,0.5">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="90"/>
+                            <TranslateTransform X="60.5" Y="-60.5"/>
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                </Path>
+                <Path Data="M5.7457886,242.69208 L0.40625,244.25 C0.40625,244.25 5.7457886,245.66383 5.7457886,245.66383 5.1815697,244.11435 5.7457886,242.69208 5.7457886,242.69208 z" Fill="{DynamicResource SystemControlForegroundBaseHighBrush}" Margin="-69,110,315,162" Stretch="Fill" RenderTransformOrigin="0.5,0.5">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="90"/>
+                            <TranslateTransform X="52" Y="-73"/>
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                </Path>
+                <Path Data="M5.7295111,242.62281 L0.40625,244.25 C0.40625,244.25 5.7295113,245.76172 5.7295113,245.76172 5.1652924,244.21224 5.7295111,242.62281 5.7295111,242.62281 z" Fill="{DynamicResource SystemControlForegroundBaseHighBrush}" HorizontalAlignment="Left" Margin="47,183,0,89" Stretch="Fill" Width="4" RenderTransformOrigin="0.5,0.5">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="270"/>
+                            <TranslateTransform X="-64" Y="43"/>
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                </Path>
+                <Path Style="{StaticResource DimensionLine}" Data="M1.1899083,220.23396 L1.1899083,254.7014" HorizontalAlignment="Left" Height="35" Margin="-2,213.25,0,0" Stretch="Fill" VerticalAlignment="Top" Width="9" RenderTransformOrigin="0.5,0.5">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="90"/>
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                </Path>
+                <Path Style="{StaticResource DimensionLine}" Data="M4,244.5 L118.625,244.5" HorizontalAlignment="Left" Height="1" Margin="-110.5,133,0,0" Stretch="Fill" VerticalAlignment="Top" Width="191" RenderTransformOrigin="0.5,0.5">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="90"/>
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                </Path>
+            </Grid>
+            <Grid>
+                <Path Style="{StaticResource DimensionLine}" Data="M1.1899083,220.23396 L1.1899083,254.7014" HorizontalAlignment="Left" Height="30" Margin="154.5,187,0,0" Stretch="Fill" VerticalAlignment="Top" Width="10"/>
+                <Path Style="{StaticResource DimensionLine}" Data="M85.077872,228.81805 L125.71508,199.36327" HorizontalAlignment="Left" Height="31" Margin="124.5,212,0,0" Stretch="Fill" VerticalAlignment="Top" Width="30"/>
+                <Path Data="M5.7295111,242.62281 L0.40625,244.25 C0.40625,244.25 5.6116873,245.68983 5.6116873,245.68983 5.0474684,244.14035 5.7295111,242.62281 5.7295111,242.62281 z" Fill="{DynamicResource SystemControlForegroundBaseHighBrush}" HorizontalAlignment="Left" Margin="151,212,0,60" Stretch="Fill" Width="4" RenderTransformOrigin="0.5,0.5">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="135.781"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                </Path>
+                <Path Data="M5.7295111,242.62281 L0.40625,244.25 C0.40625,244.25 5.6116873,245.68983 5.6116873,245.68983 5.0474684,244.14035 5.7295111,242.62281 5.7295111,242.62281 z" Fill="{DynamicResource SystemControlForegroundBaseHighBrush}" Margin="123,241,123,31" Stretch="Fill" RenderTransformOrigin="0.5,0.5">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="-43.832"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                </Path>
+            </Grid>
+        </Grid>
+
+        <Grid>
+            <TextBlock Text="{Binding ElementName=Box, Path=DisplayableWidth}" FontSize="10" Height="20" Width="35" Margin="51,232,164,23"/>
+            <TextBlock Text="{Binding ElementName=Box, Path=DisplayableHeight}" FontSize="10" Height="20" Width="35" Margin="-35,117,250,138" RenderTransformOrigin="0.5,0.5">
+                <TextBlock.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-90"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </TextBlock.RenderTransform>
+            </TextBlock>
+            <TextBlock Text="{Binding ElementName=Box, Path=DisplayableDepth}" FontSize="10" Height="20" Width="35" Margin="124,211,90,44" RenderTransformOrigin="0.5,0.5">
+                <TextBlock.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-46.084"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </TextBlock.RenderTransform>
+            </TextBlock>
+
+        </Grid>
+    </Grid>
+</UserControl>
