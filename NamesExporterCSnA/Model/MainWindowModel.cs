@@ -14,13 +14,11 @@ namespace NamesExporterCSnA.Model
     {
         public ObservableCollection<MaxExportedCable> DataIn { get; private set; }
         public ObservableCollection<IDisplayableData> DataOut { get; private set; }
-        public string SelectedCableMarkVendor { get => _converter.CableMarkDKCFabric.SelectedVendorName; set => _converter.CableMarkDKCFabric.SelectedVendorName = value; }
-        public ReadOnlyCollection<string> CableMarksVendors { get => _converter.CableMarkDKCFabric.VendorsNames; }
         public IUpdateLogger Logger => _converter.Logger;
-        public bool IsUpdateFeezed { get; set; } = false;
+        public bool IsUpdateFrozen { get; set; } = false;
 
         private DataConverter _converter;
-        private DeferredOperation _deferredUpdate;
+        private DeferredOperation _deferredUpdate; //нужно только для прямой вставки из DataGrid
 
         public MainWindowModel(DataConverter converter)
         {
@@ -28,13 +26,15 @@ namespace NamesExporterCSnA.Model
             DataOut = new ObservableCollection<IDisplayableData>();
             _converter = converter;
             DataIn.CollectionChanged += DataInChanged;
+            converter.SettingsChanged += UpdateDataOut;
+
             Dispatcher disp = Dispatcher.CurrentDispatcher;
             _deferredUpdate = new DeferredOperation(() => disp.BeginInvoke(UpdateDataOut), 5);
         }
 
         public void SetDataIn(List<string[]> values)
         {
-            IsUpdateFeezed = true;
+            IsUpdateFrozen = true;
             DataIn.Clear();
 
             foreach (string[] row in values)
@@ -58,7 +58,7 @@ namespace NamesExporterCSnA.Model
                 }
                 DataIn.Add(cable);
             }
-            IsUpdateFeezed = false;
+            IsUpdateFrozen = false;
             UpdateDataOut();
         }
 
@@ -70,14 +70,14 @@ namespace NamesExporterCSnA.Model
             {
                 int i = 0;
                 data.Add(new());
-                foreach (var item in TypeDescriptor.GetProperties(DataOut.First()))
+                foreach (PropertyDescriptor item in TypeDescriptor.GetProperties(DataOut.GetType().GetGenericArguments().Single()))
                 {
-                    System.ComponentModel.PropertyDescriptor propertyDescriptor = item as System.ComponentModel.PropertyDescriptor;
+                    PropertyDescriptor propertyDescriptor = item;
                     var attributes = propertyDescriptor.Attributes[typeof(System.ComponentModel.DataAnnotations.DisplayAttribute)];
                     System.ComponentModel.DataAnnotations.DisplayAttribute displayAttribute =
                             attributes as System.ComponentModel.DataAnnotations.DisplayAttribute;
 
-                    if (displayAttribute.GetAutoGenerateField() != false)
+                    if (displayAttribute != null && displayAttribute.GetAutoGenerateField() != false)
                         data.Last().Add(propertyDescriptor.GetValue(itemDataOut).ToString());
                     i++;
                 }
@@ -88,7 +88,7 @@ namespace NamesExporterCSnA.Model
 
         public void UpdateDataOut()
         {
-            if (IsUpdateFeezed)
+            if (IsUpdateFrozen)
                 return;
 
             DataOut.Clear();

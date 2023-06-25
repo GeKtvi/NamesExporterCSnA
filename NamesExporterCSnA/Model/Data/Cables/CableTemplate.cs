@@ -11,5 +11,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
         public string SubCableType { get; set; }
         public string FullCableType { get; set; }
         public string Template { get; set; }
+        public bool HasFixedLength { get; set; }
+        public double Length { get; set; }
     }
 }

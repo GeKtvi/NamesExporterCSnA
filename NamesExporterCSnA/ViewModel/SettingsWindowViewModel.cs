@@ -6,7 +6,7 @@ namespace NamesExporterCSnA.ViewModel
 {
     public class SettingsWindowViewModel : BindableBase
     {
-        public ApproximateCableLength ApproximateCableLength
+        public IApproximateCableLength ApproximateCableLength
         {
             get => _model.ApproximateCableLength;
             set => _model.ApproximateCableLength = value;

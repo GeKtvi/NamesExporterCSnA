@@ -13,13 +13,10 @@ namespace NamesExporterCSnA.Model.Data
         [Display(Name = "Кол.")] 
         int Count { get; }
 
-        [Display(Name = "Кол. хK")]
-        int CountX2 { get; }
-
         [Display(Name = "Окр.")]
         int Rounded { get; }
 
-        [Display(Name = "Е.И")]
+        [Display(Name = "Е.И.")]
         string Measure { get; }
     }
 }

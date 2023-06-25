@@ -1,11 +1,11 @@
 ﻿using GeKtviWpfToolkit;
-using NamesExporterCSnA.Services.UpdateLog;
 using NamesExporterCSnA.Model.Data.Cables.Exceptions;
+using NamesExporterCSnA.Services.Settings;
+using NamesExporterCSnA.Services.UpdateLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-
 
 namespace NamesExporterCSnA.Model.Data.Cables
 {
@@ -14,11 +14,13 @@ namespace NamesExporterCSnA.Model.Data.Cables
         public IUpdateLogger Logger { get; private set; }
 
         private CableTemplate[] _templateList;
+        private IApproximateCableLength _approximateLength;
 
-        public CablesParser(IUpdateLogger logger)
+        public CablesParser(IUpdateLogger logger, IApproximateCableLength approximateLength)
         {
             Logger = logger;
             _templateList = AppConfigHelper.LoadConfig<CableTemplate[]>("CablesParser.config");
+            _approximateLength = approximateLength;
         }
 
         public List<Cable> Parse(List<MaxExportedCable> cables)
@@ -30,13 +32,17 @@ namespace NamesExporterCSnA.Model.Data.Cables
 
             List<Cable> parsedCables = new List<Cable>();
 
-            foreach (var cable in cables)
+            foreach (MaxExportedCable cable in cables)
             {
+                double length = 0;
                 string cableType = GetCableType(cable); //ШВВП_
+                CableTemplate template = _templateList.Where(x => cableType.Contains(x.SubCableType)).First();
+
+                length = template.HasFixedLength ? template.Length : 1 * _approximateLength.FinalMultiplier;
 
                 try
                 {
-                    GetCableData(cable, out int pairCount, out int wireCount , out double wireSection);
+                    GetCableData(cable, out int pairCount, out int wireCount, out double wireSection);
                     Cable parsedCable = new Cable()
                     {
                         SchemeName = cable.SchemeName,
@@ -44,7 +50,9 @@ namespace NamesExporterCSnA.Model.Data.Cables
                         WireSection = wireSection,
                         WireCount = wireCount,
                         WirePairs = pairCount,
-                        Template = _templateList.Where(x => cableType.Contains(x.SubCableType)).First().Template
+                        Length = length,
+                        HasFixedLength = template.HasFixedLength,
+                        Template = template.Template
                     };
                     parsedCables.Add(parsedCable);
                 }
@@ -84,7 +92,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
                 throw new InvalidCableDataException($"Некорректная информация в данных о кабеле: {cable.WireName}");
 
             Match match = signPartRegex.Match(cable.WireName);
-            if(isCableHasPairs)
+            if (isCableHasPairs)
                 pairCount = Convert.ToInt32(match.Groups["pairCount"].Value);
             wireCount = Convert.ToInt32(match.Groups["wireCount"].Value);
             wireSection = Convert.ToDouble(match.Groups["wireSection"].Value);
@@ -95,10 +103,10 @@ namespace NamesExporterCSnA.Model.Data.Cables
         private List<MaxExportedCable> FiltrateByWhiteList(List<MaxExportedCable> cables)
         {
             List<MaxExportedCable> cablesCopy = new List<MaxExportedCable>();
-            foreach (var cable in cables)
+            foreach (MaxExportedCable cable in cables)
             {
                 bool isCableAdded = false;
-                foreach (var pattern in _templateList.Select(x => x.SubCableType))
+                foreach (string pattern in _templateList.Select(x => x.SubCableType))
                 {
                     Regex regex = new Regex(pattern);
                     if (regex.IsMatch(cable.WireName))
@@ -117,7 +125,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
         {
             Regex regex = new Regex(@"\(\d+\)");
 
-            foreach (var cable in cables)
+            foreach (MaxExportedCable cable in cables)
             {
                 if (cable.SchemeName.Length > 0)
                 {
@@ -133,7 +141,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
         {
             List<MaxExportedCable> cablesCopy = new List<MaxExportedCable>();
 
-            foreach (var cable in cables)
+            foreach (MaxExportedCable cable in cables)
                 cablesCopy.Add(new MaxExportedCable(cable));
 
             return cablesCopy;

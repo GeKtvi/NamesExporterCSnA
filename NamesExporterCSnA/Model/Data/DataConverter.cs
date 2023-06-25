@@ -1,11 +1,11 @@
-﻿using NamesExporterCSnA.Model.Data.Marks;
-using NamesExporterCSnA.Model.Data.Cables;
+﻿using NamesExporterCSnA.Model.Data.Cables;
+using NamesExporterCSnA.Model.Data.Marks;
+using NamesExporterCSnA.Services.Settings;
 using NamesExporterCSnA.Services.UpdateLog;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using NamesExporterCSnA.Services.Settings;
 
 namespace NamesExporterCSnA.Model.Data
 {
@@ -14,13 +14,22 @@ namespace NamesExporterCSnA.Model.Data
         public CablesParser CablesParser { get; private set; }
         public CableMarkFactory CableMarkDKCFabric { get; private set; }
 
+        public event Action SettingsChanged
+        {
+            add { _settings.DataConverterSettingChanged += value; }
+            remove { _settings.DataConverterSettingChanged -= value; }
+        }
         public IUpdateLogger Logger { get; private set; }
+
+        private IPreferencesSettings _settings;
 
         public DataConverter(IUpdateLogger logger, IPreferencesSettings settings)
         {
             Logger = logger;
-            CablesParser = new(Logger);
-            CableMarkDKCFabric = new(Logger, settings);
+            _settings = settings;
+
+            CablesParser = new(Logger, _settings.ApproximateCableLength);
+            CableMarkDKCFabric = new(Logger, _settings);
         }
 
         public List<IDisplayableData> Convert(List<MaxExportedCable> cables)
@@ -29,14 +38,14 @@ namespace NamesExporterCSnA.Model.Data
             Logger.ClearLog();
             try
             {
-                var parsed = CablesParser.Parse(cables);
+                List<Cable> parsed = CablesParser.Parse(cables);
 
                 if (parsed.Count == 0)
                     return displayableData;
 
                 List<ICableMark> marks = new();
 
-                foreach (var cable in parsed)
+                foreach (Cable cable in parsed)
                     marks.AddRange(CableMarkDKCFabric.CreateMarksForCable(cable));
 
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCable, Cable>(parsed));
@@ -48,7 +57,7 @@ namespace NamesExporterCSnA.Model.Data
                 Logger.Log(
                         new UpdateFail()
                         {
-                            Message = $"Необрабатываемая ошибка: {ex.Message}",
+                            Message = $"Не обрабатываемая ошибка: {ex.Message}",
                             Type = UpdateFailType.Error,
                             SchemeName = "-",
                             WireName = "-",
@@ -65,13 +74,13 @@ namespace NamesExporterCSnA.Model.Data
         {
             List<IDisplayableData> groupedList = new();
 
-            var groupedMarks =
+            IOrderedEnumerable<IGrouping<string, GroupingObj>> groupedMarks =
             from mark in marks
             group mark by mark.FullName into newGroup
             orderby newGroup.Key
             select newGroup;
 
-            foreach (var item in groupedMarks)
+            foreach (IGrouping<string, GroupingObj> item in groupedMarks)
                 groupedList.Add(new DisplayableObj().SetFromGrouping(item));
 
             return groupedList;

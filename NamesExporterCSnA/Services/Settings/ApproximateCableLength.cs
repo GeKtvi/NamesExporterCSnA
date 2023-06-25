@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace NamesExporterCSnA.Services.Settings
 {
-    public class ApproximateCableLength : INotifyPropertyChanged
+    public class ApproximateCableLength : INotifyPropertyChanged, IApproximateCableLength
     {
         public int BoxWidth { get; set; } = 1000;
         public int BoxHeight { get; set; } = 2000;

@@ -1,5 +1,5 @@
 ﻿using NamesExporterCSnA.Model.Data.Marks;
-using System.Linq;
+using System;
 
 namespace NamesExporterCSnA.Model.Data.Cables
 {
@@ -9,9 +9,21 @@ namespace NamesExporterCSnA.Model.Data.Cables
         public string SchemeName { get; set; } = "{NotSet}";
         public double WireSection { get; set; } = 0;
         public int WireCount { get; set; } = 0;
-        public int WirePairs { get; set; } = 0; 
+        public int WirePairs { get; set; } = 0;
         public string NormativeDocument { get; set; } = "{NotSet}";
         public string Template { get; set; } = "{NotSet}";
+
+        public bool HasFixedLength { get; set; } = false;
+        public double _length = 0;
+        public double Length { 
+            get => _length;
+            set
+            {
+                if (HasFixedLength == true)
+                    throw new InvalidOperationException("Нельзя установить длину кабеля с фиксированной длиной");
+                _length = value;
+            } 
+        }
 
         public override string FullName => GetFullName(Template, PropertyHolder<Cable>.GetProperties());
 
@@ -45,8 +57,8 @@ namespace NamesExporterCSnA.Model.Data.Cables
 
             bool isEqual = true;
 
-            foreach (var prop in PropertyHolder<Cable>.GetProperties())
-                if (prop.GetType() != typeof(Cable) && 
+            foreach (System.Reflection.PropertyInfo prop in PropertyHolder<Cable>.GetProperties())
+                if (prop.GetType() != typeof(Cable) &&
                     prop.GetValue(this).Equals(prop.GetValue(objectToCompare)) == false)
                     isEqual = false;
 

@@ -28,9 +28,9 @@ namespace NamesExporterCSnA.Services.Settings
                 return;
             using (var fs = new FileStream(_saveFileName, FileMode.Open))
             {
-                PropertyHolder<IPreferencesSettings>.SetPropertiesValue(
-                    _settings, 
-                    (IPreferencesSettings)new XmlSerializer(typeof(PreferencesSettings)).Deserialize(fs)
+                PropertyHolder<PreferencesSettings>.SetPropertiesValue(
+                    (PreferencesSettings)_settings, 
+                    (PreferencesSettings)new XmlSerializer(typeof(PreferencesSettings)).Deserialize(fs)
                     ); 
             }
         }

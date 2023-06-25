@@ -82,7 +82,10 @@ namespace NamesExporterCSnA.Model.Data.Marks
 
                 if (fendedMark != null)
                     for (int i = 0; i < sourceCable.WireCount; i++)
+                    {
                         marks.Add(fendedMark);
+                        marks.Add(fendedMark); //х2 (У кабеля два конца и марки две)
+                    }
             }
 
             return marks;

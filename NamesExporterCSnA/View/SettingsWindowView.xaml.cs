@@ -13,21 +13,24 @@ namespace NamesExporterCSnA.View
         public SettingsWindowView(SettingsWindowViewModel viewModel)
         {
             DataContext = viewModel;
-            InitializeComponentUiSave();
             InitializeComponent();
+            InitializeComponentUiSave();
         }
 
         private void InitializeComponentUiSave()
         {
             if (Properties.UI.Default.SettingsWindowSettings == null)
-                Properties.UI.Default.SettingsWindowSettings = 
-                    new DefaultWindowSettings()
-                    {
-                        Top = this.Top,
-                        Left = this.Left,
-                        Width = 500,
-                        Height = 500,
-                    };
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                Properties.UI.Default.SettingsWindowSettings =
+                        new DefaultWindowSettings()
+                        {
+                            Top = this.Top,
+                            Left = this.Left,
+                            Width = 500,
+                            Height = 590,
+                        };
+            }
             if (Properties.UI.Default.SettingsWindowSettings.WindowState == WindowState.Minimized)
                 Properties.UI.Default.SettingsWindowSettings.WindowState = WindowState.Normal;
         }

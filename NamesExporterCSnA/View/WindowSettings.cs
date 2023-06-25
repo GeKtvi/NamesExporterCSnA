@@ -41,14 +41,14 @@ namespace NamesExporterCSnA.View
         }
 
         public string SecondColumnType { get; set; } = "Star";
-        public double SecondColumnValue { get; set; } = 1;
+        public double SecondColumnValue { get; set; } = 2;
 
         public WindowSettings()
         {
             Top = 250;
             Left = 300;
             Height = 600;
-            Width = 900;
+            Width = 1100;
         }
     }
 }

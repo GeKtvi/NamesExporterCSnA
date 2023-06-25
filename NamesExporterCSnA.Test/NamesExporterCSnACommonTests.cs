@@ -54,10 +54,37 @@ namespace NamesExporterCSnATests
                 },
                 new CableMark()
                 {
+                     VendorCode = "MKF0S1",
+                     Symbol = "0",
+                     MinSection = 0.5,
+                     MaxSection = 1.5,
+                     PackageAmount = 200,
+                     Template = "Ручная маркировка кабеля, сечением {MinSection}-{MaxSection} мм кв., символ '{Symbol}', арт. {VendorCode}, ДКС"
+                },
+                new CableMark()
+                {
                      VendorCode = "MKCES2",
                      Symbol = "E",
                      MinSection = 1.5,
                      MaxSection = 2.5,
+                     PackageAmount = 200,
+                     Template = "Ручная маркировка кабеля, сечением {MinSection}-{MaxSection} мм кв., символ '{Symbol}', арт. {VendorCode}, ДКС"
+                },
+                new CableMark()
+                {
+                     VendorCode = "MKCES2",
+                     Symbol = "E",
+                     MinSection = 1.5,
+                     MaxSection = 2.5,
+                     PackageAmount = 200,
+                     Template = "Ручная маркировка кабеля, сечением {MinSection}-{MaxSection} мм кв., символ '{Symbol}', арт. {VendorCode}, ДКС"
+                },
+                new CableMark()
+                {
+                     VendorCode = "MKSGS1EARTH",
+                     Symbol = "земля",
+                     MinSection = 0.5,
+                     MaxSection = 1.5,
                      PackageAmount = 200,
                      Template = "Ручная маркировка кабеля, сечением {MinSection}-{MaxSection} мм кв., символ '{Symbol}', арт. {VendorCode}, ДКС"
                 },
@@ -91,7 +118,13 @@ namespace NamesExporterCSnATests
                 new MaxExportedCable() { SchemeName = "L334",       WireName ="КГВВнг(А)-LS 3х0,75"}
             };
 
-            List<object> cablesResult = new CablesParser(new UpdateLogger()).Parse(maxExportedCable).Cast<object>().ToList();
+            var length = new ApproximateCableLength();
+            length.BoxWidth = 1000;
+            length.BoxHeight = 1000;
+            length.BoxDepth = 1000;
+            length.K = 1; 
+
+            List<object> cablesResult = new CablesParser(new UpdateLogger(), length).Parse(maxExportedCable).Cast<object>().ToList();
             List<object> cablesExpected = new List<object>()
             {
 
@@ -102,7 +135,8 @@ namespace NamesExporterCSnATests
                     SchemeName = "15/N",
                     WireCount = 2,
                     WireSection = 0.5,
-                    Template = "Провод, {CableType} {WireCount}х{WireSection}, РЭК"
+                    Template = "Провод, {CableType} {WireCount}х{WireSection}, РЭК",
+                    Length = 1
                 },
                 new Cable()
                 {
@@ -111,7 +145,8 @@ namespace NamesExporterCSnATests
                     SchemeName = "PE",
                     WireCount = 1,
                     WireSection = 10,
-                    Template = "Провод, {CableType} {WireCount}х{WireSection}, РЭК"
+                    Template = "Провод, {CableType} {WireCount}х{WireSection}, РЭК",
+                    Length = 1
                 },
                 new Cable()
                 {
@@ -120,7 +155,8 @@ namespace NamesExporterCSnATests
                     SchemeName = "A11-1",
                     WireCount = 1,
                     WireSection = 0.5,
-                    Template = "Провод, {CableType} {WireCount}х{WireSection}, РЭК"
+                    Template = "Провод, {CableType} {WireCount}х{WireSection}, РЭК",
+                    Length = 1
                 },
                 new Cable()
                 {
@@ -129,7 +165,8 @@ namespace NamesExporterCSnATests
                     SchemeName = "L334",
                     WireCount = 3,
                     WireSection = 0.75,
-                    Template = "Кабель силовой, {CableType} {WireCount}х{WireSection}, РЭК"
+                    Template = "Кабель силовой, {CableType} {WireCount}х{WireSection}, РЭК",
+                    Length = 1
                 },
             };
 

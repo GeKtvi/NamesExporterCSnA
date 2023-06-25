@@ -11,23 +11,15 @@ namespace NamesExporterCSnA.Model.Data
 {
     public class DisplayableCableMark : IDisplayableData, IFromGroup<ICableMark>
     {
-        [Display(AutoGenerateField = false)]
         public string DataType { get; } = "Маркировка";
 
-        [Display(Name = "Наименование")]
         public string Name { get; set; } = "{NotSet}";
 
-        [Display(Name = "Кол-во")]
         public int Count { get; set; } = -1;
 
-        [Display(Name = "Кол-во х2")]
-        public int CountX2 => Count * 2;
-
-        [Display(AutoGenerateField = false)]
         public int VendorPalletCount { get; set; } = -1;
 
-        [Display(Name = "Окр.")]
-        public int Rounded => (CountX2 - 1) / VendorPalletCount * VendorPalletCount + VendorPalletCount;
+        public int Rounded => (Count - 1) / VendorPalletCount * VendorPalletCount + VendorPalletCount;
 
         public string Measure => "шт.";
 

@@ -26,9 +26,9 @@ namespace NamesExporterCSnA
                                 .AddSingleton<MainWindowView>()
                                 .AddSingleton<DataConverter>()
                                 .AddSingleton<IUpdateLogger, UpdateLogger>()
-                                .AddTransient<SettingsWindowModel>()
-                                .AddTransient<SettingsWindowViewModel>()
-                                .AddTransient<SettingsWindowView>()
+                                .AddScoped<SettingsWindowModel>()
+                                .AddScoped<SettingsWindowViewModel>()
+                                .AddScoped<SettingsWindowView>()
                                 .AddSingleton<IPreferencesSettings, PreferencesSettings>()
                                 .AddSingleton<SettingsSaveLoadManager>()
                                 .BuildServiceProvider();

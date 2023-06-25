@@ -111,18 +111,6 @@
                 </ui:TitleBarButton.Content>
             </ui:TitleBarButton >
 
-
-            <ui:TitleBarButton  
-                MinWidth="100"
-                Grid.Column="5" 
-                >
-                <ui:TitleBarButton.Content>
-                    <ComboBox Grid.Column="1" SelectedItem="{Binding SelectedCableMarkVendor}" ItemsSource="{Binding CableMarksVendors}"  MinWidth="100">
-
-                    </ComboBox>
-                </ui:TitleBarButton.Content>
-            </ui:TitleBarButton >
-
             <ui:TitleBarButton 
                 Grid.Column="7" 
                 Width="45" 
@@ -138,6 +126,7 @@
             <ui:TitleBarButton  
                 Width="45" 
                 Grid.Column="8" 
+                ToolTip="Настройки"
                 Click="ShowSettings"
                 >
                 <ui:TitleBarButton.Content>
@@ -170,8 +159,8 @@
                     GridLinesVisibility="All">
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Обозначение"  Binding="{Binding SchemeName,     UpdateSourceTrigger=PropertyChanged, Delay=2500}" Width="Auto"/>
-                        <DataGridTextColumn Header="Наименование" Binding="{Binding WireName,       UpdateSourceTrigger=PropertyChanged, Delay=2500}" Width="Auto"/>
+                        <DataGridTextColumn Header="Обозначение"  Binding="{Binding SchemeName,     UpdateSourceTrigger=PropertyChanged, Delay=250}" Width="Auto"/>
+                        <DataGridTextColumn Header="Наименование" Binding="{Binding WireName,       UpdateSourceTrigger=PropertyChanged, Delay=250}" Width="Auto"/>
                     </DataGrid.Columns>
 
                 </tk:DataGridGK>

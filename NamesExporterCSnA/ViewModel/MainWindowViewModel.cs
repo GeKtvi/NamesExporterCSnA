@@ -21,17 +21,6 @@ namespace NamesExporterCSnA.ViewModel
             get => _mainWindowModel.DataOut;
         }
 
-        public string SelectedCableMarkVendor { 
-            get => _mainWindowModel.SelectedCableMarkVendor;
-            set
-            {
-                _mainWindowModel.SelectedCableMarkVendor = value;
-                _mainWindowModel.UpdateDataOut();
-            }
-        }
-
-        public ReadOnlyCollection<string> CableMarksVendors { get => _mainWindowModel.CableMarksVendors; }
-
         public IUpdateLogger Logger { get => _mainWindowModel.Logger; }
 
         public ICommand ImportData { get; private set; }

@@ -23,7 +23,7 @@
             <Setter Property="StrokeThickness" Value="0.5"/>
         </Style>
     </UserControl.Resources>
-    <Grid Margin="50,0,-50,0">
+    <Grid Margin="50,0,-50,-25">
         <Grid>
             <Rectangle HorizontalAlignment="Left" Height="196" Margin="33,2,0,0" VerticalAlignment="Top" Width="122" RadiusX="10" RadiusY="10"/>
             <Rectangle HorizontalAlignment="Left" Height="196" Margin="1,35,0,0" VerticalAlignment="Top" Width="122" RadiusX="10" RadiusY="10"/>
@@ -131,8 +131,8 @@
         </Grid>
 
         <Grid>
-            <TextBlock Text="{Binding ElementName=Box, Path=DisplayableWidth}" FontSize="10" Height="20" Width="35" Margin="51,232,164,23"/>
-            <TextBlock Text="{Binding ElementName=Box, Path=DisplayableHeight}" FontSize="10" Height="20" Width="35" Margin="-35,117,250,138" RenderTransformOrigin="0.5,0.5">
+            <TextBlock Text="{Binding ElementName=Box, Path=DisplayableWidth}" FontSize="10" Height="20" Width="35" Margin="51,231,164,24"/>
+            <TextBlock Text="{Binding ElementName=Box, Path=DisplayableHeight}" FontSize="10" Height="20" Width="35" Margin="-36,117,251,138" RenderTransformOrigin="0.5,0.5">
                 <TextBlock.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -142,7 +142,7 @@
                     </TransformGroup>
                 </TextBlock.RenderTransform>
             </TextBlock>
-            <TextBlock Text="{Binding ElementName=Box, Path=DisplayableDepth}" FontSize="10" Height="20" Width="35" Margin="124,211,90,44" RenderTransformOrigin="0.5,0.5">
+            <TextBlock Text="{Binding ElementName=Box, Path=DisplayableDepth}" FontSize="10" Height="20" Width="35" Margin="124,210,91,44" RenderTransformOrigin="0.5,0.5">
                 <TextBlock.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
