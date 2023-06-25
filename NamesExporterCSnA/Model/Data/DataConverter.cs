@@ -35,6 +35,7 @@ namespace NamesExporterCSnA.Model.Data
         public List<IDisplayableData> Convert(List<MaxExportedCable> cables)
         {
             List<IDisplayableData> displayableData = new List<IDisplayableData>();
+            Logger.FreezeLogNotify();
             Logger.ClearLog();
             try
             {
@@ -50,7 +51,6 @@ namespace NamesExporterCSnA.Model.Data
 
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCable, Cable>(parsed));
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCableMark, ICableMark>(marks));
-                return displayableData;
             }
             catch (Exception ex)
             {
@@ -64,8 +64,10 @@ namespace NamesExporterCSnA.Model.Data
                             Source = "Модуль конвертации"
                         }
                     );
-                return new List<IDisplayableData>();
+                displayableData =  new List<IDisplayableData>();
             }
+            Logger.UnfreezeLogNotify();
+            return displayableData;
         }
 
         private List<IDisplayableData> ConvertToIDisplayableData<DisplayableObj, GroupingObj>(List<GroupingObj> marks)

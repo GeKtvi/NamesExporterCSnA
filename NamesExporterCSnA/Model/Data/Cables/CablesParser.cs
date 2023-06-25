@@ -46,7 +46,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
                     Cable parsedCable = new Cable()
                     {
                         SchemeName = cable.SchemeName,
-                        CableType = cableType,
+                        CableType = template.FullCableType,
                         WireSection = wireSection,
                         WireCount = wireCount,
                         WirePairs = pairCount,

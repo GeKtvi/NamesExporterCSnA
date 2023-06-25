@@ -100,7 +100,10 @@ namespace NamesExporterCSnA.Model
 
         private void DataInChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            _deferredUpdate.DoOperation();
+            if (IsUpdateFrozen == false)
+                _deferredUpdate.DoOperation();
+
+
 
             if (e.NewItems == null)
                 return;

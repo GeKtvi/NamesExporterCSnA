@@ -25,7 +25,7 @@ namespace NamesExporterCSnATests
                 },
                 new Cable()
                 {
-                    CableType = "ШВВП",
+                    CableType = "ПуГВ",
                     NormativeDocument = "",
                     SchemeName = "E",
                     WireCount = 1,
@@ -130,32 +130,32 @@ namespace NamesExporterCSnATests
 
                 new Cable()
                 {
-                    CableType = "ШВВП",
+                    CableType = "ШВВПнг(А)-LS",
                     NormativeDocument = "{NotSet}",
                     SchemeName = "15/N",
                     WireCount = 2,
                     WireSection = 0.5,
-                    Template = "Провод, {CableType} {WireCount}х{WireSection}, РЭК",
+                    Template = "Провод, {CableType} {WireCount}х{WireSection}, ТУ 3520-005-50951092-2005, РЭК",
                     Length = 1
                 },
                 new Cable()
                 {
-                    CableType = "ПУГВнг(А)-LS",
+                    CableType = "ПуГВнг(А)-LS",
                     NormativeDocument = "{NotSet}",
                     SchemeName = "PE",
                     WireCount = 1,
                     WireSection = 10,
-                    Template = "Провод, {CableType} {WireCount}х{WireSection}, РЭК",
+                    Template = "Провод, {CableType} {WireCount}х{WireSection}, ТУ 3520-005-50951092-2005, РЭК",
                     Length = 1
                 },
                 new Cable()
                 {
-                    CableType = "ПУГВнг(А)-LS",
+                    CableType = "ПуГВнг(А)-LS",
                     NormativeDocument = "{NotSet}",
                     SchemeName = "A11-1",
                     WireCount = 1,
                     WireSection = 0.5,
-                    Template = "Провод, {CableType} {WireCount}х{WireSection}, РЭК",
+                    Template = "Провод, {CableType} {WireCount}х{WireSection}, ТУ 3520-005-50951092-2005, РЭК",
                     Length = 1
                 },
                 new Cable()
@@ -165,7 +165,7 @@ namespace NamesExporterCSnATests
                     SchemeName = "L334",
                     WireCount = 3,
                     WireSection = 0.75,
-                    Template = "Кабель силовой, {CableType} {WireCount}х{WireSection}, РЭК",
+                    Template = "Кабель, {CableType} {WireCount}х{WireSection}, ТУ 3520-005-50951092-2005, РЭК",
                     Length = 1
                 },
             };
