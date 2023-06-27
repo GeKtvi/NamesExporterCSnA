@@ -127,7 +127,6 @@ namespace NamesExporterCSnATests
             List<object> cablesResult = new CablesParser(new UpdateLogger(), length).Parse(maxExportedCable).Cast<object>().ToList();
             List<object> cablesExpected = new List<object>()
             {
-
                 new Cable()
                 {
                     CableType = "ØÂÂÏíã(À)-LS",
