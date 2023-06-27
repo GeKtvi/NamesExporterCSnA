@@ -135,7 +135,7 @@ namespace NamesExporterCSnATests
                     SchemeName = "15/N",
                     WireCount = 2,
                     WireSection = 0.5,
-                    Template = "Провод, {CableType} {WireCount}х{WireSection}, ТУ 3520-005-50951092-2005, РЭК",
+                    Template = "Провод {CableType} {WireCount}х{WireSection}, ТУ 3520-005-50951092-2005, РЭК",
                     Length = 1
                 },
                 new Cable()
@@ -145,8 +145,10 @@ namespace NamesExporterCSnATests
                     SchemeName = "PE",
                     WireCount = 1,
                     WireSection = 10,
-                    Template = "Провод, {CableType} {WireCount}х{WireSection}, ТУ 3520-005-50951092-2005, РЭК",
-                    Length = 1
+                    Template = "Провод {CableType} {WireCount}х{WireSection}, {Color}, ТУ 3520-005-50951092-2005, РЭК",
+                    Length = 1,
+                    HasColor = true,
+                    Color = "желто-зеленый"
                 },
                 new Cable()
                 {
@@ -155,8 +157,10 @@ namespace NamesExporterCSnATests
                     SchemeName = "A11-1",
                     WireCount = 1,
                     WireSection = 0.5,
-                    Template = "Провод, {CableType} {WireCount}х{WireSection}, ТУ 3520-005-50951092-2005, РЭК",
-                    Length = 1
+                    Template = "Провод {CableType} {WireCount}х{WireSection}, {Color}, ТУ 3520-005-50951092-2005, РЭК",
+                    Length = 1,
+                    HasColor = true,
+                    Color = "белый"
                 },
                 new Cable()
                 {
@@ -165,7 +169,7 @@ namespace NamesExporterCSnATests
                     SchemeName = "L334",
                     WireCount = 3,
                     WireSection = 0.75,
-                    Template = "Кабель, {CableType} {WireCount}х{WireSection}, ТУ 3520-005-50951092-2005, РЭК",
+                    Template = "Кабель {CableType} {WireCount}х{WireSection}, ТУ 3520-005-50951092-2005, РЭК",
                     Length = 1
                 },
             };

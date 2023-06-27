@@ -13,13 +13,20 @@ namespace NamesExporterCSnA.Model.Data.Cables
     {
         public IUpdateLogger Logger { get; private set; }
 
-        private CableTemplate[] _templateList;
         private IApproximateCableLength _approximateLength;
+
+        private CablesParserConfig _config;
 
         public CablesParser(IUpdateLogger logger, IApproximateCableLength approximateLength)
         {
             Logger = logger;
-            _templateList = AppConfigHelper.LoadConfig<CableTemplate[]>("CablesParser.config");
+            /////
+            //var t = new CablesParserConfig();
+            //t.Templates = new CableTemplate[9];
+            //t.DefaultColorMapper = new ColorMapper();
+            //AppConfigHelper.WriteConfig(t, "CablesParserT.config");
+            /////
+            _config = AppConfigHelper.LoadConfig<CablesParserConfig>("CablesParser.config");
             _approximateLength = approximateLength;
         }
 
@@ -36,7 +43,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
             {
                 double length = 0;
                 string cableType = GetCableType(cable); //ШВВП_
-                CableTemplate template = _templateList.Where(x => cableType.Contains(x.SubCableType)).First();
+                CableTemplate template = _config.GetTemplate(cableType);
 
                 length = template.HasFixedLength ? template.Length : 1 * _approximateLength.FinalMultiplier;
 
@@ -52,8 +59,11 @@ namespace NamesExporterCSnA.Model.Data.Cables
                         WirePairs = pairCount,
                         Length = length,
                         HasFixedLength = template.HasFixedLength,
+                        HasColor = template.HasColor,
                         Template = template.Template
                     };
+                    if (template.HasColor)
+                        parsedCable.Color = _config.GetTemplateColorOrDefault(template, cable.SchemeName);
                     parsedCables.Add(parsedCable);
                 }
                 catch (InvalidCableDataException)
@@ -106,7 +116,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
             foreach (MaxExportedCable cable in cables)
             {
                 bool isCableAdded = false;
-                foreach (string pattern in _templateList.Select(x => x.SubCableType))
+                foreach (string pattern in _config.Templates.Select(x => x.SubCableType))
                 {
                     Regex regex = new Regex(pattern);
                     if (regex.IsMatch(cable.WireName))

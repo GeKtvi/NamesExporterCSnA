@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace NamesExporterCSnA.Model.Data.Cables
 {
+    [XmlInclude(typeof(ColorMapper))]
     public class CableTemplate
     {
         public string SubCableType { get; set; }
@@ -13,5 +11,25 @@ namespace NamesExporterCSnA.Model.Data.Cables
         public string Template { get; set; }
         public bool HasFixedLength { get; set; }
         public double Length { get; set; }
+        public bool HasColor { get; set; } = false;
+        public ColorMapper _colorMapper; 
+        public ColorMapper ColorMapper {
+            get
+            {
+                if (HasColor == false)
+                    throw new InvalidOperationException(
+                        $"Кабель не имеет, цвета невозможно получить {nameof(ColorMapper)}, " +
+                        $"необходимо установит {nameof(HasColor)} в true");
+                return _colorMapper;
+            }
+            set
+            {
+                if (HasColor == false)
+                    throw new InvalidOperationException(
+                        $"Кабель не имеет, цвета невозможно задать {nameof(ColorMapper)}, " +
+                        $"необходимо установит {nameof(HasColor)} в true");
+                _colorMapper = value;
+            }
+        }
     }
 }

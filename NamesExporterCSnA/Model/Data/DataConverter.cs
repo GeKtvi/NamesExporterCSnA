@@ -41,9 +41,6 @@ namespace NamesExporterCSnA.Model.Data
             {
                 List<Cable> parsed = CablesParser.Parse(cables);
 
-                if (parsed.Count == 0)
-                    return displayableData;
-
                 List<ICableMark> marks = new();
 
                 foreach (Cable cable in parsed)
@@ -54,6 +51,7 @@ namespace NamesExporterCSnA.Model.Data
             }
             catch (Exception ex)
             {
+#if !DEBUG
                 Logger.Log(
                         new UpdateFail()
                         {
@@ -65,6 +63,9 @@ namespace NamesExporterCSnA.Model.Data
                         }
                     );
                 displayableData =  new List<IDisplayableData>();
+#else
+                throw;
+#endif
             }
             Logger.UnfreezeLogNotify();
             return displayableData;
