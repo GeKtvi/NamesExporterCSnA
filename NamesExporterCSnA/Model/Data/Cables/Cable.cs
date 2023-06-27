@@ -14,7 +14,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
         public string Template { get; set; } = "{NotSet}";
 
         public bool HasFixedLength { get; set; } = false;
-        public double _length = 0;
+        private double _length = 0;
         public double Length { 
             get => _length;
             set
@@ -23,6 +23,23 @@ namespace NamesExporterCSnA.Model.Data.Cables
                     throw new InvalidOperationException("Нельзя установить длину кабеля с фиксированной длиной");
                 _length = value;
             } 
+        }
+
+        public bool HasColor { get; set; } = false;
+        private string _color = "{NotSet}";
+        public string Color { 
+            get
+            {
+                if (HasColor == false)
+                    return "{The cable has no color}";
+                return _color;
+            }
+            set
+            {
+                if (HasColor == false)
+                    throw new InvalidOperationException("Кабель не имеет цвета");
+                _color = value;
+            }
         }
 
         public override string FullName => GetFullName(Template, PropertyHolder<Cable>.GetProperties());

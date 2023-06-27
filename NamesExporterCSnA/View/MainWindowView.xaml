@@ -116,8 +116,8 @@
                 Width="45" 
                 ToolTip="Показать окно проблем при обновлении"
                 Click="ShowUpdateFails"
-                Visibility="{Binding Logger.Status, Converter={StaticResource LoggerStatusToVisibleConverter}, Delay=10}"
-                Background="{Binding Logger.Status, Converter={StaticResource LoggerStatusToBrushConverter}, Delay=10}">               
+                Visibility="{Binding Logger.Status, Converter={StaticResource LoggerStatusToVisibleConverter}}"
+                Background="{Binding Logger.Status, Converter={StaticResource LoggerStatusToBrushConverter}}">               
                 <ui:TitleBarButton.Content>
                     <ui:SymbolIcon Symbol="Important"/>
                 </ui:TitleBarButton.Content>

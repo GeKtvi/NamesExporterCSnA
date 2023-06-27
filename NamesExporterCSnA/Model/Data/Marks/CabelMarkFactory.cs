@@ -74,7 +74,7 @@ namespace NamesExporterCSnA.Model.Data.Marks
                 IEnumerable<ICableMark> foundMarks = _selectedCableMarkVendorsData.ExistingMarks.Where(x => x.Symbol == symbol);
 
                 if (foundMarks.Count() == 0)
-                    throw new SymbolNotFoundException($"Символ \"{symbol}\" не найден в каталоге");
+                    throw new SymbolNotFoundException($"Символ \"{symbol}\" не найден в каталоге"); //TODO перенести в юзер лог
 
                 ICableMark fendedMark = foundMarks
                     .Where(item => item.MaxSection >= sourceCable.WireSection && item.MinSection <= sourceCable.WireSection)

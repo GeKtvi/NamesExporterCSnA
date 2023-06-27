@@ -8,5 +8,7 @@ namespace NamesExporterCSnA.Services.UpdateLog
         List<UpdateFail> FailList { get; }
         void Log(UpdateFail updateFail);
         void ClearLog();
+        void UnfreezeLogNotify();
+        void FreezeLogNotify();
     }
 }
