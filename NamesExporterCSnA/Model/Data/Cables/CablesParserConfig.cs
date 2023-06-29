@@ -10,7 +10,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
 
         public CableTemplate GetTemplate(string cableType)
         {
-            return Templates.Where(x => cableType.Contains(x.SubCableType)).First();
+            return Templates.Where(x => cableType.Contains(x.SubCableType.ToLower())).First();
         }
 
         public string GetTemplateColorOrDefault(CableTemplate cableTemplate, string schemeName)

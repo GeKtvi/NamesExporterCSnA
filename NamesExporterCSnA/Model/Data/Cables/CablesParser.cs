@@ -42,7 +42,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
             foreach (MaxExportedCable cable in cables)
             {
                 double length = 0;
-                string cableType = GetCableType(cable); //ШВВП_
+                string cableType = GetCableType(cable).ToLower(); //ШВВП_
                 CableTemplate template = _config.GetTemplate(cableType);
 
                 length = template.HasFixedLength ? template.Length : 1 * _approximateLength.FinalMultiplier;

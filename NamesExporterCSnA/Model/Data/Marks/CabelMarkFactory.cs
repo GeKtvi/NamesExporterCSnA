@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NamesExporterCSnA.Properties;
+using ModernWpf.Controls;
 
 namespace NamesExporterCSnA.Model.Data.Marks
 {
@@ -66,27 +67,8 @@ namespace NamesExporterCSnA.Model.Data.Marks
             sourceCable = new Cable(sourceCable);
 
             List<string> symbolsInCable = SplitSchemeNameToSymbols(sourceCable.SchemeName);
-
-            List<ICableMark> marks = new();
-
-            foreach (var symbol in symbolsInCable)
-            {
-                IEnumerable<ICableMark> foundMarks = _selectedCableMarkVendorsData.ExistingMarks.Where(x => x.Symbol == symbol);
-
-                if (foundMarks.Count() == 0)
-                    throw new SymbolNotFoundException($"Символ \"{symbol}\" не найден в каталоге"); //TODO перенести в юзер лог
-
-                ICableMark fendedMark = foundMarks
-                    .Where(item => item.MaxSection >= sourceCable.WireSection && item.MinSection <= sourceCable.WireSection)
-                    .MaxBy(x => x.MaxSection);
-
-                if (fendedMark != null)
-                    for (int i = 0; i < sourceCable.WireCount; i++)
-                    {
-                        marks.Add(fendedMark);
-                        marks.Add(fendedMark); //х2 (У кабеля два конца и марки две)
-                    }
-            }
+            
+            List<ICableMark> marks = FindMarksForCable(sourceCable, symbolsInCable);
 
             return marks;
         }
@@ -118,15 +100,45 @@ namespace NamesExporterCSnA.Model.Data.Marks
             return symbolsInCable;
         }
 
+        private List<ICableMark> FindMarksForCable(Cable sourceCable, List<string> symbolsInCable)
+        {
+            List<ICableMark> marks = new();
+            List<string> symbolsExceptedSectionNotFound = new List<string>();
+
+            foreach (var symbol in symbolsInCable)
+            {
+                IEnumerable<ICableMark> foundMarks = _selectedCableMarkVendorsData.ExistingMarks.Where(x => x.Symbol == symbol);
+
+                if (foundMarks.Count() == 0)
+                    LogSymbolNotFound(sourceCable, symbol);
+
+                ICableMark fendedMark = foundMarks
+                    .Where(item => item.MaxSection >= sourceCable.WireSection && item.MinSection <= sourceCable.WireSection)
+                    .MaxBy(x => x.MaxSection);
+
+                if (fendedMark != null)
+                    for (int i = 0; i < sourceCable.WireCount; i++)
+                    {
+                        marks.Add(fendedMark);
+                        marks.Add(fendedMark); //х2 (У кабеля два конца и марки две)
+                    }
+                else
+                    symbolsExceptedSectionNotFound.Add(symbol);
+            }
+
+            if (symbolsExceptedSectionNotFound.Count() != 0)
+                LogMarkExceptSectionNotFound(sourceCable, symbolsExceptedSectionNotFound.Distinct());
+
+            return marks;
+        }
+
         private void CheckSelectedVendorData()
         {
-            bool isFound = false;
             foreach (var item in _cableMarkVendorsData)
                 if (item == _selectedCableMarkVendorsData)
-                    isFound = true;
+                    return;
 
-            if (isFound == false)
-                throw new InvalidOperationException("Установленный объект отсутствует в списке");
+            throw new InvalidOperationException("Установленный объект отсутствует в списке");
         }
 
         private bool IsCableValidForMarking(Cable sourceCable)
@@ -137,16 +149,46 @@ namespace NamesExporterCSnA.Model.Data.Marks
             }
             else
             {
-                _logger.Log(new UpdateFail()
-                {
-                    Message = "Кабель не разрешен для маркировки",
-                    SchemeName = sourceCable.SchemeName,
-                    WireName = sourceCable.CableType,
-                    Source = "Модуль маркировки",
-                    Type = UpdateFailType.Exception
-                });
+                LogCableNotAllowedForMarking(sourceCable);
                 return false;
             }
+        }
+
+        private void LogCableNotAllowedForMarking(Cable sourceCable)
+        {
+            _logger.Log(new UpdateFail()
+            {
+                Message = "Кабель не разрешен для маркировки",
+                SchemeName = sourceCable.SchemeName,
+                WireName = sourceCable.CableType,
+                Source = "Модуль маркировки",
+                Type = UpdateFailType.Exception
+            });
+        }
+
+        private void LogMarkExceptSectionNotFound(Cable sourceCable, IEnumerable<string> symbols)
+        {
+            _logger.Log(new UpdateFail()
+            {
+                Message = $"Маркировка для символа(ов): {String.Join(", ", symbols)} \n" +
+                $"не найдена, для кабеля с сечением жилы {sourceCable.WireSection}",
+                SchemeName = sourceCable.SchemeName,
+                WireName = sourceCable.CableType,
+                Source = "Модуль маркировки",
+                Type = UpdateFailType.Exception
+            });
+        }
+
+        private void LogSymbolNotFound(Cable sourceCable, string symbol)
+        {
+            _logger.Log(new UpdateFail()
+            {
+                Message = $"Символ - {symbol}, не найден в каталоге производителя",
+                SchemeName = sourceCable.SchemeName,
+                WireName = sourceCable.CableType,
+                Source = "Модуль маркировки",
+                Type = UpdateFailType.Error
+            });
         }
     }
 }

@@ -38,10 +38,12 @@ namespace NamesExporterCSnA
                 MainWindow = CurrentServiceProvider.GetService<MainWindowView>();  
                 CurrentServiceProvider.GetRequiredService<MainWindowView>().Show();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 #if !DEBUG
-                MessageBox.Show(new Window(),"Не обрабатываемая ошибка выполнения программы", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MainWindow.Close();
+                MessageBox.Show(new Window(),$"Не обрабатываемая ошибка выполнения программы \n\n {ex.Message}\n\n {ex.StackTrace}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                Shutdown();
 #else
                 throw;
 #endif
