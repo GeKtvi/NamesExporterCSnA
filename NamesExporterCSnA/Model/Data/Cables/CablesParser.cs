@@ -20,12 +20,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
         public CablesParser(IUpdateLogger logger, IApproximateCableLength approximateLength)
         {
             Logger = logger;
-            /////
-            //var t = new CablesParserConfig();
-            //t.Templates = new CableTemplate[9];
-            //t.DefaultColorMapper = new ColorMapper();
-            //AppConfigHelper.WriteConfig(t, "CablesParserT.config");
-            /////
+
             _config = AppConfigHelper.LoadConfig<CablesParserConfig>("CablesParser.config");
             _approximateLength = approximateLength;
         }
@@ -42,7 +37,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
             foreach (MaxExportedCable cable in cables)
             {
                 double length = 0;
-                string cableType = GetCableType(cable).ToLower(); //ШВВП_
+                string cableType = GetCableType(cable); //ШВВП_
                 CableTemplate template = _config.GetTemplate(cableType);
 
                 length = template.HasFixedLength ? template.Length : 1 * _approximateLength.FinalMultiplier;
