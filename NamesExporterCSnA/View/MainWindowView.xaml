@@ -156,7 +156,8 @@
                     SelectionUnit="CellOrRowHeader" 
                     AutoGenerateColumns="False" 
                     HorizontalScrollBarVisibility="Visible"
-                    GridLinesVisibility="All">
+                    GridLinesVisibility="All"
+                    AllowDrop="True">
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Обозначение"  Binding="{Binding SchemeName,     UpdateSourceTrigger=PropertyChanged, Delay=250}" Width="Auto"/>

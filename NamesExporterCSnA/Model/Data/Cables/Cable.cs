@@ -3,7 +3,7 @@ using System;
 
 namespace NamesExporterCSnA.Model.Data.Cables
 {
-    public class Cable : FullNameBase, IFullName
+    public class Cable : FullNameBase, IFullName, ICable
     {
         public string CableType { get; set; } = "{NotSet}";
         public string SchemeName { get; set; } = "{NotSet}";
@@ -15,19 +15,21 @@ namespace NamesExporterCSnA.Model.Data.Cables
 
         public bool HasFixedLength { get; set; } = false;
         private double _length = 0;
-        public double Length { 
+        public double Length
+        {
             get => _length;
             set
             {
                 if (HasFixedLength == true)
                     throw new InvalidOperationException("Нельзя установить длину кабеля с фиксированной длиной");
                 _length = value;
-            } 
+            }
         }
 
         public bool HasColor { get; set; } = false;
         private string _color = "{NotSet}";
-        public string Color { 
+        public string Color
+        {
             get
             {
                 if (HasColor == false)

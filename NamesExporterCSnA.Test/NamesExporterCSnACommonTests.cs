@@ -113,8 +113,8 @@ namespace NamesExporterCSnATests
             {
                 new MaxExportedCable() { SchemeName = "шина L2(1)", WireName ="Ўина медна€ L2"},
                 new MaxExportedCable() { SchemeName = "15/N",       WireName ="Ў¬¬ѕ 2х0,5"},
-                new MaxExportedCable() { SchemeName = "PE(28)",     WireName ="ѕ”√¬нг(ј)-LS 1х10"},
-                new MaxExportedCable() { SchemeName = "A11-1",      WireName ="ѕ”√¬нг(ј)-LS 1х0,5"},
+                new MaxExportedCable() { SchemeName = "PE(28)",     WireName ="ѕу√¬нг(ј)-LS 1х10"},
+                new MaxExportedCable() { SchemeName = "A11-1",      WireName ="ѕу√¬нг(ј)-LS 1х0,5"},
                 new MaxExportedCable() { SchemeName = "L334",       WireName =" √¬¬нг(ј)-LS 3х0,75"}
             };
 

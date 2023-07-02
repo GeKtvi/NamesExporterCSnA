@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace NamesExporterCSnA.Model
@@ -41,7 +43,7 @@ namespace NamesExporterCSnA.Model
             {
                 int i = 0;
                 MaxExportedCable cable = new MaxExportedCable();
-                foreach (var cell in row)
+                foreach (string cell in row)
                 {
                     switch (i)
                     {
@@ -66,18 +68,16 @@ namespace NamesExporterCSnA.Model
         {
             List<List<string>> data = new();
 
-            foreach (var itemDataOut in DataOut)
+            foreach (IDisplayableData itemDataOut in DataOut)
             {
                 int i = 0;
                 data.Add(new());
                 foreach (PropertyDescriptor item in TypeDescriptor.GetProperties(DataOut.GetType().GetGenericArguments().Single()))
                 {
                     PropertyDescriptor propertyDescriptor = item;
-                    var attributes = propertyDescriptor.Attributes[typeof(System.ComponentModel.DataAnnotations.DisplayAttribute)];
-                    System.ComponentModel.DataAnnotations.DisplayAttribute displayAttribute =
-                            attributes as System.ComponentModel.DataAnnotations.DisplayAttribute;
+                    System.Attribute attributes = propertyDescriptor.Attributes[typeof(System.ComponentModel.DataAnnotations.DisplayAttribute)];
 
-                    if (displayAttribute != null && displayAttribute.GetAutoGenerateField() != false)
+                    if (attributes is System.ComponentModel.DataAnnotations.DisplayAttribute displayAttribute && displayAttribute.GetAutoGenerateField() != false)
                         data.Last().Add(propertyDescriptor.GetValue(itemDataOut).ToString());
                     i++;
                 }
@@ -86,16 +86,29 @@ namespace NamesExporterCSnA.Model
             return data;
         }
 
-        public void UpdateDataOut()
+        public async void UpdateDataOut()
         {
+            #region Debug
+#if DEBUG
+            Stopwatch sw = Stopwatch.StartNew();
+#endif
+            #endregion
             if (IsUpdateFrozen)
                 return;
 
+            Task<List<IDisplayableData>> task = Task.Run(() => _converter.Convert(DataIn.ToList()));
+
             DataOut.Clear();
 
-            List<IDisplayableData> dataOut = _converter.Convert(DataIn.ToList());
-            foreach (var itemDataOut in dataOut)
+            List<IDisplayableData> dataOut = await task;
+
+            foreach (IDisplayableData itemDataOut in dataOut)
                 DataOut.Add(itemDataOut);
+            #region Debug
+#if DEBUG
+            Debug.WriteLine($"Update time - {sw.ElapsedMilliseconds} ms");
+#endif
+            #endregion
         }
 
         private void DataInChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -103,14 +116,11 @@ namespace NamesExporterCSnA.Model
             if (IsUpdateFrozen == false)
                 _deferredUpdate.DoOperation();
 
-
-
             if (e.NewItems == null)
                 return;
 
             foreach (INotifyPropertyChanged item in e.NewItems)
                 item.PropertyChanged += (s, e) => _deferredUpdate.DoOperation();
-
         }
     }
 }

@@ -36,9 +36,10 @@ namespace NamesExporterCSnA.Model.Data.Cables
 
             foreach (MaxExportedCable cable in cables)
             {
-                double length = 0;
+                double length;
                 string cableType = GetCableType(cable); //ШВВП_
-                CableTemplate template = _config.GetTemplate(cableType);
+                CableTemplate template = null;
+                template = _config.GetTemplate(cableType);
 
                 length = template.HasFixedLength ? template.Length : 1 * _approximateLength.FinalMultiplier;
 
@@ -113,7 +114,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
                 bool isCableAdded = false;
                 foreach (string pattern in _config.Templates.Select(x => x.SubCableType))
                 {
-                    Regex regex = new Regex(pattern);
+                    Regex regex = new Regex('^' +pattern);
                     if (regex.IsMatch(cable.WireName))
                     {
                         cablesCopy.Add(cable);

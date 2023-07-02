@@ -47,9 +47,9 @@
                         <RowDefinition Height ="350"/>
                     </Grid.RowDefinitions>
                     <Viewbox Margin ="0" Grid.Column="0" VerticalAlignment="Center">
-                        <local:BoxVisualize DisplayableWidth="{Binding ElementName=Width, Path=Value}"
+                        <local:BoxVisualize DisplayableWidth= "{Binding ElementName=Width,  Path=Value}"
                                             DisplayableHeight="{Binding ElementName=Heigth, Path=Value}"
-                                            DisplayableDepth="{Binding ElementName=Depth, Path=Value}"/>
+                                            DisplayableDepth= "{Binding ElementName=Depth,  Path=Value}"/>
                     </Viewbox>
                     <StackPanel x:Name="PropPanel"  Grid.Column="1" Grid.Row="0" >
                         <ui:NumberBox x:Name="Width"  Margin="5"  ui:ControlHelper.Header="Ширина"     Minimum="0"   Maximum="10000" SmallChange="100" LargeChange="1000" SpinButtonPlacementMode="Inline" Value="{Binding ApproximateCableLength.BoxWidth,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
