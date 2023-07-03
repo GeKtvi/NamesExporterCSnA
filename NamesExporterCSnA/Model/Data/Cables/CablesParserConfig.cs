@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NamesExporterCSnA.Model.Data.Cables.Exceptions;
 
 namespace NamesExporterCSnA.Model.Data.Cables
 {
@@ -10,7 +11,11 @@ namespace NamesExporterCSnA.Model.Data.Cables
 
         public CableTemplate GetTemplate(string cableType)
         {
-            return Templates.Where(x => cableType.Contains(x.SubCableType)).First();
+            var result = Templates.Where(x => cableType.Contains(x.SubCableType));
+            if (result.Count() > 0)
+                return result.First();
+            else
+                throw new CableTemplateNotFoundException("TemplateNot");
         }
 
         public string GetTemplateColorOrDefault(CableTemplate cableTemplate, string schemeName)

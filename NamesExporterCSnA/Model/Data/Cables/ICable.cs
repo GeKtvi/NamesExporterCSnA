@@ -1,14 +1,15 @@
-﻿namespace NamesExporterCSnA.Model.Data.Cables
+﻿using NamesExporterCSnA.Model.Data.Marks;
+
+namespace NamesExporterCSnA.Model.Data.Cables
 {
-    public interface ICable
+    public interface ICable :IFullName
     {
-        string CableType { get; set; }
-        string FullName { get; }
-        bool HasFixedLength { get; set; }
-        double Length { get; set; }
-        string SchemeName { get; set; }
-        int WireCount { get; set; }
-        int WirePairs { get; set; }
-        double WireSection { get; set; }
+        string CableType { get; }
+        bool HasFixedLength { get; }
+        double Length { get; }
+        string SchemeName { get; }
+        int WireCount { get; }
+        int WirePairs { get; }
+        double WireSection { get; }
     }
 }

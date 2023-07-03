@@ -41,18 +41,19 @@ namespace NamesExporterCSnA.Model.Data
             Logger.ClearLog();
             try
             {
-                List<Cable> parsed = CablesParser.Parse(cables);
+                List<ICable> parsed = CablesParser.Parse(cables);
 
                 List<ICableMark> marks = new();
 
-                foreach (Cable cable in parsed)
+                foreach (ICable cable in parsed)
                     marks.AddRange(CableMarkDKCFabric.CreateMarksForCable(cable));
 
-                displayableData.AddRange(ConvertToIDisplayableData<DisplayableCable, Cable>(parsed));
+                displayableData.AddRange(ConvertToIDisplayableData<DisplayableCable, ICable>(parsed));
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCableMark, ICableMark>(marks));
             }
             catch (Exception ex)
             {
+
 #if !DEBUG
                 Logger.Log(
                         new UpdateFail()

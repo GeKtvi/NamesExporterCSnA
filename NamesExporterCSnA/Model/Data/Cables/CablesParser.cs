@@ -25,49 +25,79 @@ namespace NamesExporterCSnA.Model.Data.Cables
             _approximateLength = approximateLength;
         }
 
-        public List<Cable> Parse(List<MaxExportedCable> cables)
+        public List<ICable> Parse(List<MaxExportedCable> cables)
         {
             cables = CopyCablesValue(cables);
             RemoveCableNumbers(ref cables);
 
             cables = FiltrateByWhiteList(cables);
 
-            List<Cable> parsedCables = new List<Cable>();
+            List<ICable> parsedCables = new List<ICable>();
 
             foreach (MaxExportedCable cable in cables)
             {
-                double length;
-                string cableType = GetCableType(cable); //ШВВП_
-                CableTemplate template = null;
-                template = _config.GetTemplate(cableType);
-
-                length = template.HasFixedLength ? template.Length : 1 * _approximateLength.FinalMultiplier;
+                CableTemplate template = _config.GetTemplate(cable.WireName);
 
                 try
                 {
-                    GetCableData(cable, out int pairCount, out int wireCount, out double wireSection);
-                    Cable parsedCable = new Cable()
-                    {
-                        SchemeName = cable.SchemeName,
-                        CableType = template.FullCableType,
-                        WireSection = wireSection,
-                        WireCount = wireCount,
-                        WirePairs = pairCount,
-                        Length = length,
-                        HasFixedLength = template.HasFixedLength,
-                        HasColor = template.HasColor,
-                        Template = template.Template
-                    };
-                    if (template.HasColor)
-                        parsedCable.Color = _config.GetTemplateColorOrDefault(template, cable.SchemeName);
-                    parsedCables.Add(parsedCable);
+                    template = _config.GetTemplate(cable.WireName);
                 }
-                catch (InvalidCableDataException)
+                catch (Exception)
                 {
-                    LogError("Информация о кабеле должна иметь верный формат \" DхD,D\"", cable);
+                    string cableType = GetCableType(cable); //ШВВП_
+                    template = _config.GetTemplate(cableType);
                 }
+
+                ICable resultCable = null;
+
+                if(template.ParseOutType == nameof(Cable))
+                    resultCable = CreateCable(cable, template);
+
+                if (template.ParseOutType == nameof(PurchasedCable))
+                    resultCable = CreatePurchasedCable(cable, template);
+
+                if (resultCable != null)
+                    parsedCables.Add(resultCable);
             }
             return parsedCables;
+        }
+
+        private Cable CreateCable(MaxExportedCable cable, CableTemplate template)
+        {
+            double length = template.HasFixedLength ? template.Length : 1 * _approximateLength.FinalMultiplier;
+            try
+            {
+                GetCableData(cable, out int pairCount, out int wireCount, out double wireSection);
+                Cable parsedCable = new Cable()
+                {
+                    SchemeName = cable.SchemeName,
+                    CableType = template.FullCableType,
+                    WireSection = wireSection,
+                    WireCount = wireCount,
+                    WirePairs = pairCount,
+                    Length = length,
+                    HasFixedLength = template.HasFixedLength,
+                    HasColor = template.HasColor,
+                    Template = template.Template
+                };
+                if (template.HasColor)
+                    parsedCable.Color = _config.GetTemplateColorOrDefault(template, cable.SchemeName);
+                return parsedCable;
+            }
+            catch (InvalidCableDataException)
+            {
+                LogError("Информация о кабеле должна иметь верный формат \" DхD,D\"", cable);
+            }
+            return null;
+        }
+
+        private PurchasedCable CreatePurchasedCable(MaxExportedCable cable, CableTemplate template)
+        {
+            return new PurchasedCable()
+            {
+                SchemeName= cable.SchemeName,
+                CableType = template.FullCableType,
+            };
         }
 
         private static string GetCableType(MaxExportedCable cable)

@@ -12,6 +12,9 @@ namespace NamesExporterCSnA.Model.Data.Cables
         public bool HasFixedLength { get; set; }
         public double Length { get; set; }
         public bool HasColor { get; set; } = false;
+
+        public string ParseOutType { get; set; } = nameof(Cable);
+
         public ColorMapper _colorMapper; 
         public ColorMapper ColorMapper {
             get
