@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace NamesExporterCSnA.Model.Data
 {
-    public class DisplayableCable : IDisplayableData, IFromGroup<Cable>
+    public class DisplayableCable : IDisplayableData, IFromGroup<ICable>
     {
         public string DataType { get; } = "Кабель/Провод";
 
@@ -27,7 +27,7 @@ namespace NamesExporterCSnA.Model.Data
 
         }
 
-        public IDisplayableData SetFromGrouping(IGrouping<string, Cable> group)
+        public IDisplayableData SetFromGrouping(IGrouping<string, ICable> group)
         {
             Name = group.First().FullName;
             if (group.First().HasFixedLength)

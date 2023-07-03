@@ -57,14 +57,12 @@ namespace NamesExporterCSnA.Model.Data.Marks
             settings.PropertyChanged += (s, e) => SelectedVendorName = settings.CableMarkSelectedVendorName;
         }
 
-        public List<ICableMark> CreateMarksForCable(Cable sourceCable)
+        public List<ICableMark> CreateMarksForCable(ICable sourceCable)
         {
             if (IsCableValidForMarking(sourceCable) == false)
                 return new List<ICableMark>();
 
             CheckSelectedVendorData();
-
-            sourceCable = new Cable(sourceCable);
 
             List<string> symbolsInCable = SplitSchemeNameToSymbols(sourceCable.SchemeName);
             
@@ -100,7 +98,7 @@ namespace NamesExporterCSnA.Model.Data.Marks
             return symbolsInCable;
         }
 
-        private List<ICableMark> FindMarksForCable(Cable sourceCable, List<string> symbolsInCable)
+        private List<ICableMark> FindMarksForCable(ICable sourceCable, List<string> symbolsInCable)
         {
             List<ICableMark> marks = new();
             List<string> symbolsExceptedSectionNotFound = new List<string>();
@@ -141,7 +139,7 @@ namespace NamesExporterCSnA.Model.Data.Marks
             throw new InvalidOperationException("Установленный объект отсутствует в списке");
         }
 
-        private bool IsCableValidForMarking(Cable sourceCable)
+        private bool IsCableValidForMarking(ICable sourceCable)
         {
             if (_cableForMarkingWhiteList.Where(x => sourceCable.CableType.Contains(x)).ToList().Count != 0)
             {
@@ -154,7 +152,7 @@ namespace NamesExporterCSnA.Model.Data.Marks
             }
         }
 
-        private void LogCableNotAllowedForMarking(Cable sourceCable)
+        private void LogCableNotAllowedForMarking(ICable sourceCable)
         {
             _logger.Log(new UpdateFail()
             {
@@ -166,7 +164,7 @@ namespace NamesExporterCSnA.Model.Data.Marks
             });
         }
 
-        private void LogMarkExceptSectionNotFound(Cable sourceCable, IEnumerable<string> symbols)
+        private void LogMarkExceptSectionNotFound(ICable sourceCable, IEnumerable<string> symbols)
         {
             _logger.Log(new UpdateFail()
             {
@@ -179,7 +177,7 @@ namespace NamesExporterCSnA.Model.Data.Marks
             });
         }
 
-        private void LogSymbolNotFound(Cable sourceCable, string symbol)
+        private void LogSymbolNotFound(ICable sourceCable, string symbol)
         {
             _logger.Log(new UpdateFail()
             {
