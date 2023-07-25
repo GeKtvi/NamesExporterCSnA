@@ -20,7 +20,6 @@
         Width=          "{Binding Source={x:Static properties:UI.Default}, Path=Default.SettingsWindowSettings.Width,       Mode=TwoWay}"
         Height=         "{Binding Source={x:Static properties:UI.Default}, Path=Default.SettingsWindowSettings.Height,      Mode=TwoWay}"
         WindowState=    "{Binding Source={x:Static properties:UI.Default}, Path=Default.SettingsWindowSettings.WindowState, Mode=TwoWay}"
-        ui:WindowHelper.UseModernWindowStyle="True"
         Closing="SettingsWindowClosed">
 
     <ScrollViewer>
@@ -31,10 +30,10 @@
             <Border Style="{DynamicResource BorderStyle}">
                 <ComboBox 
                     Margin="15" 
-                    ui:ControlHelper.Header="Производитель маркировки"
                     SelectedItem="{Binding CableMarkSelectedVendorName, Mode=TwoWay}" 
                     ItemsSource="{Binding PossibleCableMarkVendorName, Mode=TwoWay}"/>
             </Border>
+                    <!--ui:ControlHelper.Header="Производитель маркировки"-->
 
             <Label Content="Приблизительный подсчёт длины кабеля"/>
             <Border Style="{DynamicResource BorderStyle}">
@@ -52,11 +51,11 @@
                                             DisplayableDepth= "{Binding ElementName=Depth,  Path=Value}"/>
                     </Viewbox>
                     <StackPanel x:Name="PropPanel"  Grid.Column="1" Grid.Row="0" >
-                        <ui:NumberBox x:Name="Width"  Margin="5"  ui:ControlHelper.Header="Ширина"     Minimum="0"   Maximum="10000" SmallChange="100" LargeChange="1000" SpinButtonPlacementMode="Inline" Value="{Binding ApproximateCableLength.BoxWidth,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
+                        <!--<ui:NumberBox x:Name="Width"  Margin="5"  ui:ControlHelper.Header="Ширина"     Minimum="0"   Maximum="10000" SmallChange="100" LargeChange="1000" SpinButtonPlacementMode="Inline" Value="{Binding ApproximateCableLength.BoxWidth,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
                         <ui:NumberBox x:Name="Depth"  Margin="5"  ui:ControlHelper.Header="Глубина"    Minimum="0"   Maximum="10000" SmallChange="100" LargeChange="1000" SpinButtonPlacementMode="Inline" Value="{Binding ApproximateCableLength.BoxDepth,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
                         <ui:NumberBox x:Name="Heigth" Margin="5"  ui:ControlHelper.Header="Высота"     Minimum="0"   Maximum="10000" SmallChange="100" LargeChange="1000" SpinButtonPlacementMode="Inline" Value="{Binding ApproximateCableLength.BoxHeight,    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
                         <ui:NumberBox x:Name="Koef"   Margin="5"  ui:ControlHelper.Header="Коэфицент"  Minimum="0.1" Maximum="10"    SmallChange="0.1" LargeChange="1"    SpinButtonPlacementMode="Inline" Value="{Binding ApproximateCableLength.K,            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
-                        <TextBox      Margin="5"  ui:ControlHelper.Header="Ш * Г * В * k = К" IsReadOnly="True" Text="{Binding ApproximateCableLength.FinalMultiplier , UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
+                        <TextBox      Margin="5"  ui:ControlHelper.Header="Ш * Г * В * k = К" IsReadOnly="True" Text="{Binding ApproximateCableLength.FinalMultiplier , UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>-->
                     </StackPanel>
 
                 </Grid>

@@ -5,13 +5,14 @@ using System.Windows;
 
 namespace NamesExporterCSnA.View
 {
-    public partial class MainWindowView : Window
+    public partial class MainWindowView 
     {
         private IServiceProvider _services;
         private IServiceScope _settingsServiceScope;
 
         public MainWindowView(MainWindowViewModel mainWindowViewModel, IServiceProvider serviceProvider)
         {
+            Wpf.Ui.Appearance.Watcher.Watch(this);
             _services = serviceProvider;
             InitializeComponentUiSave();
             DataContext = mainWindowViewModel;
@@ -35,8 +36,9 @@ namespace NamesExporterCSnA.View
         private async void ShowUpdateFails(object sender, RoutedEventArgs e) //TODO create command
         {
             UpdateFails updateDialog = new();
-            updateDialog.DataContext = (DataContext as MainWindowViewModel).Logger;
-            await updateDialog.ShowAsync().ConfigureAwait(true);
+            throw new NotImplementedException();
+            //updateDialog.DataContext = (DataContext as MainWindowViewModel).Logger;
+            //await updateDialog.ShowAsync().ConfigureAwait(true);
         }
 
         private void ShowSettings(object sender, RoutedEventArgs e) //TODO create command

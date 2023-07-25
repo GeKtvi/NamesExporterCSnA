@@ -9,7 +9,7 @@
         </CollectionViewSource.GroupDescriptions>
     </CollectionViewSource>
 
-    <Style  TargetType="ui:TitleBarButton">
+    <!--<Style  TargetType="ui:TitleBarButton">
         <Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
         <Setter Property="InactiveForeground" Value="{DynamicResource SystemControlBackgroundBaseHighBrush}"/>
     </Style>
@@ -43,5 +43,5 @@
                     Text="{Binding Name}"
                     Style="{StaticResource BodyTextBlockStyle}" />
         </StackPanel>
-    </DataTemplate>
+    </DataTemplate>-->
 </ResourceDictionary>
