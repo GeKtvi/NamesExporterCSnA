@@ -2,10 +2,11 @@
 using NamesExporterCSnA.ViewModel;
 using System;
 using System.Windows;
+using Wpf.Ui.Controls;
 
 namespace NamesExporterCSnA.View
 {
-    public partial class MainWindowView 
+    public partial class MainWindowView
     {
         private IServiceProvider _services;
         private IServiceScope _settingsServiceScope;
@@ -18,6 +19,9 @@ namespace NamesExporterCSnA.View
             DataContext = mainWindowViewModel;
             InitializeComponent();
             Closed += MainWindowClosed;
+
+            ContentRendered
+                += (s, e) => base.OnStateChanged(new EventArgs());
         }
 
         private void InitializeComponentUiSave()
@@ -35,10 +39,9 @@ namespace NamesExporterCSnA.View
 
         private async void ShowUpdateFails(object sender, RoutedEventArgs e) //TODO create command
         {
-            UpdateFails updateDialog = new();
-            throw new NotImplementedException();
-            //updateDialog.DataContext = (DataContext as MainWindowViewModel).Logger;
-            //await updateDialog.ShowAsync().ConfigureAwait(true);
+            Dialog updateDialog = Dialog;
+            updateDialog.DataContext = (DataContext as MainWindowViewModel).Logger;
+            await updateDialog.ShowAndWaitAsync();
         }
 
         private void ShowSettings(object sender, RoutedEventArgs e) //TODO create command

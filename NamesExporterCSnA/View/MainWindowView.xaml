@@ -8,6 +8,7 @@
     xmlns:localVM="clr-namespace:NamesExporterCSnA.ViewModel"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:NamesExporterCSnA.Properties"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:tk="clr-namespace:GeKtviWpfToolkit.Controls;assembly=GeKtviWpfToolkit"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     x:Name="Window"
@@ -19,9 +20,13 @@
     d:DataContext="{d:DesignInstance Type=localVM:MainWindowViewModel}"
     d:Height="500"
     d:Width="700"
+    Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     ExtendsContentIntoTitleBar="True"
     Left="{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.Left, Mode=TwoWay}"
     Top="{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.Top, Mode=TwoWay}"
+    WindowBackdropType="Mica"
+    WindowCornerPreference="Round"
+    ResizeMode="CanResize"
     WindowState="{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.WindowState, Mode=TwoWay}"
     mc:Ignorable="d">
 
@@ -43,11 +48,12 @@
     </ui:UiWindow.InputBindings>
 
     <Grid>
+
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-
 
         <!--#region TitleBar-->
         <Grid
@@ -55,30 +61,8 @@
             Grid.Row="0"
             Height="30">
             <Grid.Resources>
-
-
-
                 <Style BasedOn="{StaticResource TitleBarUiButtonStyle}" TargetType="ui:Button" />
-
-                <!--<Style BasedOn="{StaticResource DefaultSymbolIconStyle}" TargetType="ui:SymbolIcon">
-                    <Setter Property="Margin" Value="-999" />
-                </Style>
-                <Style BasedOn="{StaticResource DefaultSymbolIconStyle}" TargetType="ui:FontIcon">
-                    <Setter Property="Margin" Value="-999" />
-
-                </Style>-->
-
             </Grid.Resources>
-            <!--<Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsActive, ElementName=Window}" Value="False">
-                            <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlDisabledBaseMediumLowBrush}" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>-->
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1" />
@@ -93,10 +77,9 @@
                 <ColumnDefinition Width="132" />
             </Grid.ColumnDefinitions>
 
-            <ui:TitleBar Grid.Column="0" Grid.ColumnSpan="999" />
+            <ui:TitleBar x:Name ="TitleBar"  Grid.Column="0" Grid.ColumnSpan="999"/>
 
             <TextBlock
-                x:Name="assdf45345dfdsfg"
                 Grid.Column="0"
                 Grid.ColumnSpan="999"
                 HorizontalAlignment="Center"
@@ -147,7 +130,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            
+
             <tk:DataGridGK
                 Grid.Column="0"
                 Margin="10,10,5,10"
@@ -186,23 +169,33 @@
                 Background="Transparent"
                 Grid.ZIndex="1" />
 
-                <tk:DataGridGK
-                    Grid.Column="1"
-                    Margin="5,10,10,10"
-                    CanUserResizeRows="False"
-                    GridLinesVisibility="All"
-                    HorizontalScrollBarVisibility="Auto"
-                    IsReadOnly="True"
-                    ItemsSource="{Binding Source={StaticResource GroupedDataOut}, UpdateSourceTrigger=PropertyChanged}"
-                    SelectionUnit="CellOrRowHeader">
-                    <!--<DataGrid.GroupStyle>
-                        <GroupStyle HeaderTemplate="{StaticResource RowGroupHeaderTemplate}" />
-                    </DataGrid.GroupStyle>-->
-                </tk:DataGridGK>
+            <tk:DataGridGK
+                Grid.Column="1"
+                Margin="5,10,10,10"
+                CanUserResizeRows="False"
+                GridLinesVisibility="All"
+                HorizontalScrollBarVisibility="Auto"
+                IsReadOnly="True"
+                ItemsSource="{Binding Source={StaticResource GroupedDataOut}, UpdateSourceTrigger=PropertyChanged}"
+                SelectionUnit="CellOrRowHeader">
+                <DataGrid.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource DataGridRowGroupContainerStyle}" HeaderTemplate="{StaticResource RowGroupHeaderTemplate}" />
+                </DataGrid.GroupStyle>
+            </tk:DataGridGK>
         </Grid>
+
+        <ui:Dialog
+            x:Name="Dialog"
+            Title="Ошибки обновления"
+            Grid.Row="1"
+            ButtonLeftVisibility="Collapsed"
+            ButtonRightName="Закрыть"
+            DialogHeight="{x:Static sys:Double.MaxValue}"
+            DialogWidth="{x:Static sys:Double.MaxValue}">
+            <localV:UpdateFails />
+        </ui:Dialog>
     </Grid>
 
 
 </ui:UiWindow>
 
-<!--  ContainerStyle="{StaticResource DataGridRowGroupContainerStyle}"  -->

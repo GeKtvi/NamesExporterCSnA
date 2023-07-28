@@ -5,9 +5,9 @@ namespace NamesExporterCSnA.View
     /// <summary>
     /// Interaction logic for UpdateFails.xaml
     /// </summary>
-    public partial class UpdateFails : Dialog
+    public partial class UpdateFails 
     {
-        public UpdateFails()
+        public UpdateFails() : base()
         {
             InitializeComponent();
         }
