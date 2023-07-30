@@ -48,6 +48,8 @@ namespace NamesExporterCSnA.Model.Data
                 foreach (ICable cable in parsed)
                     marks.AddRange(CableMarkDKCFabric.CreateMarksForCable(cable));
 
+                //parsed.AsParallel().ForAll(cable => marks.AddRange(CableMarkDKCFabric.CreateMarksForCable(cable))); //TODO Add paralleling
+
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCable, ICable>(parsed));
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCableMark, ICableMark>(marks));
             }
@@ -86,7 +88,7 @@ namespace NamesExporterCSnA.Model.Data
             orderby newGroup.Key
             select newGroup;
 
-            foreach (IGrouping<string, GroupingObj> item in groupedMarks)
+            foreach (IGrouping<string, GroupingObj> item in groupedMarks.AsParallel())
                 groupedList.Add(new DisplayableObj().SetFromGrouping(item));
 
             return groupedList;
