@@ -8,7 +8,7 @@ namespace NamesExporterCSnA.View
     /// <summary>
     /// Interaction logic for SettingsWindowView.xaml
     /// </summary>
-    public partial class SettingsWindowView : Window
+    public partial class SettingsWindowView 
     {
         public SettingsWindowView(SettingsWindowViewModel viewModel)
         {

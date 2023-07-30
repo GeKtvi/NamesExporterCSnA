@@ -1,56 +1,78 @@
-﻿<ui:ContentDialog x:Class="NamesExporterCSnA.View.UpdateFails"
-                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                  xmlns:local="clr-namespace:NamesExporterCSnA.View"
-                  xmlns:ui="http://schemas.modernwpf.com/2019"
-                  xmlns:tk="clr-namespace:GeKtviWpfToolkit.Controls;assembly=GeKtviWpfToolkit"
-                  xmlns:log="clr-namespace:NamesExporterCSnA.Services.UpdateLog" 
-                  xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                  xmlns:conv="clr-namespace:NamesExporterCSnA.View.Converters"
-                  xmlns:localV="clr-namespace:NamesExporterCSnA.View"
-                  x:Name="ContentDialog"
-                  CloseButtonText="Закрыть"
-                  mc:Ignorable="d"
-                  d:DesignHeight="450" 
-                  d:DesignWidth="800"
-                  d:DataContext="{d:DesignInstance {x:Type log:UpdateLogger}}"
-                  Title="Проблемы обновления">
-    <ui:ContentDialog.Resources>
-        <sys:Double x:Key="ContentDialogMaxWidth">1800</sys:Double>
-        <sys:Double x:Key="ContentDialogMaxHeight">1000</sys:Double>
-        <conv:UpdateFailTypeToImageConverter x:Key="UpdateFailTypeToImageConverter"/>
-    </ui:ContentDialog.Resources>
+﻿<UserControl
+    x:Class="NamesExporterCSnA.View.UpdateFails"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:NamesExporterCSnA.View.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NamesExporterCSnA.View"
+    xmlns:localV="clr-namespace:NamesExporterCSnA.View"
+    xmlns:log="clr-namespace:NamesExporterCSnA.Services.UpdateLog"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:tk="clr-namespace:GeKtviWpfToolkit.Controls;assembly=GeKtviWpfToolkit"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    x:Name="ContentDialog"
+    HorizontalAlignment="Stretch"
+    d:DataContext="{d:DesignInstance {x:Type log:UpdateLogger}}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
 
-    <Grid >
-        <tk:DataGridGK 
-            ItemsSource="{Binding FailList}" 
-            Style="{StaticResource DefaultDataGridStyle}"
+
+    <UserControl.Resources>
+
+        <!--  CloseButtonText="Закрыть"  -->
+        <!--<sys:Double x:Key="ContentDialogMaxWidth">1800</sys:Double>
+        <sys:Double x:Key="ContentDialogMaxHeight">1000</sys:Double>-->
+        <conv:UpdateFailTypeToImageConverter x:Key="UpdateFailTypeToImageConverter" />
+    </UserControl.Resources>
+
+    <Grid VerticalAlignment="Stretch" d:DataContext="{d:DesignInstance {x:Type log:UpdateLogger}}">
+        <tk:DataGridGK
+            AutoGenerateColumns="False"
             CanUserResizeRows="False"
-            SelectionUnit="CellOrRowHeader" 
-            AutoGenerateColumns="False" 
-            HorizontalScrollBarVisibility="Visible"
             GridLinesVisibility="All"
-            IsReadOnly="True">
+            HorizontalScrollBarVisibility="Visible"
+            IsReadOnly="True"
+            ItemsSource="{Binding FailList, UpdateSourceTrigger=PropertyChanged, IsAsync=True, Delay=500}"
+            SelectionUnit="CellOrRowHeader">
 
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="" Width="Auto" SortMemberPath="Type" CanUserSort="True">
+                <DataGridTemplateColumn
+                    Width="Auto"
+                    CanUserSort="True"
+                    Header=""
+                    SortMemberPath="Type">
                     <DataGridTemplateColumn.CellTemplate>
+
                         <ItemContainerTemplate>
-                            <Image 
-                                Height="20" 
+                            <Image
                                 Width="20"
-                                Source="{Binding Type, Converter={StaticResource UpdateFailTypeToImageConverter}}"/>
+                                Height="20"
+                                Source="{Binding Type, Converter={StaticResource UpdateFailTypeToImageConverter}}" />
                         </ItemContainerTemplate>
+
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn     Header="Сообщение"      Binding="{Binding Message   }" Width="Auto"/>
-                <DataGridTextColumn     Header="Обозначение"    Binding="{Binding SchemeName}" Width="Auto"/>
-                <DataGridTextColumn     Header="Наименование"   Binding="{Binding WireName  }" Width="Auto"/>
-                <DataGridTextColumn     Header="Источник"       Binding="{Binding Source    }" Width="Auto"/>
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding Message}"
+                    Header="Сообщение" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding SchemeName}"
+                    Header="Обозначение" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding WireName}"
+                    Header="Наименование" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding Source}"
+                    Header="Источник" />
             </DataGrid.Columns>
 
         </tk:DataGridGK>
     </Grid>
-</ui:ContentDialog>
+
+</UserControl>

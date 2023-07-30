@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NamesExporterCSnA.Properties;
-using ModernWpf.Controls;
 
 namespace NamesExporterCSnA.Model.Data.Marks
 {

@@ -1,20 +1,25 @@
-﻿<Application x:Class="NamesExporterCSnA.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:NamesExporterCSnA"
-             xmlns:ui="http://schemas.modernwpf.com/2019"
-             ShutdownMode="OnMainWindowClose"
-             >
+﻿<Application
+    x:Class="NamesExporterCSnA.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:NamesExporterCSnA"
+    xmlns:tk="clr-namespace:GeKtviWpfToolkit;assembly=GeKtviWpfToolkit"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    ShutdownMode="OnMainWindowClose">
 
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:ThemeResources />
-                <ui:XamlControlsResources />
+                <ui:ThemesDictionary Theme="Light" />
+                <ui:ControlsDictionary />
+                <tk:ControlsStyles />
+                <!--<ui:ThemeResources />
+                <ui:XamlControlsResources />-->
                 <ResourceDictionary
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
 
                     <sys:Double x:Key="ControlContentThemeFontSize">14</sys:Double>
                     <sys:Double x:Key="ContentControlFontSize">14</sys:Double>
@@ -33,7 +38,7 @@
                     <sys:Double x:Key="GridViewItemContainerMinHeight">24</sys:Double>
                     <sys:Double x:Key="DataGridRowMinHeight">24</sys:Double>
 
-                    <!-- CompactDatePickerTimePickerFlyout.xaml -->
+                    <!--  CompactDatePickerTimePickerFlyout.xaml  -->
                     <sys:Double x:Key="TimePickerFlyoutPresenterItemHeight">32</sys:Double>
                     <sys:Double x:Key="TimePickerFlyoutPresenterHighlightHeight">32</sys:Double>
                     <sys:Double x:Key="TimePickerFlyoutPresenterAcceptDismissHostGridHeight">33</sys:Double>
@@ -45,38 +50,38 @@
                     <Thickness x:Key="DatePickerFlyoutPresenterItemPadding">0,0,0,1</Thickness>
                     <Thickness x:Key="DatePickerFlyoutPresenterMonthPadding">9,0,0,1</Thickness>
 
-                    <Style TargetType="ui:TitleBarButton">
+                    <!--<Style TargetType="ui:TitleBarButton">
                         <Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
                         <Setter Property="InactiveForeground" Value="{DynamicResource SystemControlBackgroundBaseHighBrush}"/>
                     </Style>
 
                     <Style x:Key="AppTitleBarBackButtonStyle" TargetType="ui:TitleBarButton" BasedOn="{StaticResource TitleBarBackButtonStyle}">
                         <Setter Property="IsActive" Value="{Binding IsActive, ElementName=Window}" />
-                    </Style>
+                    </Style>-->
 
                     <Style x:Key="BorderStyle" TargetType="Border">
-                        <Setter Property="BorderThickness" Value="2"/>
-                        <Setter Property="Margin" Value="5"/>
-                        <Setter Property="CornerRadius" Value="5"/>
-                        <Setter Property="BorderBrush" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+                        <Setter Property="BorderThickness" Value="2" />
+                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="CornerRadius" Value="5" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
                     </Style>
 
-                    <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCellExpanded}">
+                    <!--<Style BasedOn="{StaticResource DataGridCellExpanded}" TargetType="{x:Type DataGridCell}">
                         <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True" >
+                            <Trigger Property="IsSelected" Value="True">
                                 <Setter Property="Background" Value="{DynamicResource ResourceKey=SystemControlHighlightListAccentLowBrush}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
 
-                    <Style TargetType="{x:Type Label}" BasedOn="{StaticResource DefaultLabelStyle}">
-                        <Setter Property="FontSize" Value="18"/>
-                        <Setter Property="Margin" Value="5,5,5,0"/>
-                    </Style>
+                    <Style BasedOn="{StaticResource DefaultLabelStyle}" TargetType="{x:Type Label}">
+                        <Setter Property="FontSize" Value="18" />
+                        <Setter Property="Margin" Value="5,5,5,0" />
+                    </Style>-->
                 </ResourceDictionary>
-                <!-- Other merged dictionaries here -->
+                <!--  Other merged dictionaries here  -->
             </ResourceDictionary.MergedDictionaries>
-            <!-- Other app resources here -->
+            <!--  Other app resources here  -->
         </ResourceDictionary>
     </Application.Resources>
 

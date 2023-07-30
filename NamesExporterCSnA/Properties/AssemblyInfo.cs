@@ -1,8 +1,5 @@
 using System.Reflection;
 using System.Windows;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.None, //where theme specific resource dictionaries are located
@@ -12,4 +9,4 @@ using System.Runtime.Versioning;
                                               //(used if a resource is not found in the page,
                                               // app, or any theme specific resource dictionaries)
 )]
-[assembly: AssemblyVersion("0.1.0.*")]
+[assembly: AssemblyVersion("0.1.1.*")]
