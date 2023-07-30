@@ -1,10 +1,12 @@
 ﻿using GeKtviWpfToolkit;
 using NamesExporterCSnA.Model.Data;
 using NamesExporterCSnA.Services.UpdateLog;
+using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +14,7 @@ using System.Windows.Threading;
 
 namespace NamesExporterCSnA.Model
 {
-    public class MainWindowModel
+    public class MainWindowModel : BindableBase
     {
         public ObservableCollection<MaxExportedCable> DataIn { get; private set; }
         public ObservableCollection<IDisplayableData> DataOut { get; private set; }
@@ -98,12 +100,15 @@ namespace NamesExporterCSnA.Model
 
             Task<List<IDisplayableData>> task = Task.Run(() => _converter.Convert(DataIn.ToList()));
 
-            DataOut.Clear();
+            DataOut = null;
 
-            List<IDisplayableData> dataOut = await task;
+            List<IDisplayableData> data = await task;
 
-            foreach (IDisplayableData itemDataOut in dataOut)
-                DataOut.Add(itemDataOut);
+            var dataOut = new ObservableCollection<IDisplayableData>();
+            foreach (IDisplayableData itemDataOut in data)
+                dataOut.Add(itemDataOut);
+
+            DataOut = dataOut;
             #region Debug
 #if DEBUG
             Debug.WriteLine($"Update time - {sw.ElapsedMilliseconds} ms");

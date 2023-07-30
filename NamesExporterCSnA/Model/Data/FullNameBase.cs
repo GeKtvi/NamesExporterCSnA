@@ -10,7 +10,13 @@ namespace NamesExporterCSnA.Model.Data
         {
             foreach (var prop in props)
                 if (prop.Name != nameof(FullName))
-                    nameTemplate = nameTemplate.Replace('{' + prop.Name + '}', prop.GetValue(this).ToString());
+                {
+                    //TODO optimize
+                    var name = '{' + prop.Name + '}';
+                    var propVal = prop.GetValue(this);
+                    string propValS = propVal.ToString();
+                    nameTemplate = nameTemplate.Replace(name, propValS);
+                }
 
             return nameTemplate;
         }

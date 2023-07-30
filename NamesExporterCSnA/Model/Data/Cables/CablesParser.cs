@@ -17,11 +17,19 @@ namespace NamesExporterCSnA.Model.Data.Cables
 
         private CablesParserConfig _config;
 
+        private List<Regex> _whiteList;
+
         public CablesParser(IUpdateLogger logger, IApproximateCableLength approximateLength)
         {
             Logger = logger;
 
             _config = AppConfigHelper.LoadConfig<CablesParserConfig>("CablesParser.config");
+
+            _whiteList = new List<Regex>();
+            foreach (var pattern in _config.Templates.Select(x => x.SubCableType))
+                _whiteList.Add(new Regex('^' + pattern));
+           
+
             _approximateLength = approximateLength;
         }
 
@@ -142,9 +150,8 @@ namespace NamesExporterCSnA.Model.Data.Cables
             foreach (MaxExportedCable cable in cables)
             {
                 bool isCableAdded = false;
-                foreach (string pattern in _config.Templates.Select(x => x.SubCableType))
+                foreach (Regex regex in _whiteList)
                 {
-                    Regex regex = new Regex('^' +pattern);
                     if (regex.IsMatch(cable.WireName))
                     {
                         cablesCopy.Add(cable);

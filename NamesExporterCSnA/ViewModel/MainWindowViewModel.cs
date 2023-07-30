@@ -39,12 +39,18 @@ namespace NamesExporterCSnA.ViewModel
 
             DataIn.CollectionChanged += DataInCollectionChanged;
             DataOut.CollectionChanged += DataOutCollectionChanged;
+
+            _mainWindowModel.PropertyChanged += (s, e) => OnPropertyChanged(e);
+            _mainWindowModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(DataOut) && DataOut != null)
+                    DataOut.CollectionChanged += DataOutCollectionChanged;
+            };
         }
 
         private void DataInCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             (ClearData as DelegateCommand).RaiseCanExecuteChanged();
-            //OnPropertyChanged(new PropertyChangedEventArgs(nameof(Logger)));
         }
 
         private void DataOutCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

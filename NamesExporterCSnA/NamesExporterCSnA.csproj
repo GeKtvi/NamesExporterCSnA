@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -7,8 +8,6 @@
 	  <StartupObject>NamesExporterCSnA.App</StartupObject>
 	  <ApplicationIcon>View\Icon.ico</ApplicationIcon>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	  <Deterministic>false</Deterministic>
-	  <AssemblyVersion>0.0.0.*</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
