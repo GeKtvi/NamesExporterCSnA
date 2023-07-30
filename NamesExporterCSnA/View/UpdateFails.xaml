@@ -22,8 +22,8 @@
     <UserControl.Resources>
 
         <!--  CloseButtonText="Закрыть"  -->
-        <sys:Double x:Key="ContentDialogMaxWidth">1800</sys:Double>
-        <sys:Double x:Key="ContentDialogMaxHeight">1000</sys:Double>
+        <!--<sys:Double x:Key="ContentDialogMaxWidth">1800</sys:Double>
+        <sys:Double x:Key="ContentDialogMaxHeight">1000</sys:Double>-->
         <conv:UpdateFailTypeToImageConverter x:Key="UpdateFailTypeToImageConverter" />
     </UserControl.Resources>
 
@@ -34,9 +34,8 @@
             GridLinesVisibility="All"
             HorizontalScrollBarVisibility="Visible"
             IsReadOnly="True"
-            ItemsSource="{Binding FailList, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"
-            SelectionUnit="CellOrRowHeader"
-            Visibility="{Binding ElementName=ContentDialog, Path=Visibility}">
+            ItemsSource="{Binding FailList, UpdateSourceTrigger=PropertyChanged, IsAsync=True, Delay=500}"
+            SelectionUnit="CellOrRowHeader">
 
             <DataGrid.Columns>
                 <DataGridTemplateColumn

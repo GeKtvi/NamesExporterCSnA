@@ -14,12 +14,14 @@ namespace NamesExporterCSnA.View
         public MainWindowView(MainWindowViewModel mainWindowViewModel, IServiceProvider serviceProvider)
         {
             Wpf.Ui.Appearance.Watcher.Watch(this);
+
             _services = serviceProvider;
             InitializeComponentUiSave();
             DataContext = mainWindowViewModel;
             InitializeComponent();
-            Closed += MainWindowClosed;
 
+            Closed += MainWindowClosed;
+            Dialog.ButtonRightClick += (s, e) => Dialog.Hide();
             ContentRendered
                 += (s, e) => base.OnStateChanged(new EventArgs());
         }
@@ -37,11 +39,11 @@ namespace NamesExporterCSnA.View
             Properties.UI.Default.Save();
         }
 
-        private async void ShowUpdateFails(object sender, RoutedEventArgs e) //TODO create command
+        private  void ShowUpdateFails(object sender, RoutedEventArgs e) //TODO create command
         {
             Dialog updateDialog = Dialog;
             updateDialog.DataContext = (DataContext as MainWindowViewModel).Logger;
-            await updateDialog.ShowAndWaitAsync();
+             updateDialog.Show();
         }
 
         private void ShowSettings(object sender, RoutedEventArgs e) //TODO create command

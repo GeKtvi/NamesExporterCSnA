@@ -23,10 +23,10 @@
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     ExtendsContentIntoTitleBar="True"
     Left="{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.Left, Mode=TwoWay}"
+    ResizeMode="CanResize"
     Top="{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.Top, Mode=TwoWay}"
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
-    ResizeMode="CanResize"
     WindowState="{Binding Source={x:Static properties:UI.Default}, Path=Default.MainWindowSettings.WindowState, Mode=TwoWay}"
     mc:Ignorable="d">
 
@@ -36,7 +36,7 @@
                 <ResourceDictionary Source="MainWindowResourses.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <conv:LoggerStatusToBrushConverter x:Key="LoggerStatusToBrushConverter" />
+            <conv:LoggerStatusToAppearanceConverter x:Key="LoggerStatusToAppearanceConverter" />
             <conv:LoggerStatusToVisibleConverter x:Key="LoggerStatusToVisibleConverter" />
         </ResourceDictionary>
     </ui:UiWindow.Resources>
@@ -77,13 +77,17 @@
                 <ColumnDefinition Width="132" />
             </Grid.ColumnDefinitions>
 
-            <ui:TitleBar x:Name ="TitleBar"  Grid.Column="0" Grid.ColumnSpan="999"/>
+            <ui:TitleBar
+                x:Name="TitleBar"
+                Grid.Column="0"
+                Grid.ColumnSpan="999" />
 
             <TextBlock
                 Grid.Column="0"
                 Grid.ColumnSpan="999"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
+                IsHitTestVisible="False"
                 Text="{Binding ElementName=Window, Path=Title}" />
 
             <ui:Button
@@ -106,7 +110,7 @@
 
             <ui:Button
                 Grid.Column="7"
-                Background="{Binding Logger.Status, Converter={StaticResource LoggerStatusToBrushConverter}}"
+                Appearance="{Binding Logger.Status, Converter={StaticResource LoggerStatusToAppearanceConverter}}"
                 Click="ShowUpdateFails"
                 Icon="Important12"
                 ToolTip="Показать окно проблем при обновлении"
@@ -183,16 +187,17 @@
                 </DataGrid.GroupStyle>
             </tk:DataGridGK>
         </Grid>
-
         <ui:Dialog
             x:Name="Dialog"
             Title="Ошибки обновления"
             Grid.Row="1"
             ButtonLeftVisibility="Collapsed"
             ButtonRightName="Закрыть"
+            DataContext="{Binding Logger}"
             DialogHeight="{x:Static sys:Double.MaxValue}"
             DialogWidth="{x:Static sys:Double.MaxValue}">
-            <localV:UpdateFails />
+
+            <localV:UpdateFails Grid.Row="1" />
         </ui:Dialog>
     </Grid>
 

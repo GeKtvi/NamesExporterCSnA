@@ -36,7 +36,10 @@
                 Margin="10,0,0,0"
                 VerticalAlignment="Center"
                 Text="{Binding ElementName=Window, Path=Title}" />
-            <ui:TitleBar ShowMaximize="False" ShowMinimize="False" CanMaximize="False"/>
+            <ui:TitleBar
+                CanMaximize="False"
+                ShowMaximize="False"
+                ShowMinimize="False" />
         </Grid>
 
         <ui:DynamicScrollViewer Grid.Row="1">
@@ -48,17 +51,24 @@
                 CornerRadius="{DynamicResource ControlCornerRadius}">
                 <StackPanel CanHorizontallyScroll="True">
                     <Label Content="Маркировка кабеля" />
-                    <Border Style="{DynamicResource BorderStyle}">
-                        <ComboBox
-                            Margin="15"
-                            ItemsSource="{Binding PossibleCableMarkVendorName, Mode=TwoWay}"
-                            SelectedItem="{Binding CableMarkSelectedVendorName, Mode=TwoWay}" />
+                    <Border
+                        Padding="5"
+                        Margin="0"
+                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                        CornerRadius="{DynamicResource ControlCornerRadius}">
+                        <StackPanel>
+                            <TextBlock Margin="5,0" Text="Производитель маркировки" />
+                            <Border HorizontalAlignment="Left" Width="250">
+                                <ComboBox
+                                Margin="5"
+                                ItemsSource="{Binding PossibleCableMarkVendorName, Mode=TwoWay}"
+                                SelectedItem="{Binding CableMarkSelectedVendorName, Mode=TwoWay}" />
+                            </Border>
+                        </StackPanel>
                     </Border>
-                    <!--  ui:ControlHelper.Header="Производитель маркировки"  -->
 
                     <Label Content="Приблизительный подсчёт длины кабеля" />
-                    <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
-                CornerRadius="{DynamicResource ControlCornerRadius}">
+                    <Border Background="{DynamicResource ControlFillColorDefaultBrush}" CornerRadius="{DynamicResource ControlCornerRadius}">
                         <Grid Margin="20">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -80,11 +90,47 @@
                                 x:Name="PropPanel"
                                 Grid.Row="0"
                                 Grid.Column="1">
-                                <!--<ui:NumberBox x:Name="Width"  Margin="5"  ui:ControlHelper.Header="Ширина"     Minimum="0"   Maximum="10000" SmallChange="100" LargeChange="1000" SpinButtonPlacementMode="Inline" Value="{Binding ApproximateCableLength.BoxWidth,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
-                                <ui:NumberBox x:Name="Depth"  Margin="5"  ui:ControlHelper.Header="Глубина"    Minimum="0"   Maximum="10000" SmallChange="100" LargeChange="1000" SpinButtonPlacementMode="Inline" Value="{Binding ApproximateCableLength.BoxDepth,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
-                                <ui:NumberBox x:Name="Heigth" Margin="5"  ui:ControlHelper.Header="Высота"     Minimum="0"   Maximum="10000" SmallChange="100" LargeChange="1000" SpinButtonPlacementMode="Inline" Value="{Binding ApproximateCableLength.BoxHeight,    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
-                                <ui:NumberBox x:Name="Koef"   Margin="5"  ui:ControlHelper.Header="Коэфицент"  Minimum="0.1" Maximum="10"    SmallChange="0.1" LargeChange="1"    SpinButtonPlacementMode="Inline" Value="{Binding ApproximateCableLength.K,            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
-                                <TextBox      Margin="5"  ui:ControlHelper.Header="Ш * Г * В * k = К" IsReadOnly="True" Text="{Binding ApproximateCableLength.FinalMultiplier , UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>-->
+                                <TextBlock Margin="5,0,0,0" Text="Ширина" />
+                                <ui:NumberBox
+                                    x:Name="Width"
+                                    Margin="5"
+                                    DecimalPlaces="0"
+                                    Max="10000"
+                                    Min="0"
+                                    Step="100"
+                                    Value="{Binding ApproximateCableLength.BoxWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}" />
+                                <TextBlock Margin="5,0,0,0" Text="Глубина" />
+                                <ui:NumberBox
+                                    x:Name="Depth"
+                                    Margin="5"
+                                    DecimalPlaces="0"
+                                    Max="10000"
+                                    Min="0"
+                                    Step="100"
+                                    Value="{Binding ApproximateCableLength.BoxDepth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}" />
+                                <TextBlock Margin="5,0,0,0" Text="Высота" />
+                                <ui:NumberBox
+                                    x:Name="Heigth"
+                                    Margin="5"
+                                    DecimalPlaces="0"
+                                    Max="10000"
+                                    Min="0"
+                                    Step="100"
+                                    Value="{Binding ApproximateCableLength.BoxHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}" />
+                                <TextBlock Margin="5,0,0,0" Text="Коэффициент" />
+                                <ui:NumberBox
+                                    x:Name="Koef"
+                                    Margin="5"
+                                    DecimalPlaces="2"
+                                    Max="10"
+                                    Min="0.1"
+                                    Step="0.1"
+                                    Value="{Binding ApproximateCableLength.K, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}" />
+                                <TextBlock Margin="5,0,0,0" Text="Ш * Г * В * k = К" />
+                                <TextBox
+                                    Margin="5"
+                                    IsReadOnly="True"
+                                    Text="{Binding ApproximateCableLength.FinalMultiplier, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                             </StackPanel>
                         </Grid>
                     </Border>
