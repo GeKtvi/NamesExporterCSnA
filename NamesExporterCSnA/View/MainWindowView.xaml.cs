@@ -24,6 +24,7 @@ namespace NamesExporterCSnA.View
             Dialog.ButtonRightClick += (s, e) => Dialog.Hide();
             ContentRendered
                 += (s, e) => base.OnStateChanged(new EventArgs());
+            DragOver += (s, e) => Activate();
         }
 
         private void InitializeComponentUiSave()

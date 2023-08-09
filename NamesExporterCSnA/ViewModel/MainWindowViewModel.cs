@@ -43,8 +43,19 @@ namespace NamesExporterCSnA.ViewModel
             _mainWindowModel.PropertyChanged += (s, e) => OnPropertyChanged(e);
             _mainWindowModel.PropertyChanged += (s, e) =>
             {
+                if (e.PropertyName == nameof(DataIn) && DataIn != null)
+                {
+                    DataInCollectionChanged(s, null);
+                    DataIn.CollectionChanged += DataInCollectionChanged;
+                }
+            };
+            _mainWindowModel.PropertyChanged += (s, e) =>
+            {
                 if (e.PropertyName == nameof(DataOut) && DataOut != null)
+                {
                     DataOutCollectionChanged(s, null);
+                    DataOut.CollectionChanged += DataOutCollectionChanged;
+                }
             };
         }
 

@@ -43,19 +43,20 @@ namespace NamesExporterCSnA.Model.Data
             {
                 List<ICable> parsed = CablesParser.Parse(cables);
 
-                List<ICableMark> marks = new();
+                System.Collections.Concurrent.ConcurrentBag<ICableMark> marks = new();
 
-                foreach (ICable cable in parsed)
-                    marks.AddRange(CableMarkDKCFabric.CreateMarksForCable(cable));
-
-                //parsed.AsParallel().ForAll(cable => marks.AddRange(CableMarkDKCFabric.CreateMarksForCable(cable))); //TODO Add paralleling
+                parsed.AsParallel().ForAll(cable =>
+                    {
+                        foreach (ICableMark mark in CableMarkDKCFabric.CreateMarksForCable(cable))
+                            marks.Add(mark);
+                    }
+                ); 
 
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCable, ICable>(parsed));
-                displayableData.AddRange(ConvertToIDisplayableData<DisplayableCableMark, ICableMark>(marks));
+                displayableData.AddRange(ConvertToIDisplayableData<DisplayableCableMark, ICableMark>(marks.ToList()));
             }
             catch (Exception ex)
             {
-
 #if !DEBUG
                 Logger.Log(
                         new UpdateFail()
@@ -76,19 +77,19 @@ namespace NamesExporterCSnA.Model.Data
             return displayableData;
         }
 
-        private List<IDisplayableData> ConvertToIDisplayableData<DisplayableObj, GroupingObj>(List<GroupingObj> marks)
+        private List<IDisplayableData> ConvertToIDisplayableData<DisplayableObj, GroupingObj>(List<GroupingObj> objects)
             where DisplayableObj : class, IFromGroup<GroupingObj>, new()
             where GroupingObj : IFullName
         {
             List<IDisplayableData> groupedList = new();
 
             IOrderedEnumerable<IGrouping<string, GroupingObj>> groupedMarks =
-            from mark in marks
-            group mark by mark.FullName into newGroup
+            from obj in objects
+            group obj by obj.FullName into newGroup
             orderby newGroup.Key
             select newGroup;
 
-            foreach (IGrouping<string, GroupingObj> item in groupedMarks.AsParallel())
+            foreach (IGrouping<string, GroupingObj> item in groupedMarks)
                 groupedList.Add(new DisplayableObj().SetFromGrouping(item));
 
             return groupedList;

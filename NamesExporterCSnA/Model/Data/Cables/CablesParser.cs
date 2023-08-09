@@ -19,6 +19,13 @@ namespace NamesExporterCSnA.Model.Data.Cables
 
         private List<Regex> _whiteList;
 
+        private readonly Regex SingleWireRegex = 
+            new Regex(@"\s(?<wireCount>\d)+(x|х)(?<wireSection>\d+\,\d+|\d+\.\d+|\d+$)"); //Example: _1х0,5
+
+        private readonly Regex MultiWireRegex = 
+            new Regex(@"\s(?<pairCount>\d)+(x|х)(?<wireCount>\d)+(x|х)(?<wireSection>\d+\,\d+|\d+\.\d+|\d+$)"); //Example: _1х1х0,5
+
+
         public CablesParser(IUpdateLogger logger, IApproximateCableLength approximateLength)
         {
             Logger = logger;
@@ -116,7 +123,7 @@ namespace NamesExporterCSnA.Model.Data.Cables
             return cableType;
         }
 
-        private static void GetCableData(MaxExportedCable cable, out int pairCount, out int wireCount, out double wireSection)
+        private void GetCableData(MaxExportedCable cable, out int pairCount, out int wireCount, out double wireSection)
         {
             pairCount = 0;
             wireCount = 0;
@@ -124,11 +131,11 @@ namespace NamesExporterCSnA.Model.Data.Cables
 
             bool isCableHasPairs = false;
 
-            Regex signPartRegex = new Regex(@"\s(?<wireCount>\d)+(x|х)(?<wireSection>\d+\,\d+|\d+\.\d+|\d+$)"); //_1х0,5
+            Regex signPartRegex = SingleWireRegex; //_1х0,5
 
             if (!signPartRegex.IsMatch(cable.WireName))
             {
-                signPartRegex = new Regex(@"\s(?<pairCount>\d)+(x|х)(?<wireCount>\d)+(x|х)(?<wireSection>\d+\,\d+|\d+\.\d+|\d+$)"); //_1х1х0,5
+                signPartRegex = MultiWireRegex; //_1х1х0,5
                 isCableHasPairs = true;
             }
 

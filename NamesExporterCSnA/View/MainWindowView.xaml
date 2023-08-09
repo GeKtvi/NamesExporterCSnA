@@ -177,8 +177,6 @@
                 Grid.Column="1"
                 Margin="5,10,10,10"
                 CanUserResizeRows="False"
-                GridLinesVisibility="All"
-                HorizontalScrollBarVisibility="Auto"
                 IsReadOnly="True"
                 ItemsSource="{Binding Source={StaticResource GroupedDataOut}, UpdateSourceTrigger=PropertyChanged}"
                 SelectionUnit="CellOrRowHeader">
@@ -200,7 +198,5 @@
             <localV:UpdateFails Grid.Row="1" />
         </ui:Dialog>
     </Grid>
-
-
 </ui:UiWindow>
 

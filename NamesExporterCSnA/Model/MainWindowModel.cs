@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,12 +21,15 @@ namespace NamesExporterCSnA.Model
         public bool IsUpdateFrozen { get; set; } = false;
 
         private DataConverter _converter;
+        private Task<List<IDisplayableData>> _convertTask;
+        private ObservableCollection<IDisplayableData> _dataOut;
         private DeferredOperation _deferredUpdate; //нужно только для прямой вставки из DataGrid
 
         public MainWindowModel(DataConverter converter)
         {
             DataIn = new ObservableCollection<MaxExportedCable>();
             DataOut = new ObservableCollection<IDisplayableData>();
+            _dataOut = DataOut;
             _converter = converter;
             DataIn.CollectionChanged += DataInChanged;
             converter.SettingsChanged += UpdateDataOut;
@@ -38,8 +40,17 @@ namespace NamesExporterCSnA.Model
 
         public void SetDataIn(List<string[]> values)
         {
+            #region Debug
+#if DEBUG
+            Stopwatch swSetDataIn = Stopwatch.StartNew();
+#endif
+            #endregion
             IsUpdateFrozen = true;
-            DataIn.Clear();
+
+            ObservableCollection<MaxExportedCable> dataIn = new ObservableCollection<MaxExportedCable>();
+            dataIn.CollectionChanged += DataInChanged;
+
+            dataIn.Clear();
 
             foreach (string[] row in values)
             {
@@ -60,9 +71,16 @@ namespace NamesExporterCSnA.Model
                     }
                     i++;
                 }
-                DataIn.Add(cable);
+                dataIn.Add(cable);
             }
             IsUpdateFrozen = false;
+            DataIn = dataIn;
+            #region Debug
+#if DEBUG
+            Debug.WriteLine($"SetDataIn time - {swSetDataIn.ElapsedMilliseconds} ms");
+#endif
+            #endregion
+
             UpdateDataOut();
         }
 
@@ -90,25 +108,42 @@ namespace NamesExporterCSnA.Model
 
         public async void UpdateDataOut()
         {
+            if (IsUpdateFrozen)
+                return;
+
             #region Debug
 #if DEBUG
             Stopwatch sw = Stopwatch.StartNew();
 #endif
             #endregion
-            if (IsUpdateFrozen)
+
+            Task<List<IDisplayableData>> currentTask = new Task<List<IDisplayableData>>(() => _converter.Convert(DataIn.ToList()));
+            _convertTask = currentTask;
+            currentTask.Start();
+
+            #region Debug
+#if DEBUG
+            Stopwatch swClear = Stopwatch.StartNew();
+#endif
+            #endregion
+            DataOut = null;
+            _dataOut.Clear();
+            #region Debug
+#if DEBUG
+            Debug.WriteLine($"Clear time - {swClear.ElapsedMilliseconds} ms");
+#endif
+            #endregion
+
+            List<IDisplayableData> data = await _convertTask;
+
+            if (_convertTask != currentTask)
                 return;
 
-            Task<List<IDisplayableData>> task = Task.Run(() => _converter.Convert(DataIn.ToList()));
-
-            DataOut = null;
-
-            List<IDisplayableData> data = await task;
-
-            var dataOut = new ObservableCollection<IDisplayableData>();
             foreach (IDisplayableData itemDataOut in data)
-                dataOut.Add(itemDataOut);
+                _dataOut.Add(itemDataOut);
 
-            DataOut = dataOut;
+            DataOut = _dataOut;
+
             #region Debug
 #if DEBUG
             Debug.WriteLine($"Update time - {sw.ElapsedMilliseconds} ms");
