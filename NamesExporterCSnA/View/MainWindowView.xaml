@@ -191,11 +191,10 @@
             Grid.Row="1"
             ButtonLeftVisibility="Collapsed"
             ButtonRightName="Закрыть"
-            DataContext="{Binding Logger}"
+            DataContext="{Binding Logger}"            
             DialogHeight="{x:Static sys:Double.MaxValue}"
             DialogWidth="{x:Static sys:Double.MaxValue}">
-
-            <localV:UpdateFails Grid.Row="1" />
+            <localV:UpdateFails/>
         </ui:Dialog>
     </Grid>
 </ui:UiWindow>

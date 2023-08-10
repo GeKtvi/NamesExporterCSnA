@@ -11,7 +11,7 @@ namespace NamesExporterCSnA.Services.Settings
         private IPreferencesSettings _settings;
         private string _saveFileName;
 
-        public SettingsSaveLoadManager(IPreferencesSettings settings) 
+        public SettingsSaveLoadManager(IPreferencesSettings settings)
         {
             _settings = settings;
             _saveFileName = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
@@ -35,13 +35,18 @@ namespace NamesExporterCSnA.Services.Settings
                 }
                 catch (Exception)
                 {
+#if !DEBUG
                     save = new PreferencesSettings();
+                    fs.SetLength(0);
+#else
+                    throw;
+#endif
                 }
 
                 PropertyHolder<PreferencesSettings>.SetPropertiesValue(
                     (PreferencesSettings)_settings,
                     save
-                    ); 
+                    );
             }
         }
 

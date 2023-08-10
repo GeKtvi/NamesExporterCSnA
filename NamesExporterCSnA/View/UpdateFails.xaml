@@ -21,9 +21,6 @@
 
     <UserControl.Resources>
 
-        <!--  CloseButtonText="Закрыть"  -->
-        <!--<sys:Double x:Key="ContentDialogMaxWidth">1800</sys:Double>
-        <sys:Double x:Key="ContentDialogMaxHeight">1000</sys:Double>-->
         <conv:UpdateFailTypeToImageConverter x:Key="UpdateFailTypeToImageConverter" />
     </UserControl.Resources>
 
