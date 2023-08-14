@@ -56,15 +56,15 @@
                         Margin="0"
                         Background="{DynamicResource ControlFillColorDefaultBrush}"
                         CornerRadius="{DynamicResource ControlCornerRadius}">
-                        <StackPanel>
-                            <TextBlock Margin="5,0" Text="Производитель маркировки" />
-                            <Border HorizontalAlignment="Left" Width="250">
+                        <DockPanel>
+                            <TextBlock VerticalAlignment="Center" Margin="5,0" Text="Производитель маркировки" DockPanel.Dock="Left"/>
+                            <Border HorizontalAlignment="Right" Width="250" DockPanel.Dock="Right">
                                 <ComboBox
                                 Margin="5"
                                 ItemsSource="{Binding PossibleCableMarkVendorName, Mode=TwoWay}"
                                 SelectedItem="{Binding CableMarkSelectedVendorName, Mode=TwoWay}" />
                             </Border>
-                        </StackPanel>
+                        </DockPanel>
                     </Border>
 
                     <Label Content="Приблизительный подсчёт длины кабеля" />

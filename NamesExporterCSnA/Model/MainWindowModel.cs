@@ -22,14 +22,12 @@ namespace NamesExporterCSnA.Model
 
         private DataConverter _converter;
         private Task<List<IDisplayableData>> _convertTask;
-        private ObservableCollection<IDisplayableData> _dataOut;
         private DeferredOperation _deferredUpdate; //нужно только для прямой вставки из DataGrid
 
         public MainWindowModel(DataConverter converter)
         {
             DataIn = new ObservableCollection<MaxExportedCable>();
             DataOut = new ObservableCollection<IDisplayableData>();
-            _dataOut = DataOut;
             _converter = converter;
             DataIn.CollectionChanged += DataInChanged;
             converter.SettingsChanged += UpdateDataOut;
@@ -126,8 +124,7 @@ namespace NamesExporterCSnA.Model
             Stopwatch swClear = Stopwatch.StartNew();
 #endif
             #endregion
-            DataOut = null;
-            _dataOut.Clear();
+            DataOut.Clear();
             #region Debug
 #if DEBUG
             Debug.WriteLine($"Clear time - {swClear.ElapsedMilliseconds} ms");
@@ -140,9 +137,7 @@ namespace NamesExporterCSnA.Model
                 return;
 
             foreach (IDisplayableData itemDataOut in data)
-                _dataOut.Add(itemDataOut);
-
-            DataOut = _dataOut;
+                DataOut.Add(itemDataOut);
 
             #region Debug
 #if DEBUG

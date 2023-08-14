@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text;
 
 namespace NamesExporterCSnA.Model.Data
 {
@@ -11,7 +12,6 @@ namespace NamesExporterCSnA.Model.Data
             foreach (var prop in props)
                 if (prop.Name != nameof(FullName))
                 {
-                    //TODO optimize
                     var name = '{' + prop.Name + '}';
                     var propVal = prop.GetValue(this);
                     string propValS = propVal.ToString();

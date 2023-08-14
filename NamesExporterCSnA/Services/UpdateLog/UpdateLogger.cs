@@ -1,6 +1,5 @@
 ﻿using Prism.Mvvm;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace NamesExporterCSnA.Services.UpdateLog
@@ -11,13 +10,13 @@ namespace NamesExporterCSnA.Services.UpdateLog
         {
             get
             {
-                if (FailList.Count == 0)
-                    return LoggerStatus.NoFails;
+                lock (FailList)
+                {
+                    if (FailList.Count == 0)
+                        return LoggerStatus.NoFails;
 
-                if (FailList.AsParallel().Any(x => x.Type == UpdateFailType.Error))
-                    return LoggerStatus.HasErrorFails;
-                else
-                    return LoggerStatus.HasExceptionFails;
+                    return FailList.AsParallel().Any(x => x.Type == UpdateFailType.Error) ? LoggerStatus.HasErrorFails : LoggerStatus.HasExceptionFails;
+                }
             }
         }
 

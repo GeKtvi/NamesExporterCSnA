@@ -1,19 +1,27 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NamesExporterCSnA.ViewModel;
+using Prism.Commands;
 using System;
 using System.Windows;
+using System.Windows.Input;
 using Wpf.Ui.Controls;
 
 namespace NamesExporterCSnA.View
 {
     public partial class MainWindowView
     {
+        public ICommand ChangeUpdateFailsVisibility { get; private set; }
+        public ICommand ShowSettings { get; private set; }
+
         private IServiceProvider _services;
         private IServiceScope _settingsServiceScope;
 
         public MainWindowView(MainWindowViewModel mainWindowViewModel, IServiceProvider serviceProvider)
         {
             Wpf.Ui.Appearance.Watcher.Watch(this);
+
+            ChangeUpdateFailsVisibility = new DelegateCommand(ChangeUpdateFailsDialogVisibility);
+            ShowSettings = new DelegateCommand(ShowSettingsWindow);
 
             _services = serviceProvider;
             InitializeComponentUiSave();
@@ -40,14 +48,23 @@ namespace NamesExporterCSnA.View
             Properties.UI.Default.Save();
         }
 
-        private  void ShowUpdateFails(object sender, RoutedEventArgs e) //TODO create command
+        private void ChangeUpdateFailsDialogVisibility() 
         {
+            if (((MainWindowViewModel)DataContext).Logger.Status == Services.UpdateLog.LoggerStatus.NoFails)
+                return;
+
+            if(Dialog.IsShown)
+            {
+                Dialog.Hide();
+                return;
+            }
+
             Dialog updateDialog = Dialog;
             updateDialog.DataContext = (DataContext as MainWindowViewModel).Logger;
-             updateDialog.Show();
+            updateDialog.Show();
         }
 
-        private void ShowSettings(object sender, RoutedEventArgs e) //TODO create command
+        private void ShowSettingsWindow()
         {
             if (_settingsServiceScope is null)
                 _settingsServiceScope = _services.CreateScope();

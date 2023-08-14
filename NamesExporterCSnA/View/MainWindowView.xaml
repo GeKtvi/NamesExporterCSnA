@@ -8,7 +8,6 @@
     xmlns:localVM="clr-namespace:NamesExporterCSnA.ViewModel"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:NamesExporterCSnA.Properties"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:tk="clr-namespace:GeKtviWpfToolkit.Controls;assembly=GeKtviWpfToolkit"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     x:Name="Window"
@@ -45,6 +44,8 @@
         <KeyBinding Command="{Binding ImportData}" Gesture="Ctrl+Shift+V" />
         <KeyBinding Command="{Binding ExportData}" Gesture="Ctrl+Shift+C" />
         <KeyBinding Command="{Binding ClearData}" Gesture="Ctrl+Shift+D" />
+        <KeyBinding Command="{Binding ElementName=Window, Path=ChangeUpdateFailsVisibility}" Gesture="Ctrl+E" />
+        <KeyBinding Command="{Binding ElementName=Window, Path=ShowSettings}" Gesture="Ctrl+I" />
     </ui:UiWindow.InputBindings>
 
     <Grid>
@@ -111,16 +112,17 @@
             <ui:Button
                 Grid.Column="7"
                 Appearance="{Binding Logger.Status, Converter={StaticResource LoggerStatusToAppearanceConverter}}"
-                Click="ShowUpdateFails"
+                Command="{Binding ElementName=Window, Path=ChangeUpdateFailsVisibility}"
                 Icon="Important12"
-                ToolTip="Показать окно проблем при обновлении"
+                IconFilled="True"
+                ToolTip="Окно проблем при обновлении (Ctrl+E)"
                 Visibility="{Binding Logger.Status, Converter={StaticResource LoggerStatusToVisibleConverter}}" />
 
             <ui:Button
                 Grid.Column="8"
-                Click="ShowSettings"
+                Command="{Binding ElementName=Window, Path=ShowSettings}"
                 Icon="Settings48"
-                ToolTip="Настройки" />
+                ToolTip="Настройки (Ctrl+I)" />
 
         </Grid>
         <!--#endregion-->
@@ -142,7 +144,6 @@
                 AutoGenerateColumns="False"
                 CanUserResizeRows="False"
                 GridLinesVisibility="All"
-                HorizontalScrollBarVisibility="Visible"
                 ItemsSource="{Binding DataIn, UpdateSourceTrigger=PropertyChanged, Delay=250}"
                 SelectionUnit="CellOrRowHeader"
                 UseDirectPaste="True">
@@ -191,9 +192,9 @@
             Grid.Row="1"
             ButtonLeftVisibility="Collapsed"
             ButtonRightName="Закрыть"
-            DataContext="{Binding Logger}"            
-            DialogHeight="{x:Static sys:Double.MaxValue}"
-            DialogWidth="{x:Static sys:Double.MaxValue}">
+            MinHeight="300"
+            MinWidth="200"
+            DataContext="{Binding Logger}">
             <localV:UpdateFails/>
         </ui:Dialog>
     </Grid>

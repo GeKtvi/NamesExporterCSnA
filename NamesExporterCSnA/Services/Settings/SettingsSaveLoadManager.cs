@@ -54,6 +54,7 @@ namespace NamesExporterCSnA.Services.Settings
         {
             using (var fs = new FileStream(_saveFileName, FileMode.OpenOrCreate))
             {
+                fs.SetLength(0);
                 new XmlSerializer(typeof(PreferencesSettings)).Serialize(fs, _settings);
             }
         }

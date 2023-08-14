@@ -318,44 +318,44 @@
         </Grid>
 
         <Grid>
-            <TextBlock
-                Width="35"
+            <Border
                 Height="20"
-                Margin="51,231,164,24"
-                FontSize="10"
-                Text="{Binding ElementName=Box, Path=DisplayableWidth}" />
-            <TextBlock
+                Margin="9,244,135,36">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="10"
+                    Text="{Binding ElementName=Box, Path=DisplayableWidth}"/>
+            </Border>
+            <Border
                 Width="35"
                 Height="20"
                 Margin="-36,117,251,138"
-                FontSize="10"
-                RenderTransformOrigin="0.5,0.5"
-                Text="{Binding ElementName=Box, Path=DisplayableHeight}">
-                <TextBlock.RenderTransform>
+                RenderTransformOrigin="0.5,0.5">
+                <Border.RenderTransform>
                     <TransformGroup>
-                        <ScaleTransform />
-                        <SkewTransform />
                         <RotateTransform Angle="-90" />
-                        <TranslateTransform />
                     </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-            <TextBlock
-                Width="35"
+                </Border.RenderTransform>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="10"
+                    Text="{Binding ElementName=Box, Path=DisplayableHeight}"/>
+            </Border>
+            <Border
+                Width="30"
                 Height="20"
-                Margin="124,210,91,44"
-                FontSize="10"
-                RenderTransformOrigin="0.5,0.5"
-                Text="{Binding ElementName=Box, Path=DisplayableDepth}">
-                <TextBlock.RenderTransform>
+                Margin="130,224,90,56"
+                RenderTransformOrigin="0.5,0.5">
+                <Border.RenderTransform>
                     <TransformGroup>
-                        <ScaleTransform />
-                        <SkewTransform />
                         <RotateTransform Angle="-46.084" />
-                        <TranslateTransform />
                     </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
+                </Border.RenderTransform>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="10"
+                    Text="{Binding ElementName=Box, Path=DisplayableDepth}" />
+            </Border>
         </Grid>
     </Grid>
 </UserControl>

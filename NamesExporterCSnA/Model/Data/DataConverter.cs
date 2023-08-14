@@ -6,8 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NamesExporterCSnA.Model.Data
 {
@@ -50,12 +48,12 @@ namespace NamesExporterCSnA.Model.Data
                         foreach (ICableMark mark in CableMarkDKCFabric.CreateMarksForCable(cable))
                             marks.Add(mark);
                     }
-                ); 
+                );
 
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCable, ICable>(parsed));
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCableMark, ICableMark>(marks.ToList()));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 #if !DEBUG
                 Logger.Log(
@@ -77,14 +75,14 @@ namespace NamesExporterCSnA.Model.Data
             return displayableData;
         }
 
-        private List<IDisplayableData> ConvertToIDisplayableData<DisplayableObj, GroupingObj>(List<GroupingObj> objects)
+        private static List<IDisplayableData> ConvertToIDisplayableData<DisplayableObj, GroupingObj>(List<GroupingObj> objects)
             where DisplayableObj : class, IFromGroup<GroupingObj>, new()
             where GroupingObj : IFullName
         {
-            List<IDisplayableData> groupedList = new();
+            System.Collections.Concurrent.ConcurrentBag<IDisplayableData> groupedList = new();
 
-            IOrderedEnumerable<IGrouping<string, GroupingObj>> groupedMarks =
-            from obj in objects
+            OrderedParallelQuery<IGrouping<string, GroupingObj>> groupedMarks =
+            from obj in objects.AsParallel()
             group obj by obj.FullName into newGroup
             orderby newGroup.Key
             select newGroup;
@@ -92,7 +90,7 @@ namespace NamesExporterCSnA.Model.Data
             foreach (IGrouping<string, GroupingObj> item in groupedMarks)
                 groupedList.Add(new DisplayableObj().SetFromGrouping(item));
 
-            return groupedList;
+            return groupedList.ToList();
         }
     }
 }
