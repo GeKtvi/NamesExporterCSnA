@@ -1,6 +1,6 @@
 ﻿using GeKtviWpfToolkit;
-using NamesExporterCSnA.Model.Data;
-using NamesExporterCSnA.Services.UpdateLog;
+using NamesExporterCSnA.Data;
+using NamesExporterCSnA.Data.UpdateLog;
 using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

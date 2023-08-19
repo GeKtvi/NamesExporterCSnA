@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:NamesExporterCSnA.View"
     xmlns:localV="clr-namespace:NamesExporterCSnA.View"
-    xmlns:log="clr-namespace:NamesExporterCSnA.Services.UpdateLog"
+    xmlns:log="clr-namespace:NamesExporterCSnA.Data.UpdateLog;assembly=NamesExporterCSnA.Data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:tk="clr-namespace:GeKtviWpfToolkit.Controls;assembly=GeKtviWpfToolkit"

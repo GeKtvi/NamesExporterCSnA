@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="GeKtviWpfToolkit" Version="0.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="Prism.Wpf" Version="8.1.97" />
@@ -28,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\GeKtviWpfToolkit\GeKtviWpfToolkit\GeKtviWpfToolkit.csproj" />
+    <ProjectReference Include="..\NamesExporterCSnA.Data\NamesExporterCSnA.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -68,6 +69,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>UI.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Model\Data\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using NamesExporterCSnA.Data.UpdateLog;
 using NamesExporterCSnA.ViewModel;
 using Prism.Commands;
 using System;
@@ -50,7 +51,7 @@ namespace NamesExporterCSnA.View
 
         private void ChangeUpdateFailsDialogVisibility() 
         {
-            if (((MainWindowViewModel)DataContext).Logger.Status == Services.UpdateLog.LoggerStatus.NoFails)
+            if (((MainWindowViewModel)DataContext).Logger.Status == LoggerStatus.NoFails)
                 return;
 
             if(Dialog.IsShown)

@@ -8,9 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace NamesExporterCSnA.Properties {
-    
-    
+namespace NamesExporterCSnA.Properties
+{
+
+
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.5.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
@@ -25,9 +26,9 @@ namespace NamesExporterCSnA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::NamesExporterCSnA.Services.Settings.PreferencesSettings PreferencesSettings {
+        public global::NamesExporterCSnA.Data.Settings.PreferencesSettings PreferencesSettings {
             get {
-                return ((global::NamesExporterCSnA.Services.Settings.PreferencesSettings)(this["PreferencesSettings"]));
+                return ((global::NamesExporterCSnA.Data.Settings.PreferencesSettings)(this["PreferencesSettings"]));
             }
             set {
                 this["PreferencesSettings"] = value;

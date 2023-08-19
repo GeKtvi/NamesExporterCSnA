@@ -1,4 +1,4 @@
-﻿using NamesExporterCSnA.Services.Settings;
+﻿using NamesExporterCSnA.Data.Settings;
 using Prism.Mvvm;
 
 namespace NamesExporterCSnA.Model

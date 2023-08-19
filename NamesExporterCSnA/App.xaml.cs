@@ -1,8 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using GeKtviWpfToolkit;
+using Microsoft.Extensions.DependencyInjection;
+using NamesExporterCSnA.Data;
+using NamesExporterCSnA.Data.Cables;
+using NamesExporterCSnA.Data.Marks;
+using NamesExporterCSnA.Data.Marks.Exceptions;
+using NamesExporterCSnA.Data.Settings;
+using NamesExporterCSnA.Data.UpdateLog;
 using NamesExporterCSnA.Model;
-using NamesExporterCSnA.Model.Data;
-using NamesExporterCSnA.Services.Settings;
-using NamesExporterCSnA.Services.UpdateLog;
+using NamesExporterCSnA.Services;
 using NamesExporterCSnA.View;
 using NamesExporterCSnA.ViewModel;
 using System;
@@ -34,6 +39,9 @@ namespace NamesExporterCSnA
                             .AddScoped<SettingsWindowView>()
                             .AddSingleton<IPreferencesSettings, PreferencesSettings>()
                             .AddSingleton<SettingsSaveLoadManager>()
+                            .AddSingleton(AppConfigHelper.LoadConfig<CablesParserConfig>("CablesParser.config"))
+                            .AddSingleton(AppConfigHelper.LoadConfig<CableMarkVendorData[]>("CableMarks.config"))
+                            .AddSingleton(AppConfigHelper.LoadConfig<CableMarkingWhiteList>("CableForMarkingWhiteList.config"))
                             .BuildServiceProvider();
 
             CurrentServiceProvider.GetRequiredService<SettingsSaveLoadManager>();

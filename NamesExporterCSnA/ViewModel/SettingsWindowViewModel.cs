@@ -1,5 +1,5 @@
-﻿using NamesExporterCSnA.Model;
-using NamesExporterCSnA.Services.Settings;
+﻿using NamesExporterCSnA.Data.Settings;
+using NamesExporterCSnA.Model;
 using Prism.Mvvm;
 
 namespace NamesExporterCSnA.ViewModel

@@ -138,7 +138,6 @@
             </Grid.RowDefinitions>
 
             <tk:DataGridGK
-                Grid.Column="0"
                 Margin="10,10,5,10"
                 AllowDrop="True"
                 AutoGenerateColumns="False"
