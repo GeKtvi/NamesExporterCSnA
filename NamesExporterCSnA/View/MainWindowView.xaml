@@ -49,8 +49,6 @@
     </ui:UiWindow.InputBindings>
 
     <Grid>
-
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />

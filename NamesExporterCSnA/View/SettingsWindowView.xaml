@@ -94,37 +94,41 @@
                                 <ui:NumberBox
                                     x:Name="Width"
                                     Margin="5"
-                                    DecimalPlaces="0"
-                                    Max="10000"
-                                    Min="0"
-                                    Step="100"
+                                    MaxDecimalPlaces="0"
+                                    Maximum="10000"
+                                    Minimum="0"
+                                    SmallChange="100"
+                                    LargeChange="1000"
                                     Value="{Binding ApproximateCableLength.BoxWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}" />
                                 <TextBlock Margin="5,0,0,0" Text="Глубина" />
                                 <ui:NumberBox
                                     x:Name="Depth"
                                     Margin="5"
-                                    DecimalPlaces="0"
-                                    Max="10000"
-                                    Min="0"
-                                    Step="100"
+                                    MaxDecimalPlaces="0"
+                                    Maximum="10000"
+                                    Minimum="0"
+                                    SmallChange="100"
+                                    LargeChange="1000"
                                     Value="{Binding ApproximateCableLength.BoxDepth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}" />
                                 <TextBlock Margin="5,0,0,0" Text="Высота" />
                                 <ui:NumberBox
                                     x:Name="Heigth"
                                     Margin="5"
-                                    DecimalPlaces="0"
-                                    Max="10000"
-                                    Min="0"
-                                    Step="100"
+                                    MaxDecimalPlaces="0"
+                                    Maximum="10000"
+                                    Minimum="0"
+                                    SmallChange="100"
+                                    LargeChange="1000"
                                     Value="{Binding ApproximateCableLength.BoxHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}" />
                                 <TextBlock Margin="5,0,0,0" Text="Коэффициент" />
                                 <ui:NumberBox
                                     x:Name="Koef"
                                     Margin="5"
-                                    DecimalPlaces="2"
-                                    Max="10"
-                                    Min="0.1"
-                                    Step="0.1"
+                                    MaxDecimalPlaces="2"
+                                    Maximum="100"
+                                    Minimum="0.1"
+                                    SmallChange="0.1"
+                                    LargeChange="1"
                                     Value="{Binding ApproximateCableLength.K, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}" />
                                 <TextBlock Margin="5,0,0,0" Text="Ш * Г * В * k = К" />
                                 <TextBox

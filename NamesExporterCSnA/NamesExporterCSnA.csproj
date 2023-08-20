@@ -19,13 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GeKtviWpfToolkit" Version="0.0.1" />
+    <PackageReference Include="GeKtviWpfToolkit" Version="0.0.3" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="Prism.Wpf" Version="8.1.97" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
-    <PackageReference Include="WPF-UI" Version="2.0.3" />
+    <PackageReference Include="WPF-UI" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,6 +51,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="LICENSE - Prism.Wpf.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="LICENSE - PropertyChanged.Fody.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="LICENSE - WPF-UI.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Properties\Configs\CableForMarkingWhiteList.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -69,10 +77,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>UI.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Model\Data\" />
   </ItemGroup>
 
 </Project>

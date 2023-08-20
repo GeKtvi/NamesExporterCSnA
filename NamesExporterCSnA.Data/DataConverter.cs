@@ -56,7 +56,7 @@ namespace NamesExporterCSnA.Data
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCable, ICable>(parsed));
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCableMark, ICableMark>(marks.ToList()));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 #if !DEBUG
                 Logger.Log(

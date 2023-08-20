@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Prism.Wpf" Version="8.1.97" />
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
   </ItemGroup>
 
 </Project>
