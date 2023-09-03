@@ -1,31 +1,38 @@
-﻿using GeKtviWpfToolkit;
+﻿using DynamicData;
+using DynamicData.Binding;
+using GeKtviWpfToolkit;
 using NamesExporterCSnA.Data;
 using NamesExporterCSnA.Data.UpdateLog;
 using NamesExporterCSnA.Model;
 using Prism.Commands;
-using Prism.Mvvm;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
-using System.Windows.Input;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 
 namespace NamesExporterCSnA.ViewModel
 {
-    public class MainWindowViewModel : BindableBase
+    public class MainWindowViewModel : ReactiveObject
     {
-        public ObservableCollection<MaxExportedCable> DataIn
-        {
-            get => _mainWindowModel.DataIn;
-        }
-        public ObservableCollection<IDisplayableData> DataOut
-        {
-            get => _mainWindowModel.DataOut;
-        }
+        [Reactive]
+        public ObservableCollectionExtended<MaxExportedCable> DataIn { get; set; } = new ObservableCollectionExtended<MaxExportedCable>();
 
+        [Reactive]
+        public ObservableCollectionExtended<IDisplayableData> DataOut { get; set; } = new ObservableCollectionExtended<IDisplayableData>();
+
+        [Reactive]
         public IUpdateLogger Logger { get => _mainWindowModel.Logger; }
 
-        public ICommand ImportData { get; private set; }
-        public ICommand ExportData { get; private set; }
-        public ICommand ClearData { get; private set; }
+        public IReactiveCommand ImportData { get; private set; }
+        public IReactiveCommand ExportData { get; private set; }
+        public IReactiveCommand ClearData { get; private set; }
 
         private MainWindowModel _mainWindowModel { get; set; }
 
@@ -33,30 +40,32 @@ namespace NamesExporterCSnA.ViewModel
         {
             _mainWindowModel = mainWindowModel;
 
-            ImportData = new DelegateCommand(SetTextFromClipboard);
-            ExportData = new DelegateCommand(SetTextToClipboard, CanExecuteExportData);
-            ClearData = new DelegateCommand(ClearDataIn, CanExecuteClearDataIn);
+            ImportData = ReactiveCommand.Create(SetTextFromClipboard, outputScheduler: RxApp.MainThreadScheduler);
+            ExportData = ReactiveCommand.Create(
+                SetTextToClipboard,
+                this.WhenAnyValue(vm => vm.DataOut).Select(data => data != null && data.Count != 0)
+            );
 
-            DataIn.CollectionChanged += DataInCollectionChanged;
-            DataOut.CollectionChanged += DataOutCollectionChanged;
+            ClearData = ReactiveCommand.Create(
+                ClearDataIn,
+                this.WhenAnyValue(vm => vm.DataIn).Select(data => data != null && data.Count != 0)
+            );
 
-            _mainWindowModel.PropertyChanged += (s, e) => OnPropertyChanged(e);
-            _mainWindowModel.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(DataIn) && DataIn != null)
-                {
-                    DataInCollectionChanged(s, null);
-                    DataIn.CollectionChanged += DataInCollectionChanged;
-                }
-            };
-            _mainWindowModel.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(DataOut) && DataOut != null)
-                {
-                    DataOutCollectionChanged(s, null);
-                    DataOut.CollectionChanged += DataOutCollectionChanged;
-                }
-            };
+            _mainWindowModel.DataIn.Connect()
+                .ObserveOn(DispatcherScheduler.Current)
+                .Bind(DataIn)
+                .Subscribe(_ => Debug.Print("DataIn changed"));
+
+            _mainWindowModel.DataOut.Connect()
+                .ObserveOn(DispatcherScheduler.Current)
+                .Bind(DataOut)
+                .Subscribe(_ => Debug.Print("DataOut changed"));
+
+            _mainWindowModel.DataIn.Connect()
+                .AutoRefresh(scheduler:DispatcherScheduler.Current)
+                .ObserveOn(DispatcherScheduler.Current)
+                .Throttle(TimeSpan.FromMilliseconds(25), DispatcherScheduler.Current)
+                .Subscribe(_ => _mainWindowModel.UpdateDataOut());
         }
 
         private void DataInCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -93,7 +102,7 @@ namespace NamesExporterCSnA.ViewModel
 
         private bool CanExecuteClearDataIn()
         {
-            return DataIn != null && DataIn.Count() != 0;
+            return DataIn != null && DataIn.Count != 0;
         }
     }
 }

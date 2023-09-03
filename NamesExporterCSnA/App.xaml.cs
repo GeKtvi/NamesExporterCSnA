@@ -10,7 +10,9 @@ using NamesExporterCSnA.Model;
 using NamesExporterCSnA.Services;
 using NamesExporterCSnA.View;
 using NamesExporterCSnA.ViewModel;
+using ReactiveUI;
 using System;
+using System.Reactive.Concurrency;
 using System.Windows;
 
 namespace NamesExporterCSnA

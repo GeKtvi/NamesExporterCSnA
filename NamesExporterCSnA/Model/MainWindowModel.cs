@@ -1,39 +1,42 @@
-﻿using GeKtviWpfToolkit;
+﻿using DynamicData;
 using NamesExporterCSnA.Data;
 using NamesExporterCSnA.Data.UpdateLog;
 using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace NamesExporterCSnA.Model
 {
     public class MainWindowModel : BindableBase
     {
-        public ObservableCollection<MaxExportedCable> DataIn { get; private set; }
-        public ObservableCollection<IDisplayableData> DataOut { get; private set; }
+        public SourceList<MaxExportedCable> DataIn => _dataIn;
+        public SourceList<IDisplayableData> DataOut => _dataOut;
         public IUpdateLogger Logger => _converter.Logger;
         public bool IsUpdateFrozen { get; set; } = false;
 
+        private readonly SourceList<MaxExportedCable> _dataIn;
+        private readonly SourceList<IDisplayableData> _dataOut;
         private DataConverter _converter;
         private Task<List<IDisplayableData>> _convertTask;
-        private DeferredOperation _deferredUpdate; //нужно только для прямой вставки из DataGrid
 
         public MainWindowModel(DataConverter converter)
         {
-            DataIn = new ObservableCollection<MaxExportedCable>();
-            DataOut = new ObservableCollection<IDisplayableData>();
+            _dataIn = new SourceList<MaxExportedCable>();
+
+            _dataOut = new SourceList<IDisplayableData>();
+            //DataOut = new ReadOnlyObservableCollection<IDisplayableData>(_dataOut);
+
             _converter = converter;
-            DataIn.CollectionChanged += DataInChanged;
             converter.SettingsChanged += UpdateDataOut;
 
-            Dispatcher disp = Dispatcher.CurrentDispatcher;
-            _deferredUpdate = new DeferredOperation(() => disp.BeginInvoke(UpdateDataOut), 5);
+            //Dispatcher disp = Dispatcher.CurrentDispatcher;
+            //_deferredUpdate = new DeferredOperation(() => disp.BeginInvoke(UpdateDataOut), 5);
         }
 
         public void SetDataIn(List<string[]> values)
@@ -45,52 +48,49 @@ namespace NamesExporterCSnA.Model
             #endregion
             IsUpdateFrozen = true;
 
-            ObservableCollection<MaxExportedCable> dataIn = new ObservableCollection<MaxExportedCable>();
-            dataIn.CollectionChanged += DataInChanged;
-
-            dataIn.Clear();
-
-            foreach (string[] row in values)
+            _dataIn.Edit(_ =>
             {
-                int i = 0;
-                MaxExportedCable cable = new MaxExportedCable();
-                foreach (string cell in row)
+                _dataIn.Clear();
+
+                foreach (string[] row in values)
                 {
-                    switch (i)
+                    int i = 0;
+                    MaxExportedCable cable = new MaxExportedCable();
+                    foreach (string cell in row)
                     {
-                        case 0:
-                            cable.SchemeName = cell;
-                            break;
-                        case 1:
-                            cable.WireName = cell;
-                            break;
-                        default:
-                            break;
+                        switch (i)
+                        {
+                            case 0:
+                                cable.SchemeName = cell;
+                                break;
+                            case 1:
+                                cable.WireName = cell;
+                                break;
+                            default:
+                                break;
+                        }
+                        i++;
                     }
-                    i++;
+                    _dataIn.Add(cable);
                 }
-                dataIn.Add(cable);
-            }
+            });
             IsUpdateFrozen = false;
-            DataIn = dataIn;
             #region Debug
 #if DEBUG
             Debug.WriteLine($"SetDataIn time - {swSetDataIn.ElapsedMilliseconds} ms");
 #endif
             #endregion
-
-            UpdateDataOut();
         }
 
         public List<List<string>> GetDataAsListList()
         {
             List<List<string>> data = new();
 
-            foreach (IDisplayableData itemDataOut in DataOut)
+            foreach (IDisplayableData itemDataOut in _dataOut.Items)
             {
                 int i = 0;
                 data.Add(new());
-                foreach (PropertyDescriptor item in TypeDescriptor.GetProperties(DataOut.GetType().GetGenericArguments().Single()))
+                foreach (PropertyDescriptor item in TypeDescriptor.GetProperties(_dataOut.GetType().GetGenericArguments().Single()))
                 {
                     PropertyDescriptor propertyDescriptor = item;
                     System.Attribute attributes = propertyDescriptor.Attributes[typeof(System.ComponentModel.DataAnnotations.DisplayAttribute)];
@@ -106,6 +106,12 @@ namespace NamesExporterCSnA.Model
 
         public async void UpdateDataOut()
         {
+            #region Debug
+#if DEBUG
+            Debug.WriteLine($"Start UpdateDataOut - {DateTime.Now}");
+#endif
+            #endregion
+
             if (IsUpdateFrozen)
                 return;
 
@@ -115,47 +121,38 @@ namespace NamesExporterCSnA.Model
 #endif
             #endregion
 
-            Task<List<IDisplayableData>> currentTask = new Task<List<IDisplayableData>>(() => _converter.Convert(DataIn.ToList()));
+            Task<List<IDisplayableData>> currentTask = new Task<List<IDisplayableData>>(() => _converter.Convert(_dataIn.Items.ToList()));
             _convertTask = currentTask;
             currentTask.Start();
 
-            #region Debug
-#if DEBUG
-            Stopwatch swClear = Stopwatch.StartNew();
-#endif
-            #endregion
-            DataOut.Clear();
-            #region Debug
-#if DEBUG
-            Debug.WriteLine($"Clear time - {swClear.ElapsedMilliseconds} ms");
-#endif
-            #endregion
+//            #region Debug
+//#if DEBUG
+//            Stopwatch swClear = Stopwatch.StartNew();
+//#endif
+//            #endregion
+            
+//            #region Debug
+//#if DEBUG
+//            Debug.WriteLine($"Clear time - {swClear.ElapsedMilliseconds} ms");
+//#endif
+//            #endregion
 
             List<IDisplayableData> data = await _convertTask;
 
             if (_convertTask != currentTask)
                 return;
 
-            foreach (IDisplayableData itemDataOut in data)
-                DataOut.Add(itemDataOut);
-
+            _dataOut.Edit(_ =>
+            {
+                _dataOut.Clear();
+                _dataOut.AddRange(data);
+            });
+            
             #region Debug
 #if DEBUG
-            Debug.WriteLine($"Update time - {sw.ElapsedMilliseconds} ms");
+            Debug.WriteLine($"  Update time - {sw.ElapsedMilliseconds} ms");
 #endif
             #endregion
-        }
-
-        private void DataInChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (IsUpdateFrozen == false)
-                _deferredUpdate.DoOperation();
-
-            if (e.NewItems == null)
-                return;
-
-            foreach (INotifyPropertyChanged item in e.NewItems)
-                item.PropertyChanged += (s, e) => _deferredUpdate.DoOperation();
         }
     }
 }
