@@ -4,28 +4,28 @@ using GeKtviWpfToolkit;
 using NamesExporterCSnA.Data;
 using NamesExporterCSnA.Data.UpdateLog;
 using NamesExporterCSnA.Model;
-using Prism.Commands;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Windows.Input;
 
 namespace NamesExporterCSnA.ViewModel
 {
     public class MainWindowViewModel : ReactiveObject
     {
         [Reactive]
-        public ObservableCollectionExtended<MaxExportedCable> DataIn { get; set; } = new ObservableCollectionExtended<MaxExportedCable>();
+        public ObservableCollectionExtended<MaxExportedCable> DataIn => _mainWindowModel.DataIn;
 
         [Reactive]
-        public ObservableCollectionExtended<IDisplayableData> DataOut { get; set; } = new ObservableCollectionExtended<IDisplayableData>();
+        public ReadOnlyObservableCollection<IDisplayableData> DataOut => _mainWindowModel.DataOut;
 
         [Reactive]
         public IUpdateLogger Logger { get => _mainWindowModel.Logger; }
@@ -33,54 +33,56 @@ namespace NamesExporterCSnA.ViewModel
         public IReactiveCommand ImportData { get; private set; }
         public IReactiveCommand ExportData { get; private set; }
         public IReactiveCommand ClearData { get; private set; }
+        public ReactiveCommand<Unit, Unit> UpdateDataOut { get; private set; }
 
-        private MainWindowModel _mainWindowModel { get; set; }
+        private MainWindowModel _mainWindowModel;
 
         public MainWindowViewModel(MainWindowModel mainWindowModel)
         {
             _mainWindowModel = mainWindowModel;
 
-            ImportData = ReactiveCommand.Create(SetTextFromClipboard, outputScheduler: RxApp.MainThreadScheduler);
+            UpdateDataOut = ReactiveCommand.CreateFromObservable(() => Observable.Start(() => _mainWindowModel.UpdateDataOut()));
+            UpdateDataOut.ThrownExceptions.Subscribe(e => throw e.InnerException);
+
+            ImportData = ReactiveCommand.Create(
+                SetTextFromClipboard,
+                UpdateDataOut.IsExecuting.Select(x => x == false),
+                RxApp.MainThreadScheduler);
+
             ExportData = ReactiveCommand.Create(
                 SetTextToClipboard,
-                this.WhenAnyValue(vm => vm.DataOut).Select(data => data != null && data.Count != 0)
+                _mainWindowModel.DataOut.ToObservableChangeSet().Throttle(TimeSpan.FromMilliseconds(25), DispatcherScheduler.Current).Select(data => data != null && data.Count != 0)
             );
 
             ClearData = ReactiveCommand.Create(
                 ClearDataIn,
-                this.WhenAnyValue(vm => vm.DataIn).Select(data => data != null && data.Count != 0)
+                _mainWindowModel.DataIn.ToObservableChangeSet().Select(data => data != null && data.Count != 0)
             );
 
-            _mainWindowModel.DataIn.Connect()
-                .ObserveOn(DispatcherScheduler.Current)
-                .Bind(DataIn)
-                .Subscribe(_ => Debug.Print("DataIn changed"));
+            //_updateDataOut = ReactiveCommand.Create(() => _mainWindowModel.UpdateDataOut(), outputScheduler: DispatcherScheduler.Current);
 
-            _mainWindowModel.DataOut.Connect()
-                .ObserveOn(DispatcherScheduler.Current)
-                .Bind(DataOut)
-                .Subscribe(_ => Debug.Print("DataOut changed"));
 
-            _mainWindowModel.DataIn.Connect()
-                .AutoRefresh(scheduler:DispatcherScheduler.Current)
-                .ObserveOn(DispatcherScheduler.Current)
-                .Throttle(TimeSpan.FromMilliseconds(25), DispatcherScheduler.Current)
-                .Subscribe(_ => _mainWindowModel.UpdateDataOut());
-        }
-
-        private void DataInCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            (ClearData as DelegateCommand).RaiseCanExecuteChanged();
-        }
-
-        private void DataOutCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            (ExportData as DelegateCommand).RaiseCanExecuteChanged();
+            _mainWindowModel.DataIn.ToObservableChangeSet()
+                .ObserveOn(RxApp.TaskpoolScheduler)
+                .Throttle(TimeSpan.FromMilliseconds(25))
+                .AutoRefresh()
+                //.Select(number => Observable.Defer(() => _mainWindowModel.UpdateDataOut().ToObservable()))
+                //.Select(number => Observable.FromAsync(async () => await _mainWindowModel.UpdateDataOut()))
+                //.Select(number => Observable.FromAsync(async () => await disp.BeginInvoke(() => _mainWindowModel.UpdateDataOut())))
+                //.Select(number => Observable.Defer(() => Observable.Start(() => disp.BeginInvoke(() => _mainWindowModel.UpdateDataOut()))))
+                //.Select(l => Observable.FromAsync(_ => _mainWindowModel.UpdateDataOut()))
+                //.Concat()
+                //.Select(x => Unit.Default)
+                //.Select(x => Unit.Default)
+                .Select(x => Unit.Default)
+                .InvokeCommand(UpdateDataOut)
+                //.Subscribe()
+                ;
         }
 
         private void SetTextFromClipboard()
         {
-            var data = ClipboardHelper.ParseClipboardData();
+            List<string[]> data = ClipboardHelper.ParseClipboardData();
             if (data != null)
                 _mainWindowModel.SetDataIn(data);
         }
@@ -90,19 +92,9 @@ namespace NamesExporterCSnA.ViewModel
             ClipboardHelper.SetClipboardData(_mainWindowModel.GetDataAsListList());
         }
 
-        private bool CanExecuteExportData()
-        {
-            return DataOut != null && DataOut.Count() != 0;
-        }
-
         private void ClearDataIn()
         {
             _mainWindowModel.DataIn.Clear();
-        }
-
-        private bool CanExecuteClearDataIn()
-        {
-            return DataIn != null && DataIn.Count != 0;
         }
     }
 }
