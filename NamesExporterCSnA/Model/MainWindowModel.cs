@@ -1,5 +1,5 @@
-﻿using DynamicData;
-using DynamicData.Binding;
+﻿using DynamicData.Binding;
+using GeKtviWpfToolkit;
 using NamesExporterCSnA.Data;
 using NamesExporterCSnA.Data.UpdateLog;
 using Prism.Mvvm;
@@ -10,7 +10,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -18,31 +17,24 @@ namespace NamesExporterCSnA.Model
 {
     public class MainWindowModel : BindableBase
     {
-        public ObservableCollectionExtended<MaxExportedCable> DataIn => _dataIn;
+        public ObservableCollectionExtended<MaxExportedCable> DataIn { get; }
         public ReadOnlyObservableCollection<IDisplayableData> DataOut => new ReadOnlyObservableCollection<IDisplayableData>(_dataOut);
         public IUpdateLogger Logger => _converter.Logger;
         public bool IsUpdateFrozen { get; set; } = false;
 
-        private readonly ObservableCollectionExtended<MaxExportedCable> _dataIn;
         private readonly ObservableCollectionExtended<IDisplayableData> _dataOut;
         private readonly Dispatcher _dispatcher;
         private DataConverter _converter;
-        private Task<List<IDisplayableData>> _convertTask;
 
         public MainWindowModel(DataConverter converter)
         {
-            _dataIn = new ObservableCollectionExtended<MaxExportedCable>();
-
+            DataIn = new ObservableCollectionExtended<MaxExportedCable>();
             _dataOut = new ObservableCollectionExtended<IDisplayableData>();
-            //DynamicData.Binding.ObservableCollectionAdaptor
-            //DataOut = new ReadOnlyObservableCollection<IDisplayableData>(_dataOut);
-            //_dataOut.Connect().To
+
             _converter = converter;
             converter.SettingsChanged += () => UpdateDataOut();
 
             _dispatcher = Dispatcher.CurrentDispatcher;
-            //Dispatcher disp = Dispatcher.CurrentDispatcher;
-            //_deferredUpdate = new DeferredOperation(() => disp.BeginInvoke(UpdateDataOut), 5);
         }
 
         public void SetDataIn(List<string[]> values)
@@ -52,10 +44,9 @@ namespace NamesExporterCSnA.Model
             Stopwatch swSetDataIn = Stopwatch.StartNew();
 #endif
             #endregion
-            //IsUpdateFrozen = true;
-            var suspend = _dataIn.SuspendNotifications();
+            IDisposable suspend = DataIn.SuspendNotifications();
 
-            _dataIn.Clear();
+            DataIn.Clear();
 
             foreach (string[] row in values)
             {
@@ -76,16 +67,21 @@ namespace NamesExporterCSnA.Model
                     }
                     i++;
                 }
-                _dataIn.Add(cable);
+                DataIn.Add(cable);
             }
 
             suspend.Dispose();
-            //IsUpdateFrozen = false;
             #region Debug
 #if DEBUG
             Debug.WriteLine($"SetDataIn time - {swSetDataIn.ElapsedMilliseconds} ms");
 #endif
             #endregion
+        }
+
+        public void SetTextFromClipboard()
+        {
+            List<string[]> data = ClipboardHelper.ParseClipboardData();
+            SetDataIn(data ?? new List<string[]>());
         }
 
         public List<List<string>> GetDataAsListList()
@@ -115,38 +111,12 @@ namespace NamesExporterCSnA.Model
             #region Debug
 #if DEBUG
             Debug.WriteLine($"Start UpdateDataOut - {DateTime.Now}");
-#endif
-            #endregion
-
-            if (IsUpdateFrozen)
-                return;
-
-            #region Debug
-#if DEBUG
             Stopwatch sw = Stopwatch.StartNew();
 #endif
             #endregion
 
-            Task<List<IDisplayableData>> currentTask = new Task<List<IDisplayableData>>(() => _converter.Convert(_dataIn.ToList()));
-            _convertTask = currentTask;
-            currentTask.Start();
+            List<IDisplayableData> data = await Task.Run(() => _converter.Convert(DataIn.ToList()));
 
-            //            #region Debug
-            //#if DEBUG
-            //            Stopwatch swClear = Stopwatch.StartNew();
-            //#endif
-            //            #endregion
-
-            //            #region Debug
-            //#if DEBUG
-            //            Debug.WriteLine($"Clear time - {swClear.ElapsedMilliseconds} ms");
-            //#endif
-            //            #endregion
-            //var lst = _dataIn.ToList();
-            List<IDisplayableData> data = await currentTask;//Task.Run(() => _converter.Convert(lst)); //new Task<List<IDisplayableData>>(() => _converter.Convert(_dataIn.ToList())).Start();
-
-            //if (_convertTask != currentTask)
-            //    return;
             _dispatcher.Invoke(() =>
             {
                 using (_dataOut.SuspendNotifications())
