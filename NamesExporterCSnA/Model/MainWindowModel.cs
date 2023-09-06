@@ -2,7 +2,6 @@
 using GeKtviWpfToolkit;
 using NamesExporterCSnA.Data;
 using NamesExporterCSnA.Data.UpdateLog;
-using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,13 +9,12 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace NamesExporterCSnA.Model
 {
-    public class MainWindowModel : BindableBase
+    public class MainWindowModel
     {
         public ObservableCollectionExtended<MaxExportedCable> DataIn { get; }
         public ReadOnlyObservableCollection<IDisplayableData> DataOut => new ReadOnlyObservableCollection<IDisplayableData>(_dataOut);
@@ -46,7 +44,7 @@ namespace NamesExporterCSnA.Model
 #endif
             #endregion
             IDisposable suspend = DataIn.SuspendNotifications();
-            
+
             DataIn.Clear();
 
             foreach (string[] row in values)
@@ -107,7 +105,7 @@ namespace NamesExporterCSnA.Model
             return data;
         }
 
-        public  void UpdateDataOut()
+        public void UpdateDataOut()
         {
             #region Debug
 #if DEBUG
@@ -115,9 +113,8 @@ namespace NamesExporterCSnA.Model
             Stopwatch sw = Stopwatch.StartNew();
 #endif
             #endregion
-            //Thread.Sleep(5000);
-            throw new InvalidOperationException("");
-            List<IDisplayableData> data =  Task.Run(() => _converter.Convert(DataIn.ToList())).Result;
+
+            List<IDisplayableData> data = Task.Run(() => _converter.Convert(DataIn.ToList())).Result;
 
             _dispatcher.Invoke(() =>
             {
