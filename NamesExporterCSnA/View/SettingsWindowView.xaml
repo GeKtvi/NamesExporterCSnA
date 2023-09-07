@@ -106,7 +106,7 @@
                                     Maximum="10000"
                                     Minimum="0"
                                     SmallChange="100"
-                                    Value="{Binding ApproximateCableLength.BoxWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}" />
+                                    Value="{Binding ApproximateCableLength.BoxWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock Margin="5,0,0,0" Text="Глубина" />
                                 <ui:NumberBox
                                     x:Name="Depth"
@@ -116,7 +116,7 @@
                                     Maximum="10000"
                                     Minimum="0"
                                     SmallChange="100"
-                                    Value="{Binding ApproximateCableLength.BoxDepth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}" />
+                                    Value="{Binding ApproximateCableLength.BoxDepth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock Margin="5,0,0,0" Text="Высота" />
                                 <ui:NumberBox
                                     x:Name="Heigth"
@@ -126,7 +126,7 @@
                                     Maximum="10000"
                                     Minimum="0"
                                     SmallChange="100"
-                                    Value="{Binding ApproximateCableLength.BoxHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}" />
+                                    Value="{Binding ApproximateCableLength.BoxHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock Margin="5,0,0,0" Text="Коэффициент" />
                                 <ui:NumberBox
                                     x:Name="Koef"
@@ -136,7 +136,7 @@
                                     Maximum="100"
                                     Minimum="0.1"
                                     SmallChange="0.1"
-                                    Value="{Binding ApproximateCableLength.K, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}" />
+                                    Value="{Binding ApproximateCableLength.K, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock Margin="5,0,0,0" Text="Ш * Г * В * k = К" />
                                 <TextBox
                                     Margin="5"

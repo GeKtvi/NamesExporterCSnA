@@ -318,13 +318,11 @@
         </Grid>
 
         <Grid>
-            <Border
-                Height="20"
-                Margin="9,244,135,36">
+            <Border Height="20" Margin="9,244,135,36">
                 <TextBlock
                     HorizontalAlignment="Center"
                     FontSize="10"
-                    Text="{Binding ElementName=Box, Path=DisplayableWidth}"/>
+                    Text="{Binding ElementName=Box, Path=DisplayableWidth}" />
             </Border>
             <Border
                 Width="35"
@@ -339,7 +337,7 @@
                 <TextBlock
                     HorizontalAlignment="Center"
                     FontSize="10"
-                    Text="{Binding ElementName=Box, Path=DisplayableHeight}"/>
+                    Text="{Binding ElementName=Box, Path=DisplayableHeight}" />
             </Border>
             <Border
                 Width="30"

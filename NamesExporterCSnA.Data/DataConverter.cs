@@ -4,6 +4,10 @@ using NamesExporterCSnA.Data.Marks.Exceptions;
 using NamesExporterCSnA.Data.Settings;
 using NamesExporterCSnA.Data.UpdateLog;
 using System.Data;
+using DynamicData.Binding;
+using System.Reactive;
+using System.Runtime;
+using System.Reactive.Linq;
 
 namespace NamesExporterCSnA.Data
 {
@@ -12,11 +16,7 @@ namespace NamesExporterCSnA.Data
         public CablesParser CablesParser { get; private set; }
         public CableMarkFactory CableMarkDKCFabric { get; private set; }
 
-        public event Action SettingsChanged
-        {
-            add { _settings.DataConverterSettingChanged += value; }
-            remove { _settings.DataConverterSettingChanged -= value; }
-        }
+        public IPreferencesSettings Settings => _settings;
         public IUpdateLogger Logger { get; private set; }
 
         private IPreferencesSettings _settings;
@@ -38,7 +38,6 @@ namespace NamesExporterCSnA.Data
         public List<IDisplayableData> Convert(List<MaxExportedCable> cables)
         {
             List<IDisplayableData> displayableData = new List<IDisplayableData>();
-            Logger.FreezeLogNotify();
             Logger.ClearLog();
             try
             {
@@ -74,7 +73,6 @@ namespace NamesExporterCSnA.Data
                 throw;
 #endif
             }
-            Logger.UnfreezeLogNotify();
             return displayableData;
         }
 

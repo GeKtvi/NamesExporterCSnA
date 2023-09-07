@@ -8,7 +8,5 @@ namespace NamesExporterCSnA.Data.Settings
 
         string CableMarkSelectedVendorName { get; set; }
         string[] PossibleCableMarkVendorName { get; set; }
-
-        event Action DataConverterSettingChanged;
     }
 }

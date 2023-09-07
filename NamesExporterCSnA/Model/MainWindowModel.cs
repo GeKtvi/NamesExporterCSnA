@@ -2,6 +2,7 @@
 using GeKtviWpfToolkit;
 using NamesExporterCSnA.Data;
 using NamesExporterCSnA.Data.UpdateLog;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,7 +32,10 @@ namespace NamesExporterCSnA.Model
             _dataOut = new ObservableCollectionExtended<IDisplayableData>();
 
             _converter = converter;
-            converter.SettingsChanged += () => UpdateDataOut();
+
+            _converter.Settings.WhenAnyPropertyChanged()
+                .Throttle(TimeSpan.FromMilliseconds(1000))
+                .Subscribe(_ => Task.Run(UpdateDataOut)); 
 
             _dispatcher = Dispatcher.CurrentDispatcher;
         }
@@ -114,9 +118,9 @@ namespace NamesExporterCSnA.Model
 #endif
             #endregion
 
-            List<IDisplayableData> data = Task.Run(() => _converter.Convert(DataIn.ToList())).Result;
+            List<IDisplayableData> data = Task.Run(() => _converter.Convert(DataIn.ToList())).Result; //TODO
 
-            _dispatcher.Invoke(() =>
+            _dispatcher.BeginInvoke(() =>
             {
                 using (_dataOut.SuspendNotifications())
                 {

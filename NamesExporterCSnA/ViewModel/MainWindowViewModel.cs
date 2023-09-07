@@ -25,6 +25,11 @@ namespace NamesExporterCSnA.ViewModel
         public ReadOnlyObservableCollection<IDisplayableData> DataOut => _mainWindowModel.DataOut;
 
         [Reactive]
+        public ReadOnlyObservableCollection<UpdateFail> FailList { get; }
+
+        [Reactive]
+        public LoggerStatus Status { get; private set; }
+
         public IUpdateLogger Logger { get => _mainWindowModel.Logger; }
 
         public IReactiveCommand ImportData { get; private set; }
@@ -65,6 +70,17 @@ namespace NamesExporterCSnA.ViewModel
                 .AutoRefresh()
                 .Select(x => Unit.Default)
                 .InvokeCommand(UpdateDataOut);
+
+            _mainWindowModel.Logger.FailList.ToObservableChangeSet()
+                .Throttle(TimeSpan.FromMilliseconds(100))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out ReadOnlyObservableCollection<UpdateFail> failList);
+            FailList = failList;
+
+            _mainWindowModel.Logger.WhenAnyPropertyChanged()
+                .Throttle(TimeSpan.FromMilliseconds(100))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(logger => Status = logger.Status);
         }
     }
 }

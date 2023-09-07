@@ -1,59 +1,52 @@
-﻿using Prism.Mvvm;
+﻿using DynamicData;
+using DynamicData.Binding;
+using Prism.Mvvm;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace NamesExporterCSnA.Data.UpdateLog
 {
-    public class UpdateLogger : BindableBase, IUpdateLogger
+    public class UpdateLogger : BindableBase, INotifyPropertyChanged, IUpdateLogger
     {
         public LoggerStatus Status
         {
             get
             {
-                lock (FailList)
+                lock (_failList)
                 {
-                    return FailList.Count == 0
+                    return _failList.Count == 0
                         ? LoggerStatus.NoFails
-                        : FailList.AsParallel().Any(x => x.Type == UpdateFailType.Error) ? LoggerStatus.HasErrorFails : LoggerStatus.HasExceptionFails;
+                        : _failList.Items.AsParallel().Any(x => x.Type == UpdateFailType.Error) ? LoggerStatus.HasErrorFails : LoggerStatus.HasExceptionFails;
                 }
             }
         }
 
-        public List<UpdateFail> FailList { get; private set; } = new List<UpdateFail>();
+        public ReadOnlyObservableCollection<UpdateFail> FailList { get; }
 
-        private bool _frozen = false;
+        private SourceList<UpdateFail> _failList = new SourceList<UpdateFail>();
 
-        public UpdateLogger() { }
+        public UpdateLogger() 
+        {
+            _failList.Connect()
+                .Bind(out ReadOnlyObservableCollection<UpdateFail> failList);
+            FailList = failList;
+        }
 
         public void Log(UpdateFail updateFail)
         {
-            FailList.Add(updateFail);
+            _failList.Add(updateFail);
             OnLogChanged();
         }
 
         public void ClearLog()
         {
-            FailList.Clear();
-            if (_frozen == false)
-                OnLogChanged();
+            _failList.Clear();
+            OnLogChanged();
         }
 
         private void OnLogChanged()
         {
-            if (_frozen == false)
-            {
-                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(Status)));
-                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(FailList)));
-            }
-        }
-
-        public void FreezeLogNotify()
-        {
-            _frozen = true;
-        }
-
-        public void UnfreezeLogNotify()
-        {
-            _frozen = false;
-            OnLogChanged();
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Status)));
         }
     }
 }
