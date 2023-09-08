@@ -5,9 +5,9 @@ namespace NamesExporterCSnA.View
     /// <summary>
     /// Interaction logic for UpdateFails.xaml
     /// </summary>
-    public partial class UpdateFails 
+    public partial class UpdateLoggerView
     {
-        public UpdateFails() : base()
+        public UpdateLoggerView() : base()
         {
             InitializeComponent();
         }

@@ -1,4 +1,5 @@
 ﻿using DynamicData;
+using DynamicData.Alias;
 using DynamicData.Binding;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
@@ -28,7 +29,8 @@ namespace NamesExporterCSnA.Data.UpdateLog
         public UpdateLogger() 
         {
             _failList.Connect()
-                .Bind(out ReadOnlyObservableCollection<UpdateFail> failList);
+                .Bind(out ReadOnlyObservableCollection<UpdateFail> failList)
+                .Subscribe();
             FailList = failList;
         }
 

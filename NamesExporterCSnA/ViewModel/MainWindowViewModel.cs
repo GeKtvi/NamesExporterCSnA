@@ -9,7 +9,6 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -25,12 +24,9 @@ namespace NamesExporterCSnA.ViewModel
         public ReadOnlyObservableCollection<IDisplayableData> DataOut => _mainWindowModel.DataOut;
 
         [Reactive]
-        public ReadOnlyObservableCollection<UpdateFail> FailList { get; }
+        public bool IsUpdateExecuting { get; private set; }
 
-        [Reactive]
-        public LoggerStatus Status { get; private set; }
-
-        public IUpdateLogger Logger { get => _mainWindowModel.Logger; }
+        public UpdateLoggerViewModel Logger { get; }
 
         public IReactiveCommand ImportData { get; private set; }
         public IReactiveCommand ExportData { get; private set; }
@@ -39,12 +35,14 @@ namespace NamesExporterCSnA.ViewModel
 
         private MainWindowModel _mainWindowModel;
 
-        public MainWindowViewModel(MainWindowModel mainWindowModel)
+        public MainWindowViewModel(MainWindowModel mainWindowModel, UpdateLoggerViewModel updateLoggerViewModel)
         {
             _mainWindowModel = mainWindowModel;
-            
+            Logger = updateLoggerViewModel;
+
             UpdateDataOut = ReactiveCommand.CreateRunInBackground(() => _mainWindowModel.UpdateDataOut());
             UpdateDataOut.ThrownExceptions.Subscribe(e => throw e);
+            UpdateDataOut.IsExecuting.BindTo(this, x => x.IsUpdateExecuting);
 
             ImportData = ReactiveCommand.Create(
                 _mainWindowModel.SetTextFromClipboard,
@@ -71,16 +69,21 @@ namespace NamesExporterCSnA.ViewModel
                 .Select(x => Unit.Default)
                 .InvokeCommand(UpdateDataOut);
 
-            _mainWindowModel.Logger.FailList.ToObservableChangeSet()
-                .Throttle(TimeSpan.FromMilliseconds(100))
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Bind(out ReadOnlyObservableCollection<UpdateFail> failList);
-            FailList = failList;
+            _mainWindowModel.SettingsChanged
+                .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
+                .Select(x => Unit.Default)
+                .InvokeCommand(UpdateDataOut);
 
-            _mainWindowModel.Logger.WhenAnyPropertyChanged()
-                .Throttle(TimeSpan.FromMilliseconds(100))
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(logger => Status = logger.Status);
+            IDisposable updateDataOutSubscribe = UpdateDataOut.Subscribe();
+            _mainWindowModel.SettingsChanged
+                .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
+                .Where(_ => IsUpdateExecuting)
+                .Subscribe(_ =>
+                    {
+                        updateDataOutSubscribe?.Dispose();
+                        updateDataOutSubscribe = UpdateDataOut.FirstAsync().Subscribe(_ => UpdateDataOut.Execute());
+                    }
+                );
         }
     }
 }

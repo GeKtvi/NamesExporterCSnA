@@ -36,6 +36,7 @@ namespace NamesExporterCSnA
                             .AddSingleton<MainWindowView>()
                             .AddSingleton<DataConverter>()
                             .AddSingleton<IUpdateLogger, UpdateLogger>()
+                            .AddSingleton<UpdateLoggerViewModel>()
                             .AddScoped<SettingsWindowModel>()
                             .AddScoped<SettingsWindowViewModel>()
                             .AddScoped<SettingsWindowView>()

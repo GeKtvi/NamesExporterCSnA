@@ -2,7 +2,6 @@
 using GeKtviWpfToolkit;
 using NamesExporterCSnA.Data;
 using NamesExporterCSnA.Data.UpdateLog;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +9,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Threading;
 
 namespace NamesExporterCSnA.Model
@@ -21,6 +20,7 @@ namespace NamesExporterCSnA.Model
         public ReadOnlyObservableCollection<IDisplayableData> DataOut => new ReadOnlyObservableCollection<IDisplayableData>(_dataOut);
         public IUpdateLogger Logger => _converter.Logger;
         public bool IsUpdateFrozen { get; set; } = false;
+        public IObservable<double> SettingsChanged { get; }
 
         private readonly ObservableCollectionExtended<IDisplayableData> _dataOut;
         private readonly Dispatcher _dispatcher;
@@ -32,10 +32,8 @@ namespace NamesExporterCSnA.Model
             _dataOut = new ObservableCollectionExtended<IDisplayableData>();
 
             _converter = converter;
-
-            _converter.Settings.WhenAnyPropertyChanged()
-                .Throttle(TimeSpan.FromMilliseconds(1000))
-                .Subscribe(_ => Task.Run(UpdateDataOut)); 
+            SettingsChanged = _converter.Settings.WhenAnyPropertyChanged()
+                                .Select(x => x.ApproximateCableLength.K);
 
             _dispatcher = Dispatcher.CurrentDispatcher;
         }
@@ -117,9 +115,8 @@ namespace NamesExporterCSnA.Model
             Stopwatch sw = Stopwatch.StartNew();
 #endif
             #endregion
-
-            List<IDisplayableData> data = Task.Run(() => _converter.Convert(DataIn.ToList())).Result; //TODO
-
+            List<IDisplayableData> data = _converter.Convert(DataIn.ToList());
+           
             _dispatcher.BeginInvoke(() =>
             {
                 using (_dataOut.SuspendNotifications())
