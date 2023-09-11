@@ -18,8 +18,7 @@ namespace NamesExporterCSnA.Data.Settings
                 _approximateCableLength.PropertyChanged += (s, e) =>
                 {
                     if (e.PropertyName != nameof(ApproximateCableLength.FinalMultiplier))
-                        OnDataConverterSettingChanged(new PropertyChangedEventArgs(nameof(ApproximateCableLength)));
-
+                        OnPropertyChanged(new PropertyChangedEventArgs(nameof(ApproximateCableLength)));
                 };
             }
         }
@@ -31,23 +30,16 @@ namespace NamesExporterCSnA.Data.Settings
             set => ApproximateCableLength = value;
         }
 
-        public string CableMarkSelectedVendorName { get; set; }
-        public string[] PossibleCableMarkVendorName { get; set; }
+        public string CableMarkSelectedVendorName { get; set; } = "{NotSet}";
+        public string[] PossibleCableMarkVendorName { get; set; } = { "{NotSet}" };
 
-        public event Action DataConverterSettingChanged;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public PreferencesSettings() { }
-
-        protected void OnDataConverterSettingChanged(PropertyChangedEventArgs eventArgs)
-        {
-            DataConverterSettingChanged?.Invoke();
-        }
 
         protected void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
         {
             PropertyChanged?.Invoke(this, eventArgs);
-            OnDataConverterSettingChanged(eventArgs);
         }
     }
 }

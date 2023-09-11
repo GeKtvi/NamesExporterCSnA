@@ -1,99 +1,87 @@
-﻿using GeKtviWpfToolkit;
+﻿using DynamicData;
+using DynamicData.Binding;
 using NamesExporterCSnA.Data;
-using NamesExporterCSnA.Data.UpdateLog;
 using NamesExporterCSnA.Model;
-using Prism.Commands;
-using Prism.Mvvm;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using System;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
-using System.Windows.Input;
+using System.Reactive;
+using System.Reactive.Linq;
 
 namespace NamesExporterCSnA.ViewModel
 {
-    public class MainWindowViewModel : BindableBase
+    public class MainWindowViewModel : ReactiveObject
     {
-        public ObservableCollection<MaxExportedCable> DataIn
-        {
-            get => _mainWindowModel.DataIn;
-        }
-        public ObservableCollection<IDisplayableData> DataOut
-        {
-            get => _mainWindowModel.DataOut;
-        }
+        [Reactive]
+        public ObservableCollectionExtended<MaxExportedCable> DataIn => _mainWindowModel.DataIn;
 
-        public IUpdateLogger Logger { get => _mainWindowModel.Logger; }
+        [Reactive]
+        public ReadOnlyObservableCollection<IDisplayableData> DataOut => _mainWindowModel.DataOut;
 
-        public ICommand ImportData { get; private set; }
-        public ICommand ExportData { get; private set; }
-        public ICommand ClearData { get; private set; }
+        [Reactive]
+        public bool IsUpdateExecuting { get; private set; }
 
-        private MainWindowModel _mainWindowModel { get; set; }
+        public UpdateLoggerViewModel Logger { get; }
 
-        public MainWindowViewModel(MainWindowModel mainWindowModel)
+        public IReactiveCommand ImportData { get; private set; }
+        public IReactiveCommand ExportData { get; private set; }
+        public IReactiveCommand ClearData { get; private set; }
+        public ReactiveCommand<Unit, Unit> UpdateDataOut { get; private set; }
+
+        private MainWindowModel _mainWindowModel;
+
+        public MainWindowViewModel(MainWindowModel mainWindowModel, UpdateLoggerViewModel updateLoggerViewModel)
         {
             _mainWindowModel = mainWindowModel;
+            Logger = updateLoggerViewModel;
 
-            ImportData = new DelegateCommand(SetTextFromClipboard);
-            ExportData = new DelegateCommand(SetTextToClipboard, CanExecuteExportData);
-            ClearData = new DelegateCommand(ClearDataIn, CanExecuteClearDataIn);
+            UpdateDataOut = ReactiveCommand.CreateRunInBackground(() => _mainWindowModel.UpdateDataOut());
+            UpdateDataOut.ThrownExceptions.Subscribe(e => throw e);
+            UpdateDataOut.IsExecuting.BindTo(this, x => x.IsUpdateExecuting);
 
-            DataIn.CollectionChanged += DataInCollectionChanged;
-            DataOut.CollectionChanged += DataOutCollectionChanged;
+            ImportData = ReactiveCommand.Create(
+                _mainWindowModel.SetTextFromClipboard,
+                UpdateDataOut.IsExecuting.Select(x => x == false),
+                RxApp.MainThreadScheduler);
+            ImportData.ThrownExceptions.Subscribe(e => throw e);
 
-            _mainWindowModel.PropertyChanged += (s, e) => OnPropertyChanged(e);
-            _mainWindowModel.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(DataIn) && DataIn != null)
-                {
-                    DataInCollectionChanged(s, null);
-                    DataIn.CollectionChanged += DataInCollectionChanged;
-                }
-            };
-            _mainWindowModel.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(DataOut) && DataOut != null)
-                {
-                    DataOutCollectionChanged(s, null);
-                    DataOut.CollectionChanged += DataOutCollectionChanged;
-                }
-            };
-        }
+            ExportData = ReactiveCommand.Create(
+                _mainWindowModel.SetDataOutToClipboard,
+                _mainWindowModel.DataOut.ToObservableChangeSet().Select(data => data != null && data.Count != 0)
+            );
+            ExportData.ThrownExceptions.Subscribe(e => throw e);
 
-        private void DataInCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            (ClearData as DelegateCommand).RaiseCanExecuteChanged();
-        }
+            ClearData = ReactiveCommand.Create(
+                _mainWindowModel.DataIn.Clear,
+                _mainWindowModel.DataIn.ToObservableChangeSet().Select(data => data != null && data.Count != 0)
+            );
+            ClearData.ThrownExceptions.Subscribe(e => throw e);
 
-        private void DataOutCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            (ExportData as DelegateCommand).RaiseCanExecuteChanged();
-        }
+            _mainWindowModel.DataIn.ToObservableChangeSet()
+                .ObserveOn(RxApp.TaskpoolScheduler)
+                .Throttle(TimeSpan.FromMilliseconds(25))
+                .AutoRefresh()
+                .Select(x => Unit.Default)
+                .InvokeCommand(UpdateDataOut);
 
-        private void SetTextFromClipboard()
-        {
-            var data = ClipboardHelper.ParseClipboardData();
-            if (data != null)
-                _mainWindowModel.SetDataIn(data);
-        }
+            _mainWindowModel.SettingsChanging
+                .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
+                .Select(x => Unit.Default)
+                .InvokeCommand(UpdateDataOut);
 
-        private void SetTextToClipboard()
-        {
-            ClipboardHelper.SetClipboardData(_mainWindowModel.GetDataAsListList());
-        }
-
-        private bool CanExecuteExportData()
-        {
-            return DataOut != null && DataOut.Count() != 0;
-        }
-
-        private void ClearDataIn()
-        {
-            _mainWindowModel.DataIn.Clear();
-        }
-
-        private bool CanExecuteClearDataIn()
-        {
-            return DataIn != null && DataIn.Count() != 0;
+            IDisposable updateDataOutSubscribe = UpdateDataOut.Subscribe();
+            _mainWindowModel.SettingsChanging
+                .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
+                .Where(_ => IsUpdateExecuting)
+                .Subscribe(_ =>
+                    {
+                        updateDataOutSubscribe?.Dispose();
+                        updateDataOutSubscribe = UpdateDataOut.FirstAsync().Subscribe(_ => UpdateDataOut.Execute());
+                    }
+                );
         }
     }
 }

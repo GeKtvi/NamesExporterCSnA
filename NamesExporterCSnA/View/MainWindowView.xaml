@@ -183,6 +183,7 @@
                 </DataGrid.GroupStyle>
             </tk:DataGridGK>
         </Grid>
+        
         <ui:Dialog
             x:Name="Dialog"
             Title="Ошибки обновления"
@@ -192,7 +193,7 @@
             MinHeight="300"
             MinWidth="200"
             DataContext="{Binding Logger}">
-            <localV:UpdateFails/>
+            <localV:UpdateLoggerView/>
         </ui:Dialog>
     </Grid>
 </ui:UiWindow>
