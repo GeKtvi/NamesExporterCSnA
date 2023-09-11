@@ -1,10 +1,10 @@
-﻿using NamesExporterCSnA.Data.Settings;
+﻿using NamesExporterCSnA.Data;
+using NamesExporterCSnA.Data.Settings;
 using System;
 using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Xml.Serialization;
-using NamesExporterCSnA.Data;
 
 namespace NamesExporterCSnA.Services
 {
@@ -37,8 +37,8 @@ namespace NamesExporterCSnA.Services
             catch (Exception)
             {
 #if !DEBUG
-                    save = new PreferencesSettings();
-                    fs.SetLength(0);
+                save = new PreferencesSettings();
+                fs.SetLength(0);
 #else
                 throw;
 #endif

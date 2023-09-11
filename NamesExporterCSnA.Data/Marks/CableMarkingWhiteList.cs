@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NamesExporterCSnA.Data.Marks.Exceptions
+﻿namespace NamesExporterCSnA.Data.Marks
 {
     public class CableMarkingWhiteList : List<string>
     {

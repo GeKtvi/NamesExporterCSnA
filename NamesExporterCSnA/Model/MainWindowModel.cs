@@ -1,15 +1,13 @@
 ﻿using DynamicData.Binding;
 using GeKtviWpfToolkit;
 using NamesExporterCSnA.Data;
-using NamesExporterCSnA.Data.UpdateLog;
+using NamesExporterCSnA.Data.Settings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Windows.Threading;
 
 namespace NamesExporterCSnA.Model
@@ -18,9 +16,9 @@ namespace NamesExporterCSnA.Model
     {
         public ObservableCollectionExtended<MaxExportedCable> DataIn { get; }
         public ReadOnlyObservableCollection<IDisplayableData> DataOut => new ReadOnlyObservableCollection<IDisplayableData>(_dataOut);
-        public IUpdateLogger Logger => _converter.Logger;
-        public bool IsUpdateFrozen { get; set; } = false;
-        public IObservable<double> SettingsChanged { get; }
+        public IPreferencesSettings Settings => _converter.Settings;
+        public IObservable<IPreferencesSettings> SettingsChanging =>
+            _converter.Settings.WhenAnyPropertyChanged();
 
         private readonly ObservableCollectionExtended<IDisplayableData> _dataOut;
         private readonly Dispatcher _dispatcher;
@@ -32,8 +30,6 @@ namespace NamesExporterCSnA.Model
             _dataOut = new ObservableCollectionExtended<IDisplayableData>();
 
             _converter = converter;
-            SettingsChanged = _converter.Settings.WhenAnyPropertyChanged()
-                                .Select(x => x.ApproximateCableLength.K);
 
             _dispatcher = Dispatcher.CurrentDispatcher;
         }
@@ -79,6 +75,11 @@ namespace NamesExporterCSnA.Model
             #endregion
         }
 
+        public void SetDataOutToClipboard()
+        {
+            ClipboardHelper.SetClipboardData(GetDataAsListList());
+        }
+
         public void SetTextFromClipboard()
         {
             List<string[]> data = ClipboardHelper.ParseClipboardData();
@@ -116,7 +117,7 @@ namespace NamesExporterCSnA.Model
 #endif
             #endregion
             List<IDisplayableData> data = _converter.Convert(DataIn.ToList());
-           
+
             _dispatcher.BeginInvoke(() =>
             {
                 using (_dataOut.SuspendNotifications())

@@ -2,7 +2,6 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace NamesExporterCSnA.View.Converters
 {
@@ -10,7 +9,7 @@ namespace NamesExporterCSnA.View.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            
+
             switch ((LoggerStatus)value)
             {
                 case LoggerStatus.NoFails:

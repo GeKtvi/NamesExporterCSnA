@@ -1,6 +1,4 @@
 ﻿using DynamicData;
-using DynamicData.Alias;
-using DynamicData.Binding;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -16,8 +14,8 @@ namespace NamesExporterCSnA.Data.UpdateLog
                 lock (_failList)
                 {
                     return _failList.Count == 0
-                        ? LoggerStatus.NoFails
-                        : _failList.Items.AsParallel().Any(x => x.Type == UpdateFailType.Error) ? LoggerStatus.HasErrorFails : LoggerStatus.HasExceptionFails;
+                        ? LoggerStatus.NoFails : _failList.Items.AsParallel().Any(x => x.Type == UpdateFailType.Error)
+                        ? LoggerStatus.HasErrorFails : LoggerStatus.HasExceptionFails;
                 }
             }
         }
@@ -26,7 +24,7 @@ namespace NamesExporterCSnA.Data.UpdateLog
 
         private SourceList<UpdateFail> _failList = new SourceList<UpdateFail>();
 
-        public UpdateLogger() 
+        public UpdateLogger()
         {
             _failList.Connect()
                 .Bind(out ReadOnlyObservableCollection<UpdateFail> failList)

@@ -26,7 +26,7 @@ namespace NamesExporterCSnA.ViewModel
 
         private readonly SettingsWindowModel _model;
 
-        public SettingsWindowViewModel(SettingsWindowModel model) 
+        public SettingsWindowViewModel(SettingsWindowModel model)
         {
             _model = model;
             _model.PropertyChanged += (s, e) => OnPropertyChanged(e);

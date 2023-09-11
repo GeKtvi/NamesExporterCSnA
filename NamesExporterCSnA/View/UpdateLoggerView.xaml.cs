@@ -1,6 +1,4 @@
-﻿using Wpf.Ui.Controls;
-
-namespace NamesExporterCSnA.View
+﻿namespace NamesExporterCSnA.View
 {
     /// <summary>
     /// Interaction logic for UpdateFails.xaml

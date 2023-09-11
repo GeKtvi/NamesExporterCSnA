@@ -30,10 +30,10 @@ namespace NamesExporterCSnA.Data.Settings
             set => ApproximateCableLength = value;
         }
 
-        public string CableMarkSelectedVendorName { get; set; }
-        public string[] PossibleCableMarkVendorName { get; set; }
+        public string CableMarkSelectedVendorName { get; set; } = "{NotSet}";
+        public string[] PossibleCableMarkVendorName { get; set; } = { "{NotSet}" };
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public PreferencesSettings() { }
 

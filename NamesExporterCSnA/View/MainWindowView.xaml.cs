@@ -49,12 +49,12 @@ namespace NamesExporterCSnA.View
             Properties.UI.Default.Save();
         }
 
-        private void ChangeUpdateFailsDialogVisibility() 
+        private void ChangeUpdateFailsDialogVisibility()
         {
             if (((MainWindowViewModel)DataContext).Logger.Status == LoggerStatus.NoFails)
                 return;
 
-            if(Dialog.IsShown)
+            if (Dialog.IsShown)
             {
                 Dialog.Hide();
                 return;

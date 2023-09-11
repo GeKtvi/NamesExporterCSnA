@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace NamesExporterCSnA.Data.Marks
+﻿namespace NamesExporterCSnA.Data.Marks
 {
     public class CableMark : FullNameBase, ICableMark, IFullName
     {

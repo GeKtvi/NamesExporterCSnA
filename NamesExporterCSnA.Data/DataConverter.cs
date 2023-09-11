@@ -4,9 +4,6 @@ using NamesExporterCSnA.Data.Marks.Exceptions;
 using NamesExporterCSnA.Data.Settings;
 using NamesExporterCSnA.Data.UpdateLog;
 using System.Data;
-using DynamicData.Binding;
-using System.Reactive;
-using System.Runtime;
 using System.Reactive.Linq;
 
 namespace NamesExporterCSnA.Data
@@ -15,7 +12,6 @@ namespace NamesExporterCSnA.Data
     {
         public CablesParser CablesParser { get; private set; }
         public CableMarkFactory CableMarkDKCFabric { get; private set; }
-
         public IPreferencesSettings Settings => _settings;
         public IUpdateLogger Logger { get; private set; }
 
@@ -68,7 +64,7 @@ namespace NamesExporterCSnA.Data
                             Source = "Модуль конвертации"
                         }
                     );
-                displayableData =  new List<IDisplayableData>();
+                displayableData = new List<IDisplayableData>();
 #else
                 throw;
 #endif

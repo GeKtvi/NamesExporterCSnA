@@ -1,8 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
-using GeKtviWpfToolkit;
 using NamesExporterCSnA.Data;
-using NamesExporterCSnA.Data.UpdateLog;
 using NamesExporterCSnA.Model;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -51,7 +49,7 @@ namespace NamesExporterCSnA.ViewModel
             ImportData.ThrownExceptions.Subscribe(e => throw e);
 
             ExportData = ReactiveCommand.Create(
-                () => ClipboardHelper.SetClipboardData(_mainWindowModel.GetDataAsListList()),
+                _mainWindowModel.SetDataOutToClipboard,
                 _mainWindowModel.DataOut.ToObservableChangeSet().Select(data => data != null && data.Count != 0)
             );
             ExportData.ThrownExceptions.Subscribe(e => throw e);
@@ -69,13 +67,13 @@ namespace NamesExporterCSnA.ViewModel
                 .Select(x => Unit.Default)
                 .InvokeCommand(UpdateDataOut);
 
-            _mainWindowModel.SettingsChanged
+            _mainWindowModel.SettingsChanging
                 .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
                 .Select(x => Unit.Default)
                 .InvokeCommand(UpdateDataOut);
 
             IDisposable updateDataOutSubscribe = UpdateDataOut.Subscribe();
-            _mainWindowModel.SettingsChanged
+            _mainWindowModel.SettingsChanging
                 .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
                 .Where(_ => IsUpdateExecuting)
                 .Subscribe(_ =>

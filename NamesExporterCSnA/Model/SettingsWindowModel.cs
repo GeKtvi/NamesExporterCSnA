@@ -25,7 +25,7 @@ namespace NamesExporterCSnA.Model
 
         private readonly IPreferencesSettings _preferencesSettings;
 
-        public SettingsWindowModel(IPreferencesSettings settings) 
+        public SettingsWindowModel(IPreferencesSettings settings)
         {
             _preferencesSettings = settings;
             _preferencesSettings.PropertyChanged += (s, e) => OnPropertyChanged(e);
