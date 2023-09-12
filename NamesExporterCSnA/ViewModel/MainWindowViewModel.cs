@@ -52,7 +52,6 @@ namespace NamesExporterCSnA.ViewModel
             ExportData = ReactiveCommand.Create(
                 _mainWindowModel.SetDataOutToClipboard,
                 _mainWindowModel.DataOut.ToObservableChangeSet()
-                //.Throttle(TimeSpan.FromMilliseconds(250), RxApp.TaskpoolScheduler)
                 .Select(_ => DataOut != null && DataOut.Count != 0)
             );
             ExportData.ThrownExceptions.Subscribe(e => throw e);
@@ -60,16 +59,19 @@ namespace NamesExporterCSnA.ViewModel
             ClearData = ReactiveCommand.Create(
                 _mainWindowModel.DataIn.Clear,
                 _mainWindowModel.DataIn.ToObservableChangeSet()
-                //.Throttle(TimeSpan.FromMilliseconds(25), RxApp.TaskpoolScheduler)
                 .Select(_ => DataIn != null && DataIn.Count != 0)
+                .CombineLatest(UpdateDataOut.IsExecuting, (canExecute, isUpdateDataOutExecuting) => canExecute == true && isUpdateDataOutExecuting == false)
             );
             ClearData.ThrownExceptions.Subscribe(e => throw e);
 
             _mainWindowModel.DataIn.ToObservableChangeSet()
-                .Throttle(TimeSpan.FromMilliseconds(2500))
-                .AutoRefresh()
-                //.Subscribe(_ => Debug.WriteLine("___"));
-                //.WhenAnyPropertyChanged()
+                .Throttle(TimeSpan.FromMilliseconds(25), RxApp.TaskpoolScheduler)
+                .WhenAnyPropertyChanged()
+                .Select(x => Unit.Default)
+                .InvokeCommand(UpdateDataOut);
+
+            _mainWindowModel.DataIn.ToObservableChangeSet()
+                .Throttle(TimeSpan.FromMilliseconds(25), RxApp.TaskpoolScheduler)
                 .Select(x => Unit.Default)
                 .InvokeCommand(UpdateDataOut);
 
