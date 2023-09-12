@@ -39,16 +39,22 @@ namespace NamesExporterCSnA.ViewModel
             _mainWindowModel = mainWindowModel;
             Logger = updateLoggerViewModel;
 
-            UpdateDataOut = ReactiveCommand.CreateRunInBackground(() => _mainWindowModel.UpdateDataOut());
+            //Configure UpdateDataOut command
+            //Binding IsExecuting to IsUpdateExecuting prop
+            UpdateDataOut = ReactiveCommand.CreateRunInBackground(_mainWindowModel.UpdateDataOut);
             UpdateDataOut.ThrownExceptions.Subscribe(e => throw e);
             UpdateDataOut.IsExecuting.BindTo(this, x => x.IsUpdateExecuting);
 
+            //Configure ImportData command
+            //Can be executed when UpdateDataOut isn't executing
             ImportData = ReactiveCommand.Create(
                 _mainWindowModel.SetTextFromClipboard,
                 UpdateDataOut.IsExecuting.Select(x => x == false),
                 RxApp.MainThreadScheduler);
             ImportData.ThrownExceptions.Subscribe(e => throw e);
 
+            //Configure ExportData command
+            //Can be executed when DataOut has elements
             ExportData = ReactiveCommand.Create(
                 _mainWindowModel.SetDataOutToClipboard,
                 _mainWindowModel.DataOut.ToObservableChangeSet()
@@ -56,6 +62,8 @@ namespace NamesExporterCSnA.ViewModel
             );
             ExportData.ThrownExceptions.Subscribe(e => throw e);
 
+            //Configure ClearData command
+            //Can be executed when DataIn has elements and UpdateDataOut isn't executing
             ClearData = ReactiveCommand.Create(
                 _mainWindowModel.DataIn.Clear,
                 _mainWindowModel.DataIn.ToObservableChangeSet()
@@ -64,22 +72,30 @@ namespace NamesExporterCSnA.ViewModel
             );
             ClearData.ThrownExceptions.Subscribe(e => throw e);
 
+            //Configure invoke of UpdateDataOut command
+            //Invokes when any property of DataIn items changed
             _mainWindowModel.DataIn.ToObservableChangeSet()
                 .Throttle(TimeSpan.FromMilliseconds(25), RxApp.TaskpoolScheduler)
                 .WhenAnyPropertyChanged()
                 .Select(x => Unit.Default)
                 .InvokeCommand(UpdateDataOut);
 
+            //Configure invoke of UpdateDataOut command
+            //Invokes when collection DataIn changed
             _mainWindowModel.DataIn.ToObservableChangeSet()
                 .Throttle(TimeSpan.FromMilliseconds(25), RxApp.TaskpoolScheduler)
                 .Select(x => Unit.Default)
                 .InvokeCommand(UpdateDataOut);
 
+            //Configure invoke of UpdateDataOut command
+            //Invokes when settings in model changed
             _mainWindowModel.SettingsChanging
                 .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
                 .Select(x => Unit.Default)
                 .InvokeCommand(UpdateDataOut);
 
+            //Configure deferred invoke of UpdateDataOut command
+            //Invokes subscribes deferred invoke of UpdateDataOut
             IDisposable updateDataOutSubscribe = null;
             _mainWindowModel.SettingsChanging
                 .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
