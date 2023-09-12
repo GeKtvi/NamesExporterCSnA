@@ -19,9 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GeKtviWpfToolkit" Version="0.0.3" />
+    <PackageReference Include="DynamicData" Version="7.14.2" />
+    <PackageReference Include="GeKtviWpfToolkit" Version="0.0.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
     <PackageReference Include="ReactiveUI" Version="19.4.1" />
     <PackageReference Include="ReactiveUI.Fody" Version="19.4.1" />
     <PackageReference Include="ReactiveUI.WPF" Version="19.4.1" />

@@ -12,8 +12,8 @@ namespace NamesExporterCSnA.Data
                 if (prop.Name != nameof(FullName))
                 {
                     string name = '{' + prop.Name + '}';
-                    object? propVal = prop.GetValue(this);
-                    string propValS = propVal.ToString();
+                    object propVal = prop.GetValue(this);
+                    string propValS = propVal?.ToString() ?? throw new InvalidDataException("Invalid value in property in heir of FullNameBase");
                     nameTemplate = nameTemplate.Replace(name, propValS);
                 }
 

@@ -8,7 +8,7 @@ namespace NamesExporterCSnA.Data.Marks
 {
     public class CableMarkFactory
     {
-        private string _selectedVendorName;
+        private string _selectedVendorName = "{NotSet}";
         public string SelectedVendorName
         {
             get => _selectedVendorName;

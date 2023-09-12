@@ -5,9 +5,9 @@ namespace NamesExporterCSnA.Data.Cables
     [XmlInclude(typeof(ColorMapper))]
     public class CableTemplate
     {
-        public string SubCableType { get; set; }
-        public string FullCableType { get; set; }
-        public string Template { get; set; }
+        public string SubCableType { get; set; } = "{NotSet}";
+        public string FullCableType { get; set; } = "{NotSet}";
+        public string Template { get; set; } = "{NotSet}";
         public bool HasFixedLength { get; set; }
         public double Length { get; set; }
         public bool HasColor { get; set; } = false;

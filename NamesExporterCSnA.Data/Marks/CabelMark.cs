@@ -1,5 +1,10 @@
-﻿namespace NamesExporterCSnA.Data.Marks
+﻿#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+using NamesExporterCSnA.Data.Cables;
+
+namespace NamesExporterCSnA.Data.Marks
 {
+    [Equals]
     public class CableMark : FullNameBase, ICableMark, IFullName
     {
         public string VendorCode { get; set; } = "{NotSet}";
@@ -29,20 +34,10 @@
             MaxSection = markDKC.MaxSection;
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is CableMark == false)
-                return false;
-
-            CableMark objectToCompare = obj as CableMark;
-
-            return objectToCompare.VendorCode == VendorCode &&
-                    objectToCompare.Symbol == Symbol &&
-                    objectToCompare.MinSection == MinSection &&
-                    objectToCompare.MaxSection == MaxSection &&
-                    objectToCompare.PackageAmount == PackageAmount &&
-                    objectToCompare.Template == Template &&
-                    objectToCompare.FullName == FullName;
-        }
+        public static bool operator ==(CableMark left, CableMark right) => Operator.Weave(left, right);
+        public static bool operator !=(CableMark left, CableMark right) => Operator.Weave(left, right);
     }
 }
+
+#pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)

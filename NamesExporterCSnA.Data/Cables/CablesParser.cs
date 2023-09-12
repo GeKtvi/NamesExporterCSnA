@@ -29,7 +29,7 @@ namespace NamesExporterCSnA.Data.Cables
             _config = config;
 
             _whiteList = new List<Regex>();
-            foreach (string? pattern in _config.Templates.Select(x => x.SubCableType))
+            foreach (string pattern in _config.Templates.Select(x => x.SubCableType))
                 _whiteList.Add(new Regex('^' + pattern));
 
 
@@ -59,16 +59,20 @@ namespace NamesExporterCSnA.Data.Cables
                     template = _config.GetTemplate(cableType);
                 }
 
-                ICable resultCable = null;
+                try
+                {
+                    ICable resultCable;
 
-                if (template.ParseOutType == nameof(Cable))
-                    resultCable = CreateCable(cable, template);
+                    if (template.ParseOutType == nameof(Cable))
+                        resultCable = CreateCable(cable, template);
+                    else if (template.ParseOutType == nameof(PurchasedCable))
+                        resultCable = CreatePurchasedCable(cable, template);
+                    else
+                        throw new InvalidDataException($"CableTemplate.ParseOutType has invalid type. It can be \"{nameof(Cable)}\" or \"{nameof(PurchasedCable)}\"");
 
-                if (template.ParseOutType == nameof(PurchasedCable))
-                    resultCable = CreatePurchasedCable(cable, template);
-
-                if (resultCable != null)
                     parsedCables.Add(resultCable);
+                }
+                catch (InvalidCableDataException) { }
             }
             return parsedCables;
         }
@@ -95,11 +99,11 @@ namespace NamesExporterCSnA.Data.Cables
                     parsedCable.Color = _config.GetTemplateColorOrDefault(template, cable.SchemeName);
                 return parsedCable;
             }
-            catch (InvalidCableDataException)
+            catch (InvalidCableDataException e)
             {
                 LogError("Информация о кабеле должна иметь верный формат \" DхD,D\"", cable);
+                throw e;
             }
-            return null;
         }
 
         private PurchasedCable CreatePurchasedCable(MaxExportedCable cable, CableTemplate template)

@@ -1,5 +1,8 @@
-﻿namespace NamesExporterCSnA.Data.Cables
+﻿#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+namespace NamesExporterCSnA.Data.Cables
 {
+    [Equals]
     public class Cable : FullNameBase, IFullName, ICable
     {
         public string CableType { get; set; } = "{NotSet}";
@@ -61,22 +64,10 @@
             NormativeDocument = cable.NormativeDocument;
         }
 
-        public override bool Equals(object obj)
-        {
-            Cable objectToCompare;
-            if (obj is Cable cable)
-                objectToCompare = cable;
-            else
-                return false;
-
-            bool isEqual = true;
-
-            foreach (System.Reflection.PropertyInfo prop in PropertyHolder<Cable>.GetProperties())
-                if (prop.GetType() != typeof(Cable) &&
-                    prop.GetValue(this).Equals(prop.GetValue(objectToCompare)) == false)
-                    isEqual = false;
-
-            return isEqual;
-        }
+        public static bool operator ==(Cable left, Cable right) => Operator.Weave(left, right);
+        public static bool operator !=(Cable left, Cable right) => Operator.Weave(left, right);
     }
 }
+
+#pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)

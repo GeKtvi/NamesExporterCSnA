@@ -16,7 +16,7 @@ namespace NamesExporterCSnA.Data
 
         public int Rounded => (Count - 1) / VendorPalletCount * VendorPalletCount + VendorPalletCount;
 
-        public string Measure { get; private set; }
+        public string Measure { get; private set; } = "{NotSet}";
 
         public DisplayableCable()
         {

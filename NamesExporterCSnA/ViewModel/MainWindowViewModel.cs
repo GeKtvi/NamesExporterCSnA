@@ -7,6 +7,7 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -50,20 +51,25 @@ namespace NamesExporterCSnA.ViewModel
 
             ExportData = ReactiveCommand.Create(
                 _mainWindowModel.SetDataOutToClipboard,
-                _mainWindowModel.DataOut.ToObservableChangeSet().Select(data => data != null && data.Count != 0)
+                _mainWindowModel.DataOut.ToObservableChangeSet()
+                //.Throttle(TimeSpan.FromMilliseconds(250), RxApp.TaskpoolScheduler)
+                .Select(_ => DataOut != null && DataOut.Count != 0)
             );
             ExportData.ThrownExceptions.Subscribe(e => throw e);
 
             ClearData = ReactiveCommand.Create(
                 _mainWindowModel.DataIn.Clear,
-                _mainWindowModel.DataIn.ToObservableChangeSet().Select(data => data != null && data.Count != 0)
+                _mainWindowModel.DataIn.ToObservableChangeSet()
+                //.Throttle(TimeSpan.FromMilliseconds(25), RxApp.TaskpoolScheduler)
+                .Select(_ => DataIn != null && DataIn.Count != 0)
             );
             ClearData.ThrownExceptions.Subscribe(e => throw e);
 
             _mainWindowModel.DataIn.ToObservableChangeSet()
-                .ObserveOn(RxApp.TaskpoolScheduler)
-                .Throttle(TimeSpan.FromMilliseconds(25))
+                .Throttle(TimeSpan.FromMilliseconds(2500))
                 .AutoRefresh()
+                //.Subscribe(_ => Debug.WriteLine("___"));
+                //.WhenAnyPropertyChanged()
                 .Select(x => Unit.Default)
                 .InvokeCommand(UpdateDataOut);
 
@@ -72,7 +78,7 @@ namespace NamesExporterCSnA.ViewModel
                 .Select(x => Unit.Default)
                 .InvokeCommand(UpdateDataOut);
 
-            IDisposable updateDataOutSubscribe = UpdateDataOut.Subscribe();
+            IDisposable updateDataOutSubscribe = null;
             _mainWindowModel.SettingsChanging
                 .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
                 .Where(_ => IsUpdateExecuting)

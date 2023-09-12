@@ -1,9 +1,9 @@
-﻿using Prism.Mvvm;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace NamesExporterCSnA.Data
 {
-    public class MaxExportedCable : BindableBase
+    public class MaxExportedCable : INotifyPropertyChanged
     {
         [Display(Name = "Обозначение")]
         public string SchemeName { get; set; } = string.Empty;
@@ -19,5 +19,6 @@ namespace NamesExporterCSnA.Data
             WireName = maxExportedCable.WireName;
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

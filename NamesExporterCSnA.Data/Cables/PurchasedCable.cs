@@ -4,9 +4,9 @@
     {
         public string FullName => CableType;
 
-        public string CableType { get; set; }
+        public string CableType { get; set; } = "{NotSet}";
         public double Length { get; set; }
-        public string SchemeName { get; set; }
+        public string SchemeName { get; set; } = "{NotSet}";
 
         public bool HasFixedLength => true;
         public int WireCount => 0;

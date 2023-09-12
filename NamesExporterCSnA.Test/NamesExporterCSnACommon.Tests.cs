@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NamesExporterCSnA.Data;
 using NamesExporterCSnA.Data.Cables;
 using NamesExporterCSnA.Data.Marks;
-using NamesExporterCSnA.Data.Marks.Exceptions;
 using NamesExporterCSnA.Data.Settings;
 using NamesExporterCSnA.Data.UpdateLog;
 
@@ -180,7 +179,7 @@ namespace NamesExporterCSnA.Tests
                     Length = 1
                 },
             };
-
+            
             CollectionAssert.AreEqual(cablesResult, cablesExpected);
         }
     }

@@ -33,7 +33,7 @@ namespace NamesExporterCSnA.Data.Settings
         public string CableMarkSelectedVendorName { get; set; } = "{NotSet}";
         public string[] PossibleCableMarkVendorName { get; set; } = { "{NotSet}" };
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public PreferencesSettings() { }
 

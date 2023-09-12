@@ -89,9 +89,9 @@
                                 Margin="0"
                                 VerticalAlignment="Center">
                                 <local:BoxVisualize
-                                    DisplayableDepth="{Binding ElementName=Depth, Path=Value}"
-                                    DisplayableHeight="{Binding ElementName=Heigth, Path=Value}"
-                                    DisplayableWidth="{Binding ElementName=Width, Path=Value}" />
+                                    DisplayableDepth="{Binding ElementName=DepthNumberBox, Path=Value}"
+                                    DisplayableHeight="{Binding ElementName=HeigthNumberBox, Path=Value}"
+                                    DisplayableWidth="{Binding ElementName=WidthNumberBox, Path=Value}" />
                             </Viewbox>
                             <StackPanel
                                 x:Name="PropPanel"
@@ -99,7 +99,7 @@
                                 Grid.Column="1">
                                 <TextBlock Margin="5,0,0,0" Text="Ширина" />
                                 <ui:NumberBox
-                                    x:Name="Width"
+                                    x:Name="WidthNumberBox"
                                     Margin="5"
                                     LargeChange="1000"
                                     MaxDecimalPlaces="0"
@@ -109,7 +109,7 @@
                                     Value="{Binding ApproximateCableLength.BoxWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock Margin="5,0,0,0" Text="Глубина" />
                                 <ui:NumberBox
-                                    x:Name="Depth"
+                                    x:Name="DepthNumberBox"
                                     Margin="5"
                                     LargeChange="1000"
                                     MaxDecimalPlaces="0"
@@ -119,7 +119,7 @@
                                     Value="{Binding ApproximateCableLength.BoxDepth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock Margin="5,0,0,0" Text="Высота" />
                                 <ui:NumberBox
-                                    x:Name="Heigth"
+                                    x:Name="HeigthNumberBox"
                                     Margin="5"
                                     LargeChange="1000"
                                     MaxDecimalPlaces="0"
