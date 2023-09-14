@@ -7,10 +7,10 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using GeKtviWpfToolkit.Reactive.NotifyPropertyChanged;
 
 namespace NamesExporterCSnA.ViewModel
 {
@@ -73,17 +73,11 @@ namespace NamesExporterCSnA.ViewModel
             ClearData.ThrownExceptions.Subscribe(e => throw e);
 
             //Configure invoke of UpdateDataOut command
-            //Invokes when any property of DataIn items changed
-            _mainWindowModel.DataIn.ToObservableChangeSet()
-                .Throttle(TimeSpan.FromMilliseconds(25), RxApp.TaskpoolScheduler)
-                .WhenAnyPropertyChanged()
-                .Select(x => Unit.Default)
-                .InvokeCommand(UpdateDataOut);
-
-            //Configure invoke of UpdateDataOut command
             //Invokes when collection DataIn changed
             _mainWindowModel.DataIn.ToObservableChangeSet()
-                .Throttle(TimeSpan.FromMilliseconds(25), RxApp.TaskpoolScheduler)
+                .ObserveOn(RxApp.TaskpoolScheduler)
+                .AutoRefreshOnObservable(t => t.WhenAnyPropertyChangedLight(TimeSpan.FromMilliseconds(25)), TimeSpan.FromMilliseconds(25))
+                .Throttle(TimeSpan.FromMilliseconds(50))
                 .Select(x => Unit.Default)
                 .InvokeCommand(UpdateDataOut);
 

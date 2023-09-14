@@ -148,11 +148,11 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding SchemeName, UpdateSourceTrigger=PropertyChanged, Delay=250}"
+                        Binding="{Binding SchemeName, UpdateSourceTrigger=PropertyChanged, Delay=500}"
                         Header="Обозначение" />
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding WireName, UpdateSourceTrigger=PropertyChanged, Delay=250}"
+                        Binding="{Binding WireName, UpdateSourceTrigger=PropertyChanged, Delay=500}"
                         Header="Наименование" />
                 </DataGrid.Columns>
 

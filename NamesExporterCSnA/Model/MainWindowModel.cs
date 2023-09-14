@@ -1,4 +1,5 @@
-﻿using DynamicData.Binding;
+﻿using DynamicData;
+using DynamicData.Binding;
 using GeKtviWpfToolkit;
 using NamesExporterCSnA.Data;
 using NamesExporterCSnA.Data.Settings;
