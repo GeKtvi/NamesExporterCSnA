@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
+using GeKtviWpfToolkit.Reactive.NotifyPropertyChanged;
 using NamesExporterCSnA.Data;
 using NamesExporterCSnA.Model;
 using ReactiveUI;
@@ -10,7 +11,6 @@ using System.Data;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using GeKtviWpfToolkit.Reactive.NotifyPropertyChanged;
 
 namespace NamesExporterCSnA.ViewModel
 {
@@ -39,22 +39,16 @@ namespace NamesExporterCSnA.ViewModel
             _mainWindowModel = mainWindowModel;
             Logger = updateLoggerViewModel;
 
-            //Configure UpdateDataOut command
-            //Binding IsExecuting to IsUpdateExecuting prop
-            UpdateDataOut = ReactiveCommand.CreateRunInBackground(_mainWindowModel.UpdateDataOut);
+            UpdateDataOut = ReactiveCommand.CreateRunInBackground(_mainWindowModel.RunUpdateDataOut);
             UpdateDataOut.ThrownExceptions.Subscribe(e => throw e);
             UpdateDataOut.IsExecuting.BindTo(this, x => x.IsUpdateExecuting);
 
-            //Configure ImportData command
-            //Can be executed when UpdateDataOut isn't executing
             ImportData = ReactiveCommand.Create(
                 _mainWindowModel.SetTextFromClipboard,
                 UpdateDataOut.IsExecuting.Select(x => x == false),
                 RxApp.MainThreadScheduler);
             ImportData.ThrownExceptions.Subscribe(e => throw e);
 
-            //Configure ExportData command
-            //Can be executed when DataOut has elements
             ExportData = ReactiveCommand.Create(
                 _mainWindowModel.SetDataOutToClipboard,
                 _mainWindowModel.DataOut.ToObservableChangeSet()
@@ -62,8 +56,6 @@ namespace NamesExporterCSnA.ViewModel
             );
             ExportData.ThrownExceptions.Subscribe(e => throw e);
 
-            //Configure ClearData command
-            //Can be executed when DataIn has elements and UpdateDataOut isn't executing
             ClearData = ReactiveCommand.Create(
                 _mainWindowModel.DataIn.Clear,
                 _mainWindowModel.DataIn.ToObservableChangeSet()
@@ -72,34 +64,17 @@ namespace NamesExporterCSnA.ViewModel
             );
             ClearData.ThrownExceptions.Subscribe(e => throw e);
 
-            //Configure invoke of UpdateDataOut command
-            //Invokes when collection DataIn changed
-            _mainWindowModel.DataIn.ToObservableChangeSet()
+            IObservable<Unit> updateDataAutoRefresh = _mainWindowModel.DataIn.ToObservableChangeSet()
                 .ObserveOn(RxApp.TaskpoolScheduler)
                 .AutoRefreshOnObservable(t => t.WhenAnyPropertyChangedLight(TimeSpan.FromMilliseconds(25)), TimeSpan.FromMilliseconds(25))
-                .Throttle(TimeSpan.FromMilliseconds(50))
-                .Select(x => Unit.Default)
-                .InvokeCommand(UpdateDataOut);
+                .Throttle(TimeSpan.FromMilliseconds(100))
+                .Select(x => Unit.Default);
 
-            //Configure invoke of UpdateDataOut command
-            //Invokes when settings in model changed
-            _mainWindowModel.SettingsChanging
+            IObservable<Unit> updateDataSettingsChanging = _mainWindowModel.SettingsChanging
                 .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
-                .Select(x => Unit.Default)
-                .InvokeCommand(UpdateDataOut);
+                .Select(x => Unit.Default);
 
-            //Configure deferred invoke of UpdateDataOut command
-            //Invokes subscribes deferred invoke of UpdateDataOut
-            IDisposable updateDataOutSubscribe = null;
-            _mainWindowModel.SettingsChanging
-                .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
-                .Where(_ => IsUpdateExecuting)
-                .Subscribe(_ =>
-                    {
-                        updateDataOutSubscribe?.Dispose();
-                        updateDataOutSubscribe = UpdateDataOut.FirstAsync().Subscribe(_ => UpdateDataOut.Execute());
-                    }
-                );
+            updateDataAutoRefresh.Merge(updateDataSettingsChanging).InvokeCommand(UpdateDataOut);
         }
     }
 }

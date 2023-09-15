@@ -10,6 +10,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace NamesExporterCSnA.Model
@@ -24,7 +26,10 @@ namespace NamesExporterCSnA.Model
 
         private readonly ObservableCollectionExtended<IDisplayableData> _dataOut;
         private readonly Dispatcher _dispatcher;
-        private DataConverter _converter;
+        private DataConverter _converter; 
+        private object _updateDataOutRunningLock = new();
+        private CancellationTokenSource _tokenSourceUpdateDataOut;
+        private Task _updateDataOutTask;
 
         public MainWindowModel(DataConverter converter)
         {
@@ -79,12 +84,29 @@ namespace NamesExporterCSnA.Model
 
         public void SetDataOutToClipboard()
         {
-            ClipboardHelper.SetClipboardData(GetDataAsListList());
+            try
+            {
+                ClipboardHelper.SetClipboardData(GetDataAsListList());
+            }
+            catch (System.Runtime.InteropServices.COMException e)
+            {
+                if (e.HResult != -2147221040)
+                    throw;
+            }
         }
 
         public void SetTextFromClipboard()
         {
-            List<string[]> data = ClipboardHelper.ParseClipboardData();
+            List<string[]> data = null;
+            try
+            {
+                data = ClipboardHelper.ParseClipboardData();
+            }
+            catch (System.Runtime.InteropServices.COMException e)
+            {
+                if (e.HResult != -2147221040)
+                    throw;
+            }
             SetDataIn(data ?? new List<string[]>());
         }
 
@@ -110,7 +132,55 @@ namespace NamesExporterCSnA.Model
             return data;
         }
 
-        public void UpdateDataOut()
+        public async void RunUpdateDataOut()
+        {
+            lock(_updateDataOutRunningLock)
+            {
+                if (_updateDataOutTask != null && _updateDataOutTask.Status == TaskStatus.Running)
+                {
+                    _tokenSourceUpdateDataOut?.Cancel();
+                    #region Debug
+#if DEBUG
+                    Debug.WriteLine($"UpdateDataOut start cancel - {DateTime.Now}");
+#endif
+                    #endregion
+                    return;
+                }
+
+                _tokenSourceUpdateDataOut = new CancellationTokenSource();
+                CancellationToken token = _tokenSourceUpdateDataOut.Token;
+
+                _updateDataOutTask = Task.Run(() => UpdateDataOut(token), token);
+            }
+
+            try
+            {
+                await _updateDataOutTask;
+            }
+            catch (AggregateException ae) 
+            {
+                if (!ae.InnerExceptions.Select(x => x is OperationCanceledException).Any())
+                    throw ae;
+            }
+            catch(OperationCanceledException) { }
+            finally
+            {
+                _tokenSourceUpdateDataOut?.Dispose();
+                _tokenSourceUpdateDataOut = null;
+            }
+
+            if (_updateDataOutTask.IsCanceled)
+            {
+                #region Debug
+#if DEBUG
+                Debug.WriteLine($"Start re invoke UpdateDataOut - {DateTime.Now}");
+#endif
+                #endregion
+                RunUpdateDataOut();
+            }
+        }
+
+        public void UpdateDataOut(CancellationToken token)
         {
             #region Debug
 #if DEBUG
@@ -118,7 +188,7 @@ namespace NamesExporterCSnA.Model
             Stopwatch sw = Stopwatch.StartNew();
 #endif
             #endregion
-            List<IDisplayableData> data = _converter.Convert(DataIn.ToList());
+            List<IDisplayableData> data = _converter.Convert(DataIn.ToList(), token);
 
             _dispatcher.BeginInvoke(() =>
             {
