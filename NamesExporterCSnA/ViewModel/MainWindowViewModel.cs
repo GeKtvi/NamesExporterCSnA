@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
+using GeKtviWpfToolkit.Reactive.NotifyPropertyChanged;
 using NamesExporterCSnA.Data;
 using NamesExporterCSnA.Model;
 using ReactiveUI;
@@ -7,10 +8,10 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace NamesExporterCSnA.ViewModel
 {
@@ -39,7 +40,7 @@ namespace NamesExporterCSnA.ViewModel
             _mainWindowModel = mainWindowModel;
             Logger = updateLoggerViewModel;
 
-            UpdateDataOut = ReactiveCommand.CreateRunInBackground(() => _mainWindowModel.UpdateDataOut());
+            UpdateDataOut = ReactiveCommand.CreateRunInBackground(_mainWindowModel.RunUpdateDataOut);
             UpdateDataOut.ThrownExceptions.Subscribe(e => throw e);
             UpdateDataOut.IsExecuting.BindTo(this, x => x.IsUpdateExecuting);
 
@@ -64,32 +65,17 @@ namespace NamesExporterCSnA.ViewModel
             );
             ClearData.ThrownExceptions.Subscribe(e => throw e);
 
-            _mainWindowModel.DataIn.ToObservableChangeSet()
-                .Throttle(TimeSpan.FromMilliseconds(25), RxApp.TaskpoolScheduler)
-                .WhenAnyPropertyChanged()
-                .Select(x => Unit.Default)
-                .InvokeCommand(UpdateDataOut);
+            IObservable<Unit> updateDataAutoRefresh = _mainWindowModel.DataIn.ToObservableChangeSet()
+                .ObserveOn(RxApp.TaskpoolScheduler)
+                .AutoRefreshOnObservable(t => t.WhenAnyPropertyChangedLight(TimeSpan.FromMilliseconds(25)), TimeSpan.FromMilliseconds(25))
+                .Throttle(TimeSpan.FromMilliseconds(500))
+                .Select(x => Unit.Default);
 
-            _mainWindowModel.DataIn.ToObservableChangeSet()
-                .Throttle(TimeSpan.FromMilliseconds(25), RxApp.TaskpoolScheduler)
-                .Select(x => Unit.Default)
-                .InvokeCommand(UpdateDataOut);
-
-            _mainWindowModel.SettingsChanging
+            IObservable<Unit> updateDataSettingsChanging = _mainWindowModel.SettingsChanging
                 .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
-                .Select(x => Unit.Default)
-                .InvokeCommand(UpdateDataOut);
+                .Select(x => Unit.Default);
 
-            IDisposable updateDataOutSubscribe = null;
-            _mainWindowModel.SettingsChanging
-                .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
-                .Where(_ => IsUpdateExecuting)
-                .Subscribe(_ =>
-                    {
-                        updateDataOutSubscribe?.Dispose();
-                        updateDataOutSubscribe = UpdateDataOut.FirstAsync().Subscribe(_ => UpdateDataOut.Execute());
-                    }
-                );
+            Observable.Merge(updateDataAutoRefresh, updateDataSettingsChanging).InvokeCommand(UpdateDataOut);
         }
     }
 }

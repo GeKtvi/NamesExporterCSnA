@@ -31,13 +31,17 @@ namespace NamesExporterCSnA.Data
             CableMarkDKCFabric = new(Logger, _settings, cableMarkVendorsData, cableForMarkingWhiteList);
         }
 
-        public List<IDisplayableData> Convert(List<MaxExportedCable> cables)
+        public List<IDisplayableData> Convert(List<MaxExportedCable> cables, CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             List<IDisplayableData> displayableData = new List<IDisplayableData>();
             Logger.ClearLog();
             try
             {
+                ThrowIfCancellationRequested(token);
+
                 List<ICable> parsed = CablesParser.Parse(cables);
+                ThrowIfCancellationRequested(token);
 
                 System.Collections.Concurrent.ConcurrentBag<ICableMark> marks = new();
 
@@ -45,11 +49,16 @@ namespace NamesExporterCSnA.Data
                     {
                         foreach (ICableMark mark in CableMarkDKCFabric.CreateMarksForCable(cable))
                             marks.Add(mark);
+                        ThrowIfCancellationRequested(token);
                     }
                 );
 
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCable, ICable>(parsed));
+                ThrowIfCancellationRequested(token);
+
                 displayableData.AddRange(ConvertToIDisplayableData<DisplayableCableMark, ICableMark>(marks.ToList()));
+                ThrowIfCancellationRequested(token);
+
             }
             catch (Exception ex)
             {
@@ -70,6 +79,15 @@ namespace NamesExporterCSnA.Data
 #endif
             }
             return displayableData;
+        }
+
+        private void ThrowIfCancellationRequested(CancellationToken token)
+        {
+            if (token.IsCancellationRequested)
+            {
+                Logger.ClearLog();
+                token.ThrowIfCancellationRequested();
+            }
         }
 
         private static List<IDisplayableData> ConvertToIDisplayableData<DisplayableObj, GroupingObj>(List<GroupingObj> objects)

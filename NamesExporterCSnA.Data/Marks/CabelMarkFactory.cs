@@ -102,7 +102,10 @@ namespace NamesExporterCSnA.Data.Marks
                 IEnumerable<ICableMark> foundMarks = _selectedCableMarkVendorsData.ExistingMarks.Where(x => x.Symbol == symbol);
 
                 if (foundMarks.Count() == 0)
+                {
                     LogSymbolNotFound(sourceCable, symbol);
+                    continue;
+                }
 
                 ICableMark fendedMark = foundMarks
                     .Where(item => item.MaxSection >= sourceCable.WireSection && item.MinSection <= sourceCable.WireSection)
@@ -118,7 +121,7 @@ namespace NamesExporterCSnA.Data.Marks
                     symbolsExceptedSectionNotFound.Add(symbol);
             }
 
-            if (symbolsExceptedSectionNotFound.Count() != 0)
+            if (symbolsExceptedSectionNotFound.Any())
                 LogMarkExceptSectionNotFound(sourceCable, symbolsExceptedSectionNotFound.Distinct());
 
             return marks;
