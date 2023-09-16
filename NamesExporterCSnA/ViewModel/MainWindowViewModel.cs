@@ -11,6 +11,7 @@ using System.Data;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace NamesExporterCSnA.ViewModel
 {
@@ -67,14 +68,14 @@ namespace NamesExporterCSnA.ViewModel
             IObservable<Unit> updateDataAutoRefresh = _mainWindowModel.DataIn.ToObservableChangeSet()
                 .ObserveOn(RxApp.TaskpoolScheduler)
                 .AutoRefreshOnObservable(t => t.WhenAnyPropertyChangedLight(TimeSpan.FromMilliseconds(25)), TimeSpan.FromMilliseconds(25))
-                .Throttle(TimeSpan.FromMilliseconds(100))
+                .Throttle(TimeSpan.FromMilliseconds(500))
                 .Select(x => Unit.Default);
 
             IObservable<Unit> updateDataSettingsChanging = _mainWindowModel.SettingsChanging
                 .Throttle(TimeSpan.FromMilliseconds(500), RxApp.TaskpoolScheduler)
                 .Select(x => Unit.Default);
 
-            updateDataAutoRefresh.Merge(updateDataSettingsChanging).InvokeCommand(UpdateDataOut);
+            Observable.Merge(updateDataAutoRefresh, updateDataSettingsChanging).InvokeCommand(UpdateDataOut);
         }
     }
 }

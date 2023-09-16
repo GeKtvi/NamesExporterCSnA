@@ -26,7 +26,7 @@ namespace NamesExporterCSnA.Model
 
         private readonly ObservableCollectionExtended<IDisplayableData> _dataOut;
         private readonly Dispatcher _dispatcher;
-        private DataConverter _converter; 
+        private DataConverter _converter;
         private object _updateDataOutRunningLock = new();
         private CancellationTokenSource _tokenSourceUpdateDataOut;
         private Task _updateDataOutTask;
@@ -134,11 +134,13 @@ namespace NamesExporterCSnA.Model
 
         public async void RunUpdateDataOut()
         {
-            lock(_updateDataOutRunningLock)
+            lock (_updateDataOutRunningLock)
             {
-                if (_updateDataOutTask != null && _updateDataOutTask.Status == TaskStatus.Running)
+                if (_updateDataOutTask is not null && 
+                    _tokenSourceUpdateDataOut is not null && 
+                    _updateDataOutTask.Status == TaskStatus.Running)
                 {
-                    _tokenSourceUpdateDataOut?.Cancel();
+                    _tokenSourceUpdateDataOut.Cancel();
                     #region Debug
 #if DEBUG
                     Debug.WriteLine($"UpdateDataOut start cancel - {DateTime.Now}");
@@ -153,20 +155,24 @@ namespace NamesExporterCSnA.Model
                 _updateDataOutTask = Task.Run(() => UpdateDataOut(token), token);
             }
 
+            bool lockWasTaken = false;
             try
             {
                 await _updateDataOutTask;
+                Monitor.Enter(_updateDataOutRunningLock, ref lockWasTaken);
             }
-            catch (AggregateException ae) 
+            catch (AggregateException ae)
             {
                 if (!ae.InnerExceptions.Select(x => x is OperationCanceledException).Any())
                     throw ae;
             }
-            catch(OperationCanceledException) { }
+            catch (OperationCanceledException) { }
             finally
             {
                 _tokenSourceUpdateDataOut?.Dispose();
                 _tokenSourceUpdateDataOut = null;
+                if (lockWasTaken)
+                    Monitor.Exit(_updateDataOutRunningLock);
             }
 
             if (_updateDataOutTask.IsCanceled)
@@ -188,16 +194,34 @@ namespace NamesExporterCSnA.Model
             Stopwatch sw = Stopwatch.StartNew();
 #endif
             #endregion
-            List<IDisplayableData> data = _converter.Convert(DataIn.ToList(), token);
+            token.ThrowIfCancellationRequested();
+            List<MaxExportedCable> dataIn = null;
 
-            _dispatcher.BeginInvoke(() =>
+            //Starts copying on the dispatcher thread to avoid changes during copying
+            _dispatcher.Invoke(() => dataIn = DataIn.ToList(), DispatcherPriority.Normal, token);
+
+            token.ThrowIfCancellationRequested();
+             
+            List<IDisplayableData> data = _converter.Convert(dataIn, token);
+            token.ThrowIfCancellationRequested();
+            _dispatcher.Invoke(() =>
             {
+                #region Debug
+#if DEBUG
+                Stopwatch sw = Stopwatch.StartNew();
+#endif
+                #endregion
                 using (_dataOut.SuspendNotifications())
                 {
                     _dataOut.Clear();
                     _dataOut.AddRange(data);
                 }
-            });
+                #region Debug
+#if DEBUG
+                Debug.WriteLine($"  Set time - {sw.ElapsedMilliseconds} ms");
+#endif
+                #endregion
+            }, DispatcherPriority.Normal, token);
             #region Debug
 #if DEBUG
             Debug.WriteLine($"  Update time - {sw.ElapsedMilliseconds} ms");
