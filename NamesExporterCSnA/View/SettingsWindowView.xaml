@@ -93,56 +93,61 @@
                                     DisplayableHeight="{Binding ElementName=HeigthNumberBox, Path=Value}"
                                     DisplayableWidth="{Binding ElementName=WidthNumberBox, Path=Value}" />
                             </Viewbox>
-                            <StackPanel
-                                x:Name="PropPanel"
-                                Grid.Row="0"
-                                Grid.Column="1">
-                                <TextBlock Margin="5,0,0,0" Text="Ширина" />
-                                <ui:NumberBox
-                                    x:Name="WidthNumberBox"
-                                    Margin="5"
-                                    LargeChange="1000"
-                                    MaxDecimalPlaces="0"
-                                    Maximum="10000"
-                                    Minimum="0"
-                                    SmallChange="100"
-                                    Value="{Binding ApproximateCableLength.BoxWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock Margin="5,0,0,0" Text="Глубина" />
-                                <ui:NumberBox
-                                    x:Name="DepthNumberBox"
-                                    Margin="5"
-                                    LargeChange="1000"
-                                    MaxDecimalPlaces="0"
-                                    Maximum="10000"
-                                    Minimum="0"
-                                    SmallChange="100"
-                                    Value="{Binding ApproximateCableLength.BoxDepth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock Margin="5,0,0,0" Text="Высота" />
-                                <ui:NumberBox
-                                    x:Name="HeigthNumberBox"
-                                    Margin="5"
-                                    LargeChange="1000"
-                                    MaxDecimalPlaces="0"
-                                    Maximum="10000"
-                                    Minimum="0"
-                                    SmallChange="100"
-                                    Value="{Binding ApproximateCableLength.BoxHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock Margin="5,0,0,0" Text="Коэффициент" />
-                                <ui:NumberBox
-                                    x:Name="Koef"
-                                    Margin="5"
-                                    LargeChange="1"
-                                    MaxDecimalPlaces="2"
-                                    Maximum="100"
-                                    Minimum="0.1"
-                                    SmallChange="0.1"
-                                    Value="{Binding ApproximateCableLength.K, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock Margin="5,0,0,0" Text="Ш * Г * В * k = К" />
-                                <TextBox
-                                    Margin="5"
-                                    IsReadOnly="True"
-                                    Text="{Binding ApproximateCableLength.FinalMultiplier, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
-                            </StackPanel>
+                            <DockPanel Grid.Row="0" Grid.Column="1">
+                                <StackPanel
+                                    x:Name="PropPanel"
+                                    VerticalAlignment="Stretch"
+                                    DockPanel.Dock="Top">
+                                    <TextBlock Margin="5,0,0,0" Text="Ширина" />
+                                    <ui:NumberBox
+                                        x:Name="WidthNumberBox"
+                                        Margin="5"
+                                        LargeChange="1000"
+                                        MaxDecimalPlaces="0"
+                                        Maximum="10000"
+                                        Minimum="0"
+                                        SmallChange="100"
+                                        Value="{Binding ApproximateCableLength.BoxWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    <TextBlock Margin="5,0,0,0" Text="Глубина" />
+                                    <ui:NumberBox
+                                        x:Name="DepthNumberBox"
+                                        Margin="5"
+                                        LargeChange="1000"
+                                        MaxDecimalPlaces="0"
+                                        Maximum="10000"
+                                        Minimum="0"
+                                        SmallChange="100"
+                                        Value="{Binding ApproximateCableLength.BoxDepth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    <TextBlock Margin="5,0,0,0" Text="Высота" />
+                                    <ui:NumberBox
+                                        x:Name="HeigthNumberBox"
+                                        Margin="5"
+                                        LargeChange="1000"
+                                        MaxDecimalPlaces="0"
+                                        Maximum="10000"
+                                        Minimum="0"
+                                        SmallChange="100"
+                                        Value="{Binding ApproximateCableLength.BoxHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    <TextBlock Margin="5,0,0,0" Text="Коэффициент" />
+                                    <ui:NumberBox
+                                        x:Name="Koef"
+                                        Margin="5"
+                                        LargeChange="1"
+                                        MaxDecimalPlaces="2"
+                                        Maximum="100"
+                                        Minimum="0.1"
+                                        SmallChange="0.1"
+                                        Value="{Binding ApproximateCableLength.K, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <Grid DockPanel.Dock="Bottom">
+                                    <TextBlock
+                                        Margin="0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Bottom"
+                                        Text="{Binding ApproximateCableLength.FinalMultiplier, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, StringFormat=К \= (Ш + Г + В) * k \= {0}}"
+                                        ToolTip="Количество соединений кабелем в схеме умножается на этот коэффициент, что в итоге отражает примерное количество кабеля" />
+                                </Grid>
+                            </DockPanel>
                         </Grid>
                     </Border>
                 </StackPanel>

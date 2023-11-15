@@ -53,16 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="LICENSE - Prism.Wpf.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="LICENSE - PropertyChanged.Fody.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="LICENSE - DynamicData.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="LICENSE - ReactiveUI.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="LICENSE - WPF-UI.txt">

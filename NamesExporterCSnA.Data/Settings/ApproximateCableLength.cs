@@ -12,7 +12,7 @@ namespace NamesExporterCSnA.Data.Settings
         public event PropertyChangedEventHandler PropertyChanged;
 
         public double FinalMultiplier =>
-             Math.Round((double)BoxWidth / 1000 * BoxHeight / 1000 * BoxDepth / 1000 * K, 2);
+             Math.Round((BoxWidth / 1000.0 + BoxHeight / 1000.0 + BoxDepth / 1000.0) * K, 2);
 
         public ApproximateCableLength() { }
     }
