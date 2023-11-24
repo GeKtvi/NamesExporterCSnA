@@ -16,10 +16,10 @@ namespace NamesExporterCSnA.Data.Cables
         private List<Regex> _whiteList;
 
         private readonly Regex SingleWireRegex =
-            new Regex(@"\s(?<wireCount>\d)+(x|х)(?<wireSection>\d+\,\d+|\d+\.\d+|\d+$)"); //Example: _1х0,5
+            new Regex(@"\s(?<wireCount>\d+)+(x|х)(?<wireSection>\d+\,\d+|\d+\.\d+|\d+$)"); //Example: _1х0,5
 
         private readonly Regex MultiWireRegex =
-            new Regex(@"\s(?<pairCount>\d)+(x|х)(?<wireCount>\d)+(x|х)(?<wireSection>\d+\,\d+|\d+\.\d+|\d+$)"); //Example: _1х1х0,5
+            new Regex(@"\s(?<pairCount>\d+)+(x|х)(?<wireCount>\d)+(x|х)(?<wireSection>\d+\,\d+|\d+\.\d+|\d+$)"); //Example: _1х1х0,5
 
 
         public CablesParser(IUpdateLogger logger, IApproximateCableLength approximateLength, CablesParserConfig config)
@@ -144,9 +144,21 @@ namespace NamesExporterCSnA.Data.Cables
 
             Match match = signPartRegex.Match(cable.WireName);
             if (isCableHasPairs)
+            {
                 pairCount = Convert.ToInt32(match.Groups["pairCount"].Value);
+                if (pairCount <= 0)
+                    throw new InvalidCableDataException("Cable has invalid pair count");
+            }
+
             wireCount = Convert.ToInt32(match.Groups["wireCount"].Value);
+
+            if (wireCount <= 0)
+                throw new InvalidCableDataException("Cable has invalid wire count");
+
             wireSection = Convert.ToDouble(match.Groups["wireSection"].Value);
+
+            if (wireSection <= 0)
+                throw new InvalidCableDataException("Cable has invalid pair section");
 
             return;
         }

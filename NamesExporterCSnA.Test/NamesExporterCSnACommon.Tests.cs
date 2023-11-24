@@ -122,9 +122,9 @@ namespace NamesExporterCSnA.Tests
             };
 
             ApproximateCableLength length = new ApproximateCableLength();
-            length.BoxWidth = 1000;
-            length.BoxHeight = 1000;
-            length.BoxDepth = 1000;
+            length.BoxWidth = 500;
+            length.BoxHeight = 250;
+            length.BoxDepth = 250;
             length.K = 1;
 
             List<object> cablesResult = new CablesParser(
